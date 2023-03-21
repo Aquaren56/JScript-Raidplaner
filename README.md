@@ -4,4 +4,4 @@
 # Willst du dann coden und ich guck dir zu?
 
 
-# hihi joners ist doof
+# hihi joners ist cool
