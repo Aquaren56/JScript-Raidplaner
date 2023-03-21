@@ -1,4 +1,4 @@
 # JScript-Raidplaner
 # Teste hier nur n bisschen
-# Test fuer Jonas
-# hihi
+# Test fuer Manu
+# Willst du dann coden und ich guck dir zu?
