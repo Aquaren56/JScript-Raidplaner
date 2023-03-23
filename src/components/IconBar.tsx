@@ -11,7 +11,8 @@ export default function IconBar() {
 
     const getContent = () => {
         switch(selected) {
-            case 1: return <IconTabContent icons={['healer', 'tank', 'melee', 'ranged']} imageGetter={getBasePlayerIcons}/>
+            case 1: return <IconTabContent icons={['healer', 'tank', 'melee', 'ranged']} imageGetter={getBasePlayerIcons}/>;
+            case 2: return 'hi'
         }
     }
 
