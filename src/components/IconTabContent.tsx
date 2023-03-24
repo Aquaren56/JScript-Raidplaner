@@ -10,8 +10,7 @@ export default function IconTabContent(props: contentProps) {
         return props.icons.map((name: string) => {
             return (
                 <DragIcon key={name} role={name} src={props.imageGetter(name)} alt={name}/>
-            )
-            
+            )  
         })
     }
 
