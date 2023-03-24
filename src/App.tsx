@@ -12,17 +12,18 @@ import PlanningCanvas from './components/PlanningCanvas';
 
 function App() {
     const [items, setItems] = useState(new Array<IconModel>());
+    const [selection, setSelection] = useState<IconModel | undefined>(undefined);
 
     useEffect(() => {
-      //console.log(items); for test purposes
-    }, [items]);
+      console.log(selection)
+    }, [items, selection]);
 
     return (
       <div className="App">
         <Header />
         <Steps />
         <IconBar />
-        <PlanningCanvas children={items} setChildren={setItems}/>
+        <PlanningCanvas children={items} setChildren={setItems} selection={selection} setSelection={setSelection}/>
         <PropertyDisplay />
       </div>
     );

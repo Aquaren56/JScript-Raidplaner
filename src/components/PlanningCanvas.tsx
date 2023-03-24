@@ -6,7 +6,7 @@ import IconModel from '../models/IconModel';
 
 export default function PlanningCanvas(props: any) {
 
-    const {children, setChildren, ...rest} = props;
+    const {children, setChildren, selection, setSelection, ...rest} = props;
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -56,7 +56,8 @@ export default function PlanningCanvas(props: any) {
 
         const obj = new IconModel( {name: iconData, pos: posData, size: {x: 30, y: 30}} );
 
-        setChildren([...children, obj])
+        setChildren([...children, obj]);
+        setSelection(obj);
     }
 
     const allowDrop = (e: React.DragEvent<HTMLCanvasElement>) => {
