@@ -1,23 +1,16 @@
 import '../styling/header.css';
 
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import getBasePlayerIcons, { pIconKeys } from '../utils/loadIcons';
-
-interface Point {
-    x: number;
-    y: number;
-}
-
-interface Child {
-    role: string;
-    pos: Point;
-}
+import IconModel from '../models/IconModel';
 
 export default function PlanningCanvas(props: any) {
 
+    const {children, setChildren, ...rest} = props;
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    const [children, setChildren] = useState(new Array<Child>())
+    //const [children, setChildren] = useState(new Array<Child>())
 
     const draw = useCallback(() => {
         const canvas = canvasRef.current
@@ -31,10 +24,10 @@ export default function PlanningCanvas(props: any) {
             context.fillStyle = 'black';
             context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         }
-        children.forEach(child => {
-            if(isOfTypePlayer(child.role)) {
+        children.forEach((child: IconModel) => {
+            if(isOfTypePlayer(child.identifier)) {
                 const image = new Image();
-                image.src = getBasePlayerIcons(child.role);
+                image.src = getBasePlayerIcons(child.identifier);
                 context.drawImage(image, child.pos.x, child.pos.y, 30, 30);
             }
         })
@@ -49,7 +42,6 @@ export default function PlanningCanvas(props: any) {
         return ['melee', 'ranged', 'tank', 'healer'].includes(keyInput);
     }
 
-
     const dropHandler = (e: React.DragEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         const canvas = canvasRef.current;
@@ -62,7 +54,7 @@ export default function PlanningCanvas(props: any) {
 
         const iconData = e.dataTransfer.getData('role');
 
-        const obj = { role: iconData, pos: posData };
+        const obj = new IconModel( {name: iconData, pos: posData, size: {x: 30, y: 30}} );
 
         setChildren([...children, obj])
     }
@@ -73,7 +65,7 @@ export default function PlanningCanvas(props: any) {
 
     return (
         <div>
-            <canvas ref={canvasRef} {...props} onDrop={dropHandler} onDragOver={allowDrop}/>
+            <canvas ref={canvasRef} {...rest} onDrop={dropHandler} onDragOver={allowDrop}/>
         </div>
     )
 }

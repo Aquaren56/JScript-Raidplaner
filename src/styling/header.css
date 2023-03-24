@@ -34,35 +34,3 @@
     background-color: darksalmon;
     grid-area: Canvas;
 }
-
-.icon-bar-header {
-    padding: 2px;
-    display: flex;
-    justify-content: space-between;
-    gap: 3px;
-}
-
-.icon-tab {
-    height: 30px;
-    width: 30px;
-    background-color: gray;
-}
-
-.icon-tab-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2px;
-}
-
-.player-icon {
-    height: 30px;
-    width: 30px;
-    display: inline;
-}
-
-.player-icon > img {
-    height: 30px;
-    width: 30px;
-}

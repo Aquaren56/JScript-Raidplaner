@@ -1,4 +1,6 @@
-import DragIcon from "./DragIcon";
+import DragIcon from "./DraggableIcon";
+
+import '../../styling/icon-bar.css';
 
 interface contentProps {
     icons: string[],

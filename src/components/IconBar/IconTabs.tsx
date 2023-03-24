@@ -1,4 +1,4 @@
-import '../styling/header.css';
+import '../../styling/icon-bar.css';
 
 interface IconTabProps {
     description: number;
