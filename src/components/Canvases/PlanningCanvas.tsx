@@ -1,8 +1,8 @@
-import '../styling/header.css';
+import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback } from 'react';
-import getBasePlayerIcons, { pIconKeys } from '../utils/loadIcons';
-import IconModel from '../models/IconModel';
+import getBasePlayerIcons, { pIconKeys } from '../../utils/loadIcons';
+import IconModel from '../../models/IconModel';
 
 export default function PlanningCanvas(props: any) {
 
@@ -17,13 +17,14 @@ export default function PlanningCanvas(props: any) {
         let context: any;
         if(canvas !== null) {
             context = canvas.getContext('2d');
-            canvas.width = 500;
-            canvas.height = 500;
+            canvas.width = canvas.height = 1000;
+            canvas.style.width = canvas.style.height = '500px';
         }
         if(context) {
-            context.fillStyle = 'black';
+            context.fillStyle = 'transparent';
             context.fillRect(0, 0, context.canvas.width, context.canvas.height);
         }
+        context.scale(2,2)
         children.forEach((child: IconModel) => {
             if(isOfTypePlayer(child.identifier)) {
                 const image = new Image();
@@ -65,8 +66,6 @@ export default function PlanningCanvas(props: any) {
     }
 
     return (
-        <div>
-            <canvas ref={canvasRef} {...rest} onDrop={dropHandler} onDragOver={allowDrop}/>
-        </div>
+            <canvas className='planning-canvas' ref={canvasRef} {...rest} onDrop={dropHandler} onDragOver={allowDrop}/>
     )
 }
