@@ -18,8 +18,7 @@ export default function Steps(props: StepsProps) {
 
     const generateButtons = useCallback(() => {
         const buttons = new Array<JSX.Element>();
-        const array = Array.from(props.all, ([name, value]) => ({ name, value }));
-        console.log(array)
+        
         props.all.forEach((value, key, map) => {
             const iterator1 = map.keys();
             let number = 1;
