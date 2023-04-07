@@ -78,8 +78,6 @@ export default function MapCanvas(props: any) {
 
 
         }
-        //context.scale(2,2)
-        
     }, [map.coloumns, map.rows, map.square, map.radials]);
 
     useEffect(() => {
