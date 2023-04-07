@@ -1,4 +1,6 @@
-import DragIcon from "./DragIcon";
+import DragIcon from "./DraggableIcon";
+
+import '../../styling/icon-bar.css';
 
 interface contentProps {
     icons: string[],
@@ -10,8 +12,7 @@ export default function IconTabContent(props: contentProps) {
         return props.icons.map((name: string) => {
             return (
                 <DragIcon key={name} role={name} src={props.imageGetter(name)} alt={name}/>
-            )
-            
+            )  
         })
     }
 

@@ -1,9 +1,9 @@
-import '../styling/header.css';
+import '../../styling/icon-bar.css';
 
 import IconTab from './IconTabs';
 import { useState } from 'react';
 import IconTabContent from './IconTabContent';
-import getBasePlayerIcons from '../utils/loadIcons';
+import getBasePlayerIcons from '../../utils/loadIcons';
 
 
 export default function IconBar() {

@@ -1,0 +1,15 @@
+.canvas-area {
+    grid-area: Canvas;
+}
+
+.canvas-area > canvas {
+    position: absolute;
+}
+
+.planning-canvas {
+    z-index: 2;
+}
+
+.map-canvas {
+    z-index: 1;
+}

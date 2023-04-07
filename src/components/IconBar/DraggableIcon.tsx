@@ -1,4 +1,4 @@
-import '../styling/header.css';
+import '../../styling/icon-bar.css';
 
 interface dragProps {
     src: string;
@@ -9,11 +9,8 @@ interface dragProps {
 export default function DragIcon(props: dragProps) {
 
     const dragStart = (e: React.DragEvent<HTMLDivElement>) => {
-        console.log(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-        console.log(props.alt)
         e.dataTransfer.setData('role', props.role)
         e.dataTransfer.setData('pos', `${e.nativeEvent.offsetX} ${e.nativeEvent.offsetY}`)
-
     }
 
     return (
