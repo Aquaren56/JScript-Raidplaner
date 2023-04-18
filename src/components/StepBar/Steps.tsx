@@ -30,13 +30,11 @@ export default function Steps(props: StepsProps) {
             }
             buttons.push(<Step number={number} change={props.changeStep} key={number} id={key}/>);
         });
-        console.log(buttons);
         setButtons(buttons);
 
     }, [props.all, props.changeStep])
 
     useEffect(() => {
-        console.log(props.all.size);
         generateButtons();
     }, [props.all, generateButtons]);
 

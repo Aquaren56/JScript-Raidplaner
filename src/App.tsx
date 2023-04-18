@@ -7,7 +7,7 @@ import IconModel from './models/IconModel';
 import Header from './components/Header';
 import IconBar from './components/IconBar/IconBar';
 import Steps from './components/StepBar/Steps';
-import PropertyDisplay from './components/PropertyDisplay';
+import PropertyDisplay from './components/PropertyDisplays/PropertyDisplay';
 import PlanningCanvas from './components/Canvases/PlanningCanvas';
 import MapCanvas from './components/Canvases/MapCanvas';
 import MapModel from './models/MapModel';
@@ -15,7 +15,7 @@ import MapModel from './models/MapModel';
 function App() {
     const [items, setItems] = useState(new Array<IconModel>());
     const [selection, setSelection] = useState<IconModel | undefined>(undefined);
-    const [area, setArea] = useState(new MapModel({ rows: 4, coloumns: 4, square: true, radials: 4}));
+    const [area, setArea] = useState(new MapModel({  square: true, grids: [{rows: 4, columns: 4, radials: 0}]}));
     const [currentStep, setCurrentStep] = useState(Date.now());
 
     const [stepList, setStepList] = useState(new Map());
@@ -39,7 +39,6 @@ function App() {
 
     useEffect(() => {
       stepList.set(currentStep, items);
-      console.log(stepList);
     }, [items, stepList, currentStep, selection]);
 
     return (
@@ -51,7 +50,7 @@ function App() {
           <PlanningCanvas children={items} setChildren={setItems} selection={selection} setSelection={setSelection} key={items}/>
           <MapCanvas map={area} setMap={setArea}/>
         </div>
-        <PropertyDisplay />
+        <PropertyDisplay selection={selection || area} changeSelection={setSelection} changeMap={setArea} />
       </div>
     );
 }

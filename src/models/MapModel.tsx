@@ -1,21 +1,23 @@
 
 interface MapProps {
-    rows: number;
-    coloumns: number;
     square: boolean;
-    radials: number;
+    grids: Grid[];
+}
+
+interface Grid {
+    rows?: number;
+    columns?: number;
+    radials?: number;
 }
 
 export default class MapModel {
-    rows: number;
-    coloumns: number;
     square: boolean;
-    radials: number;
+    grids: Grid[];
 
     constructor(props: MapProps) {
-        this.rows = props.rows;
-        this.coloumns = props.coloumns;
         this.square = props.square;
-        this.radials = props.radials;
+        this.grids = props.grids;
     }
 }
+
+export type { Grid };
