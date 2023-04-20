@@ -15,19 +15,20 @@ export default function MapProperties({ map, changeMap }: MProps) {
     
     const [square, setSquare] = useState(map.square);
     const [grids, setGrids] = useState(map.grids);
-    const [selected, setSelected] = useState(new Array<number>(0));
+    const [radials, setRadials] = useState(map.radials)
+    const [selected, setSelected] = useState(0);
 
     useEffect(() => {
-        changeMap(new MapModel({ square: square, grids: grids}));
-    }, [square, changeMap, grids]);
+        changeMap(new MapModel({ square: square, radials: radials, grids: grids}));
+    }, [square, changeMap, grids, radials]);
 
     const changeGridAt = (index:number, newGrid:Grid) => {
-        grids[index] = newGrid;
+        grids[index] = {...newGrid};
         setGrids([...map.grids]);
     }
 
     const newGrid = () => {
-        grids[grids.length] = {rows: 4, columns: 4, radials: 0};
+        grids[grids.length] = {rows: 4, columns: 4, coloring: []};
         setGrids([...map.grids]);
     }
 
@@ -42,7 +43,6 @@ export default function MapProperties({ map, changeMap }: MProps) {
                 <GridSettings 
                     rows={grid.rows} 
                     columns={grid.columns} 
-                    radials={grid.radials} 
                     id={index} 
                     key={index} 
                     onGridChange={changeGridAt} 
@@ -53,17 +53,26 @@ export default function MapProperties({ map, changeMap }: MProps) {
         return GridJSX;
     }
 
-    function selectByIndex<T>(indices: number[], arr: T[]): T[] {
-        return indices.filter((i) => i >= 0 && i < arr.length).map((i) => arr[i]);
-    }
-
     return (
         <div>
             {gridDisplay()}
             <button onClick={newGrid}>+</button>
             <div>
+                <label>Rad:</label>
+                <input 
+                    type='number' 
+                    className='cr' 
+                    defaultValue={map.radials} 
+                    onChange = {(event) => setRadials(Number(event.target.value))}
+                />
+            </div>
+            <div>
                 <label>Circle or Square</label>
-                <input type='checkbox' checked={map.square} onChange = {(event) => {setSquare(!square);}}/>
+                <input 
+                    type='checkbox' 
+                    checked={map.square} 
+                    onChange = {event => setSquare(!square)}
+                />
             </div>
             <div>
                 <GridDropdown 
@@ -74,8 +83,10 @@ export default function MapProperties({ map, changeMap }: MProps) {
             </div>
             <div>
                 <GridPropertyCanvas 
-                    grids={selectByIndex(selected, grids)} 
-                    square={map.square} 
+                    colorMap={changeGridAt}
+                    index={selected}
+                    grid={grids[selected]} 
+                    map={map}
                     key={grids}
                 />
             </div>
