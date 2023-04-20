@@ -15,7 +15,7 @@ import MapModel from './models/MapModel';
 function App() {
     const [items, setItems] = useState(new Array<IconModel>());
     const [selection, setSelection] = useState<IconModel | undefined>(undefined);
-    const [area, setArea] = useState(new MapModel({  square: true, grids: [{rows: 4, columns: 4, radials: 0}]}));
+    const [area, setArea] = useState(new MapModel({  square: true, radials: 0, grids: [{rows: 4, columns: 4, coloring: []}]}));
     const [currentStep, setCurrentStep] = useState(Date.now());
 
     const [stepList, setStepList] = useState(new Map());

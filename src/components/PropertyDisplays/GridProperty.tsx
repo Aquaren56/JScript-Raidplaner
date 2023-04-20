@@ -1,9 +1,8 @@
 import '../../styling/property.css';
 
 interface GridProps {
-    rows?: number;
-    columns?: number;
-    radials?: number;
+    rows: number;
+    columns: number;
     id: number;
     onGridChange: Function;
     onGridDelete: Function;
@@ -11,18 +10,16 @@ interface GridProps {
 
 export default function GridSettings(props: GridProps) {
 
-    const onChange = (newRows:number, newcolumns:number, newRadials:number) => {
-        props.onGridChange(props.id, {rows: newRows || props.rows, columns: newcolumns || props.columns, radials: newRadials || props.radials});
+    const onChange = ({rows = props.rows, columns = props.columns, coloring = []}: {rows?: number, columns?:number, coloring?: []}) => {
+        props.onGridChange(props.id, {rows, columns, coloring});
     }
 
     return (
         <div>
             <label>Grid:</label>
-            <input type='number' className='cr' defaultValue={props.columns} onChange = {(event) => {onChange(0, Number(event.target.value),0);}}/>
+            <input type='number' className='cr' defaultValue={props.columns} onChange = {(event) => {onChange({ columns: Number(event.target.value)});}}/>
             by:
-            <input type='number' className='cr' defaultValue={props.rows} onChange = {(event) => {onChange(Number(event.target.value), 0,0)}}/>
-            <label>Rad:</label>
-            <input type='number' className='cr' defaultValue={props.radials} onChange = {(event) => {onChange(0,0,Number(event.target.value));}}/>
+            <input type='number' className='cr' defaultValue={props.rows} onChange = {(event) => {onChange({rows: Number(event.target.value)})}}/>
             <button onClick={e => props.onGridDelete(props.id)}>-</button>
         </div>
     )

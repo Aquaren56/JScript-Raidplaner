@@ -7,24 +7,19 @@ export interface DropdownProps {
 }
 
 export default function Dropdown ({ label, grids, setNumber }: DropdownProps) {
-  const [selectedValues, setSelectedValues] = useState<number[]>([1]);
+  const [selectedValue, setSelectedValue] = useState<number | undefined>(0);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(event.target.selectedOptions).map((option) =>
-      parseInt(option.value)
-    );
-    setSelectedValues(selectedOptions);
-    setNumber(selectedOptions);
+    setSelectedValue(parseInt(event.target.value));
+    setNumber(parseInt(event.target.value));
   };
-
-  const stringValues = selectedValues.map((num) => num.toString());
 
   return (
     <div>
       <label>{label}</label>
-      <select value={stringValues} multiple={true} onChange={handleChange}>
-      {grids.map((grid, index) => (
-          <option key={index} value={index.toString()}>
+      <select value={selectedValue ?? ''} onChange={handleChange}>
+        {grids.map((grid, index) => (
+          <option key={index} value={index}>
             {index+1}
           </option>
         ))}

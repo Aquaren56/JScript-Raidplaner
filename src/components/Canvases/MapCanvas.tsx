@@ -1,6 +1,6 @@
 import '../../styling/canvases.css';
 
-import { useRef, useCallback, useEffect } from "react";
+import { useRef } from "react";
 
 export default function MapCanvas(props: any) {
 
@@ -8,7 +8,7 @@ export default function MapCanvas(props: any) {
 
     const { map, setMap, ...rest } = props;
 
-    const draw = useCallback(() => {
+    const draw = () => {
         const canvas = canvasRef.current
         let context: any;
         if(canvas !== null) {
@@ -28,6 +28,20 @@ export default function MapCanvas(props: any) {
 
             map.grids.forEach((grid: any) => {
                 if(map.square) {
+
+                    const rowWidth = 1000 / grid.rows;
+                    const columnWidth = 1000 / grid.columns;
+
+                    for(let i = 0; i < grid.rows; i++) {
+                        for(let k = 0; k < grid.columns; k++) {
+                            if(grid.coloring[i*grid.columns + k]) {
+                                context.fillStyle = "red";
+                                context.fillRect(columnWidth*k, rowWidth*i, columnWidth, rowWidth);
+    
+                            }
+                        }
+                    }
+
                     for(let i = 0; i <= grid.columns; i++) {
                         context.beginPath();
                         context.moveTo(i*(canvas.width/grid.columns), 0);
@@ -68,22 +82,18 @@ export default function MapCanvas(props: any) {
                         context.stroke();
                     }
                 }
-    
-                for(let i = 0; i <= grid.radials; i++) {
+                for(let i = 0; i <= map.radials; i++) {
                     context.beginPath();
-                    context.arc(canvas.width/2, canvas.height/2, 500 - (i * (500/grid.radials)), 0, 2 * Math.PI);
+                    context.arc(canvas.width/2, canvas.height/2, 500 - (i * (500/map.radials)), 0, 2 * Math.PI);
                     context.strokeStyle = '#d7d7d7';
                     context.stroke();
     
                 }
             })
         }
-    }, [map.grids, map.square]);
+    };
 
-    useEffect(() => {
-            draw();
-
-    }, [draw])
+    draw();
 
     return (
             <canvas className='map-canvas' ref={canvasRef} {...rest}/>
