@@ -61,11 +61,42 @@ export default function PlanningCanvas(props: any) {
         setSelection(obj);
     }
 
+    const isChildHit = (click: {x: number, y:number}, child: IconModel) => {
+        if(click.x > child.pos.x && click.x < child.pos.x+child.size.x && click.y > child.pos.y && click.y < child.pos.y+child.size.y) {
+            return true
+        }
+        return false;
+    }
+
+    const onCanvasClicked = (e: MouseEvent) => {
+        const canvas = canvasRef.current;
+        if(canvas) {
+            let childHit = false;
+            const pos = { x: e.clientX - canvas.offsetLeft, y: e.clientY - canvas.offsetTop }
+            children.forEach((child: IconModel) => {
+                if(isChildHit(pos, child)) {
+                    childHit = true;
+                    setSelection(child);
+                }
+            });
+            if(!childHit) {
+                setSelection(undefined);
+            }
+        }
+    }
+
     const allowDrop = (e: React.DragEvent<HTMLCanvasElement>) => {
         e.preventDefault();
     }
 
     return (
-            <canvas className='planning-canvas' ref={canvasRef} {...rest} onDrop={dropHandler} onDragOver={allowDrop}/>
+            <canvas 
+                className='planning-canvas' 
+                ref={canvasRef} 
+                {...rest} 
+                onDrop={dropHandler} 
+                onDragOver={allowDrop}
+                onMouseDown={onCanvasClicked}
+            />
     )
 }
