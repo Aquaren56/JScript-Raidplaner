@@ -7,6 +7,7 @@ interface CanvasEleVar {
     name: string;
     pos: Point;
     size: Point;
+    img? : string;
 }
 
 export default class CanvasElement {
@@ -14,6 +15,7 @@ export default class CanvasElement {
     pos: Point;
     size: Point;
     rotation: number;
+    img? : string;
 
 
     constructor(props: CanvasEleVar) {
@@ -21,5 +23,6 @@ export default class CanvasElement {
         this.pos = props.pos;
         this.size = props.size;
         this.rotation = 0;
+        this.img = props.img;
     }
 }

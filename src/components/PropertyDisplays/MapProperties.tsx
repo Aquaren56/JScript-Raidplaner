@@ -12,7 +12,7 @@ interface MProps {
 }
 
 export default function MapProperties({ map, changeMap }: MProps) {
-    
+
     const [square, setSquare] = useState(map.square);
     const [grids, setGrids] = useState(map.grids);
     const [radials, setRadials] = useState(map.radials)

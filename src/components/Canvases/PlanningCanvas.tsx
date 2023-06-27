@@ -1,8 +1,13 @@
 import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback } from 'react';
-import getBasePlayerIcons, { pIconKeys } from '../../utils/loadIcons';
 import IconModel from '../../models/IconModel';
+import { onDrop } from '../../utils/DragnDrop';
+
+interface Point {
+    x: number;
+    y: number;
+}
 
 export default function PlanningCanvas(props: any) {
 
@@ -14,54 +19,58 @@ export default function PlanningCanvas(props: any) {
 
     const draw = useCallback(() => {
         const canvas = canvasRef.current
-        let context: any;
+        const context = canvas?.getContext('2d');
         if(canvas !== null) {
-            context = canvas.getContext('2d');
             canvas.width = canvas.height = 1000;
             canvas.style.width = canvas.style.height = '500px';
         }
         if(context) {
             context.fillStyle = 'transparent';
             context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+            context.scale(2,2)
+            if(!children) return;
+            children.forEach((child: IconModel) => {
+                if(child.img) {
+                    context.save();
+                    const image = new Image();
+                    image.src = child.img;
+                    context.translate(child.pos.x + child.size.x/2, child.pos.y + child.size.y/2)
+                    context.rotate(child.rotation * Math.PI / 180);
+                    context.translate(-(child.pos.x + child.size.x/2), -(child.pos.y + child.size.y/2))
+                    context.drawImage(image, child.pos.x, child.pos.y, child.size.x, child.size.y);
+                    context.restore();
+                }
+            })
         }
-        context.scale(2,2)
-        children.forEach((child: IconModel) => {
-            if(isOfTypePlayer(child.identifier)) {
-                const image = new Image();
-                image.src = getBasePlayerIcons(child.identifier);
-                context.drawImage(image, child.pos.x, child.pos.y, 30, 30);
-            }
-        })
     }, [children]);
 
     useEffect(() => {
             draw();
-
     }, [draw])
 
-    function isOfTypePlayer (keyInput: string): keyInput is pIconKeys {
-        return ['melee', 'ranged', 'tank', 'healer'].includes(keyInput);
+    const calcPosOnCanvas = (pos: Point, e: React.DragEvent<HTMLCanvasElement>): Point => {
+        const canvas = canvasRef.current;
+        if(canvas) {
+            const x = e.clientX - canvas.offsetLeft - pos.x;
+            const y = e.clientY - canvas.offsetTop - pos.y;
+            return {x, y};
+        }
+        return {x: 0, y: 0};
     }
 
     const dropHandler = (e: React.DragEvent<HTMLCanvasElement>) => {
         e.preventDefault();
-        const canvas = canvasRef.current;
-        let posData = {x: 0, y: 0};
-        if(canvas){
-            const offSetClick = e.dataTransfer.getData('pos');
-            const offSets = offSetClick.split(' ');
-            posData = {x: e.clientX - canvas?.offsetLeft - Number(offSets[0]), y: e.clientY - canvas?.offsetTop - Number(offSets[1])}
-        }
+        
+        const dropObj = onDrop(e);
 
-        const iconData = e.dataTransfer.getData('role');
+        if(dropObj) {
+            const obj = new IconModel( {name: dropObj.name, pos: calcPosOnCanvas(dropObj.offset, e), size: {x: 30, y: 30}, img: dropObj?.src} );
 
-        const obj = new IconModel( {name: iconData, pos: posData, size: {x: 30, y: 30}} );
-
-        setChildren([...children, obj]);
-        setSelection(obj);
+            setChildren([...children, obj]);
+        };
     }
 
-    const isChildHit = (click: {x: number, y:number}, child: IconModel) => {
+    const isElementHit = (click: {x: number, y:number}, child: IconModel) => {
         if(click.x > child.pos.x && click.x < child.pos.x+child.size.x && click.y > child.pos.y && click.y < child.pos.y+child.size.y) {
             return true
         }
@@ -73,14 +82,14 @@ export default function PlanningCanvas(props: any) {
         if(canvas) {
             let childHit = false;
             const pos = { x: e.clientX - canvas.offsetLeft, y: e.clientY - canvas.offsetTop }
-            children.forEach((child: IconModel) => {
-                if(isChildHit(pos, child)) {
+            children.forEach((child: IconModel, index: number) => {
+                if(isElementHit(pos, child)) {
                     childHit = true;
-                    setSelection(child);
+                    setSelection(index);
                 }
             });
             if(!childHit) {
-                setSelection(undefined);
+                setSelection(-1);
             }
         }
     }

@@ -5,11 +5,11 @@ interface IconTabProps {
     onSelection: Function;
 }
 
-export default function IconTab(props: IconTabProps) {
+export default function IconTab({description, onSelection}: IconTabProps) {
 
     return (
-        <div className="icon-tab" onClick={e => props.onSelection(props.description)}>
-            {props.description}
+        <div className="icon-tab" onClick={() => onSelection()}>
+            {description}
         </div>
     )
 }
