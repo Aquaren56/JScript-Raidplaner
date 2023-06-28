@@ -91,7 +91,7 @@ export default function StepList({selectStep}: StepListProps) {
     }
 
     return (
-        <div>
+        <div style={{ backgroundColor: 'var(--dark)'}}>
             {steps.map((step, index) => (
                 <button 
                     className={`step-button`}

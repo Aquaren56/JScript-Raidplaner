@@ -12,6 +12,7 @@ import PlanningCanvas from './components/Canvases/PlanningCanvas';
 import MapCanvas from './components/Canvases/MapCanvas';
 import MapModel from './models/MapModel';
 import ElementDisplay from './components/ElementsDisplay/ElementDisplay';
+import ThemeToggle from './components/ThemeToggle';
 
 import StepList from './components/StepBar/StepList';
 
@@ -50,12 +51,14 @@ function App() {
   };
 
     return (
-      <div className="App">
+      <div className="App" style={{ backgroundColor: 'var(--background-color)', color: 'var(--text-color)' }}>
         <StepContext.Provider value={selectedStep}>
-          <Header />
+          <Header>
+            <ThemeToggle />
+          </Header>
           <StepList selectStep={updateSelectedStep} />
           <IconBar />
-          <div className='canvas-area'>
+          <div className='canvas-area' style={{ backgroundColor: 'var(--dark)'}}>
             <PlanningCanvas children={items} setChildren={updateItems} selection={selection} setSelection={setSelection} key={items}/>
             <MapCanvas map={area} setMap={setArea}/>
           </div>

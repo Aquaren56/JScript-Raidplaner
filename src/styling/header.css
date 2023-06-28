@@ -1,6 +1,6 @@
 .App {
-    height: 96vh;
-    margin: 15px;
+    height: 97vh;
+    padding: 15px;
     display: grid; 
     grid-template-columns: 210px 1.0fr 0.5fr 0.6fr; 
     grid-template-rows: 39.3px 1fr; 
@@ -11,26 +11,46 @@
 }
 
 .header {
-    background-color: aqua;
     grid-area: Header;
 }
 
 .icon-bar {
-    background-color: brown;
     grid-area: sidebar;
 }
 
 .steps {
-    background-color: blanchedalmond;
     grid-area: Steps;
 }
 
 .property-display {
-    background-color: darkcyan;
     grid-area: RightSide;
 }
 
 .element-display {
-    background-color: darkgoldenrod;
     grid-area: MiddleRightSide;
 }
+
+/* Light Theme */
+:root {
+    --background-color: #1f1f1f;
+    --text-color: #ffffff;
+    --darkest: #1a1a1a;
+    --darker: #333333;
+    --dark: #4d4d4d;
+    --light: #666666;
+    --lighter: #808080;
+
+
+  }
+  
+  /* Dark Theme */
+  :root.light {
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --darkest: #f2f2f2;
+    --darker: #e6e6e6;
+    --dark: #cccccc;
+    --light: #b3b3b3;
+    --lighter: #999999;
+}
+  

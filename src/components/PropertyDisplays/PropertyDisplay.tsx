@@ -30,7 +30,7 @@ export default function PropertyDisplay(props: PropertyDisplayProps) {
     }
 
     return (
-        <div className='property-display'>
+        <div className='property-display' style={{ backgroundColor: 'var(--darkest)'}}>
             PropertyDIsplay Right Side
             {display()}
         </div>

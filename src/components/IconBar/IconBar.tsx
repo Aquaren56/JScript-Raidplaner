@@ -17,7 +17,7 @@ export default function IconBar() {
     }
 
     return (
-        <div className='icon-bar'>
+        <div className='icon-bar' style={{ backgroundColor: 'var(--light)'}}>
             IconBar Left Side
             <div className='icon-bar-header'>
             <IconTab description={1} onSelection={() => setSelected(1)}/>

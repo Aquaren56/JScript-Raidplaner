@@ -10,10 +10,11 @@ interface ElementDisplayProps {
 
 export default function ElementDisplay({sceneChildren, selection, setSelection}: ElementDisplayProps) {
     return (
-        <div className="element-display">
+        <div className="element-display" style={{ backgroundColor: 'var(--darkest)'}}>
             {sceneChildren.map((child: IconModel, index: number) => {
+                const style = selection === index ? {bgc: 'yellow', c: 'black'} : {bgc: '', c: ''}
                 return (
-                    <div className="element" style={{ backgroundColor: selection === index ? 'yellow' : 'white'}} key={index} onClick={() => setSelection(index)}>
+                    <div className="element" style={{ backgroundColor: style.bgc, color: style.c }} key={index} onClick={() => setSelection(index)}>
                         <img src={child.img} alt={child.identifier} />
                         {child.identifier}
                     </div>
