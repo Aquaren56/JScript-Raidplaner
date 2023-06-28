@@ -6,11 +6,12 @@ import IconModel from './models/IconModel';
 
 import Header from './components/Header';
 import IconBar from './components/IconBar/IconBar';
-import Steps from './components/StepBar/Steps';
+//import Steps from './components/StepBar/Steps';
 import PropertyDisplay from './components/PropertyDisplays/PropertyDisplay';
 import PlanningCanvas from './components/Canvases/PlanningCanvas';
 import MapCanvas from './components/Canvases/MapCanvas';
 import MapModel from './models/MapModel';
+import ElementDisplay from './components/ElementsDisplay/ElementDisplay';
 
 import StepList from './components/StepBar/StepList';
 
@@ -58,6 +59,7 @@ function App() {
             <PlanningCanvas children={items} setChildren={updateItems} selection={selection} setSelection={setSelection} key={items}/>
             <MapCanvas map={area} setMap={setArea}/>
           </div>
+          <ElementDisplay sceneChildren={items} selection={selection} setSelection={setSelection}/>
           <PropertyDisplay selection={selection===-1 ?  area : {player: items[selection], index: selection}} changeSelection={changeItemAt} changeMap={setArea} />
         </StepContext.Provider>
       </div>

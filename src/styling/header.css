@@ -2,12 +2,12 @@
     height: 96vh;
     margin: 15px;
     display: grid; 
-    grid-template-columns: 210px 1.5fr 0.6fr; 
+    grid-template-columns: 210px 1.0fr 0.5fr 0.6fr; 
     grid-template-rows: 39.3px 1fr; 
     gap: 15px 15px; 
     grid-template-areas: 
-      "Header Steps RightSide"
-      "sidebar Canvas RightSide"; 
+      "Header Steps MiddleRightSide RightSide"
+      "sidebar Canvas MiddleRightSide RightSide"; 
 }
 
 .header {
@@ -28,4 +28,9 @@
 .property-display {
     background-color: darkcyan;
     grid-area: RightSide;
+}
+
+.element-display {
+    background-color: darkgoldenrod;
+    grid-area: MiddleRightSide;
 }

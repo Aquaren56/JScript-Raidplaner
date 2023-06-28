@@ -1,0 +1,20 @@
+.element {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    
+}
+
+.element > img {
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+}
+
+.element-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    gap: 2px;
+}
