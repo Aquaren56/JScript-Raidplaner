@@ -13,9 +13,6 @@ export default function StepList({selectStep}: StepListProps) {
     const [steps, setSteps] = useState([0]);
     const [nextStepId, setNextStepId] = useState(1);
 
-
-
-    
     const addStepAtIndex = (index: number) => {
       const newSteps = [...steps.slice(0, index + 1), nextStepId, ...steps.slice(index + 1)];
       setSteps(newSteps);
@@ -106,7 +103,7 @@ export default function StepList({selectStep}: StepListProps) {
                     style={{ 
                         backgroundColor: step === currentStep ? 'yellow' : 'white'}}
                 >
-                    {index + 1}
+                    {index+1}
                 </button>
             ))}
             <button onClick={e => addStepAtIndex(findIndex(currentStep))}>+</button>

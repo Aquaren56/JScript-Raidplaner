@@ -18,31 +18,42 @@ export default function PlanningCanvas(props: any) {
     //const [children, setChildren] = useState(new Array<Child>())
 
     const draw = useCallback(() => {
-        const canvas = canvasRef.current
+        const canvas = canvasRef.current;
         const context = canvas?.getContext('2d');
-        if(canvas !== null) {
-            canvas.width = canvas.height = 1000;
-            canvas.style.width = canvas.style.height = '500px';
+        if (canvas && context) {
+          canvas.width = canvas.height = 1000;
+          canvas.style.width = canvas.style.height = '500px';
+          context.fillStyle = 'transparent';
+          context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+          if (!children) return;
+          children.forEach((child: IconModel) => {
+            if (child.img) {
+              context.save();
+              context.scale(2,2)
+              const image = new Image();
+              image.src = child.img;
+              context.translate(
+                child.pos.x + child.size.x / 2,
+                child.pos.y + child.size.y / 2
+              );
+              context.rotate((child.rotation * Math.PI) / 180);
+              context.translate(
+                -(child.pos.x + child.size.x / 2),
+                -(child.pos.y + child.size.y / 2)
+              );
+              context.drawImage(
+                image,
+                child.pos.x,
+                child.pos.y,
+                child.size.x,
+                child.size.y
+              );
+              context.restore();
+            }
+          });
         }
-        if(context) {
-            context.fillStyle = 'transparent';
-            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
-            context.scale(2,2)
-            if(!children) return;
-            children.forEach((child: IconModel) => {
-                if(child.img) {
-                    context.save();
-                    const image = new Image();
-                    image.src = child.img;
-                    context.translate(child.pos.x + child.size.x/2, child.pos.y + child.size.y/2)
-                    context.rotate(child.rotation * Math.PI / 180);
-                    context.translate(-(child.pos.x + child.size.x/2), -(child.pos.y + child.size.y/2))
-                    context.drawImage(image, child.pos.x, child.pos.y, child.size.x, child.size.y);
-                    context.restore();
-                }
-            })
-        }
-    }, [children]);
+      }, [children]);
+      
 
     useEffect(() => {
             draw();
@@ -50,13 +61,14 @@ export default function PlanningCanvas(props: any) {
 
     const calcPosOnCanvas = (pos: Point, e: React.DragEvent<HTMLCanvasElement>): Point => {
         const canvas = canvasRef.current;
-        if(canvas) {
-            const x = e.clientX - canvas.offsetLeft - pos.x;
-            const y = e.clientY - canvas.offsetTop - pos.y;
-            return {x, y};
+        if (canvas) {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left - pos.x;
+          const y = e.clientY - rect.top - pos.y;
+          return { x, y };
         }
-        return {x: 0, y: 0};
-    }
+        return { x: 0, y: 0 };
+      };
 
     const dropHandler = (e: React.DragEvent<HTMLCanvasElement>) => {
         e.preventDefault();
@@ -81,7 +93,8 @@ export default function PlanningCanvas(props: any) {
         const canvas = canvasRef.current;
         if(canvas) {
             let childHit = false;
-            const pos = { x: e.clientX - canvas.offsetLeft, y: e.clientY - canvas.offsetTop }
+            const rect = canvas.getBoundingClientRect();
+            const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
             children.forEach((child: IconModel, index: number) => {
                 if(isElementHit(pos, child)) {
                     childHit = true;

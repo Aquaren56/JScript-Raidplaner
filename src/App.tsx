@@ -59,8 +59,10 @@ function App() {
           <StepList selectStep={updateSelectedStep} />
           <IconBar />
           <div className='canvas-area' style={{ backgroundColor: 'var(--dark)'}}>
-            <PlanningCanvas children={items} setChildren={updateItems} selection={selection} setSelection={setSelection} key={items}/>
-            <MapCanvas map={area} setMap={setArea}/>
+            <div className='center-canvas'>
+              <PlanningCanvas children={items} setChildren={updateItems} selection={selection} setSelection={setSelection} key={items}/>
+              <MapCanvas map={area} setMap={setArea}/>
+            </div>
           </div>
           <ElementDisplay sceneChildren={items} selection={selection} setSelection={setSelection}/>
           <PropertyDisplay selection={selection===-1 ?  area : {player: items[selection], index: selection}} changeSelection={changeItemAt} changeMap={setArea} />
