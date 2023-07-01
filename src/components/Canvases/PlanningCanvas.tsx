@@ -1,6 +1,6 @@
 import '../../styling/canvases.css';
 
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import IconModel from '../../models/IconModel';
 import { onDrop } from '../../utils/DragnDrop';
 
@@ -12,10 +12,9 @@ interface Point {
 export default function PlanningCanvas(props: any) {
 
     const {children, setChildren, selection, setSelection, ...rest} = props;
-
+    
+    const [dragging, setDragging] = useState<Point | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
-
-    //const [children, setChildren] = useState(new Array<Child>())
 
     const draw = useCallback(() => {
         const canvas = canvasRef.current;
@@ -59,7 +58,7 @@ export default function PlanningCanvas(props: any) {
             draw();
     }, [draw])
 
-    const calcPosOnCanvas = (pos: Point, e: React.DragEvent<HTMLCanvasElement>): Point => {
+    const calcPosOnCanvas = (pos: Point, e: React.MouseEvent | React.DragEvent<HTMLCanvasElement>): Point => {
         const canvas = canvasRef.current;
         if (canvas) {
           const rect = canvas.getBoundingClientRect();
@@ -89,7 +88,7 @@ export default function PlanningCanvas(props: any) {
         return false;
     }
 
-    const onCanvasClicked = (e: MouseEvent) => {
+    const onCanvasClicked = (e: React.MouseEvent) => {
         const canvas = canvasRef.current;
         if(canvas) {
             let childHit = false;
@@ -98,13 +97,32 @@ export default function PlanningCanvas(props: any) {
             children.forEach((child: IconModel, index: number) => {
                 if(isElementHit(pos, child)) {
                     childHit = true;
-                    setSelection(index);
+                    setSelection(child);
+                    const offset = { x: child.pos.x - e.clientX + rect.left, y: child.pos.y - e.clientY + rect.top }
+                    setDragging(offset);
                 }
             });
             if(!childHit) {
-                setSelection(-1);
+                setSelection(null);
             }
         }
+    }
+
+    const onMouseMove = (e: React.MouseEvent) => {
+        if(dragging) {
+            const canvas = canvasRef.current;
+            if(canvas) {
+                const rect = canvas.getBoundingClientRect();
+                const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+                selection.pos = { x: pos.x + dragging.x, y: pos.y + dragging.y}
+                const newChildren = [...children];
+                setChildren(newChildren);
+            }
+        }
+    }
+
+    const onMouseUp = (e: React.MouseEvent) => {
+        setDragging(null);
     }
 
     const allowDrop = (e: React.DragEvent<HTMLCanvasElement>) => {
@@ -119,6 +137,8 @@ export default function PlanningCanvas(props: any) {
                 onDrop={dropHandler} 
                 onDragOver={allowDrop}
                 onMouseDown={onCanvasClicked}
+                onMouseMove={onMouseMove}
+                onMouseUp={onMouseUp}
             />
     )
 }

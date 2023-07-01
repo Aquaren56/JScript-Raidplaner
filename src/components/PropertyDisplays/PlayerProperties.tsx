@@ -4,25 +4,26 @@ import React from 'react';
 interface PProps {
     player: IconModel;
     changingPlayer: Function;
-    index: number
-
 }
 
-export default function ItemForm({ player, changingPlayer, index }: PProps) {
+export default function ItemForm({ player, changingPlayer }: PProps) {
 
   const handlePositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    changingPlayer({ ...player, pos: { ...player.pos, [name]: parseInt(value, 10) } }, index);
+    player.pos = {...player.pos, [name]: parseInt(value, 10)};
+    changingPlayer();
   };
 
   const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    changingPlayer({ ...player, size: { ...player.size, [name]: parseInt(value, 10) } }, index);
+    player.size = {...player.size, [name]: parseInt(value, 10)};
+    changingPlayer();
   };
 
   const handleRotationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
-    changingPlayer({ ...player, rotation: value }, index);
+    player.rotation = value;
+    changingPlayer();
   };
 
   return (

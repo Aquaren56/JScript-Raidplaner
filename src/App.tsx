@@ -23,7 +23,7 @@ function App() {
 
     const [selectedStep, setSelectedStep] = useState(0);
     const [items, setItems] = useState(new Array<IconModel>());
-    const [selection, setSelection] = useState<number>(-1);
+    const [selection, setSelection] = useState<IconModel | null>(null);
     const [area, setArea] = useState(new MapModel({  square: true, radials: 0, grids: [{rows: 4, columns: 4, coloring: []}]}));
     const stepListRef = useRef(new Map());
 
@@ -41,11 +41,17 @@ function App() {
     } else {
       setItems(stepListRef.current.get(newStep));
     }
-    setSelection(-1);
+    setSelection(null);
     setSelectedStep(newStep);
   };
 
   const updateItems = (newItems: IconModel[]) => {
+    stepListRef.current.set(selectedStep, newItems);
+    setItems(newItems);
+  };
+
+  const update = () => {
+    const newItems = [...items];
     stepListRef.current.set(selectedStep, newItems);
     setItems(newItems);
   };
@@ -65,7 +71,7 @@ function App() {
             </div>
           </div>
           <ElementDisplay sceneChildren={items} selection={selection} setSelection={setSelection}/>
-          <PropertyDisplay selection={selection===-1 ?  area : {player: items[selection], index: selection}} changeSelection={changeItemAt} changeMap={setArea} />
+          <PropertyDisplay selection={selection===null ?  area : {player: selection}} changeSelection={update} changeMap={setArea} />
         </StepContext.Provider>
       </div>
     );

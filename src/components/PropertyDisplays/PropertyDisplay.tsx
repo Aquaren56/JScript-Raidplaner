@@ -7,7 +7,6 @@ import PlayerProperties from './PlayerProperties';
 
 interface Player {
     player: IconModel;
-    index: number;
 }
 
 interface PropertyDisplayProps {
@@ -24,7 +23,7 @@ export default function PropertyDisplay(props: PropertyDisplayProps) {
                 )
             } else {
                 return (
-                <PlayerProperties player={props.selection.player} changingPlayer={props.changeSelection} index={props.selection.index}/>
+                <PlayerProperties player={props.selection.player} changingPlayer={props.changeSelection} />
             )
         }
     }
