@@ -9,6 +9,7 @@ import Way4 from '../icons/waymarks/way_4.png';
 
 import DragIcon from '../components/IconBar/DraggableIcon';
 import { DragIconType } from './DragnDrop';
+import { Waymark } from '../types';
 
 const waymarkNumbers = {
     way1: Way1,
@@ -50,7 +51,8 @@ const getDraggableIcon = (key: WaymarkIcon) => {
         role={key} 
         type={DragIconType.Waymark}
         src={getIcon(key)} 
-        alt={getIconName(key)}/>
+        alt={getIconName(key)}
+        SceneObjectProps={getWaymarkPrefab(key)}/>
 }
 
 const getDraggableIcons = (keys: (WaymarkIcon)[]) => {
@@ -74,4 +76,19 @@ export const getWaymarkDragIcons = () => {
             </div>
         </>
     )
+}
+
+const getWaymarkPrefab = (key: WaymarkIcon): Waymark => {
+    const allIcons = getAllWaymarkIcons();
+    const icon = allIcons[key];
+    const shape = key.includes('way') ? 'square' : 'circle';
+    return {
+        step: 0,
+        identifier: key,
+        pos: { x: 0, y: 0 },
+        size: { x: 30, y: 30 },
+        img: icon,
+        shape,
+        drawSize: { x: 30, y: 30 }
+    }
 }

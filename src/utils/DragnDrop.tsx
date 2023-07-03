@@ -1,7 +1,15 @@
+import { Icons, Attacks } from '../types';
+
 export const onDrag = (event: React.DragEvent<HTMLDivElement>, dragProps: DragIconProps) => {
 
     event.dataTransfer.setData("text", JSON.stringify(dragProps));
 }
+
+export const onDrag2 = (event: React.DragEvent<HTMLDivElement>, offset: Point, dragProps: Icons | Attacks) => {
+    
+        event.dataTransfer.setData("props", JSON.stringify(dragProps));
+        event.dataTransfer.setData("offset", JSON.stringify(offset));
+    }
 
 export const onDrop = (event: React.DragEvent<HTMLCanvasElement>) => {
     event.preventDefault();
@@ -11,6 +19,20 @@ export const onDrop = (event: React.DragEvent<HTMLCanvasElement>) => {
         const dragProps: DragIconProps = JSON.parse(data);
         return dragProps;
     }
+}
+
+export const onDrop2 = (event: React.DragEvent<HTMLCanvasElement>): [Icons|Attacks, Point] | undefined => {
+    event.preventDefault();
+    const data = event.dataTransfer.getData("props");
+    const offsetString = event.dataTransfer.getData("offset");
+
+    if (data && offsetString) {
+        const dragProps: Icons | Attacks = JSON.parse(data);
+        const offset: Point = JSON.parse(offsetString) as Point;
+        return [dragProps, offset];
+    }
+
+    return undefined;
 }
 
 export const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {

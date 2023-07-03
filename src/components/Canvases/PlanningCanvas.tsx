@@ -2,7 +2,10 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import IconModel from '../../models/IconModel';
-import { onDrop } from '../../utils/DragnDrop';
+import { onDrop, onDrop2 } from '../../utils/DragnDrop';
+import { DragIconType } from '../../utils/DragnDrop';
+import { calcMiddlePoint } from '../../utils/maffs';
+import { drawRect } from '../../utils/drawUtils';
 
 interface Point {
     x: number;
@@ -26,6 +29,24 @@ export default function PlanningCanvas(props: any) {
           context.fillRect(0, 0, context.canvas.width, context.canvas.height);
           if (!children) return;
           children.forEach((child: IconModel) => {
+            if(child.type === DragIconType.Attack) {
+              context.save();
+              context.scale(2,2);
+              context.translate(
+                child.pos.x + child.size.x / 2,
+                child.pos.y + child.size.y / 2
+              );
+              context.rotate((child.rotation * Math.PI) / 180);
+              context.translate(
+                -(child.pos.x + child.size.x / 2),
+                -(child.pos.y + child.size.y / 2)
+              );
+              const mid = calcMiddlePoint(child.pos, child.size.x, child.size.y);
+              console.log(mid);
+              drawRect(context, mid, child.size.x, child.size.y);
+              context.restore();
+
+            } else {
             if (child.img) {
               context.save();
               context.scale(2,2)
@@ -49,7 +70,7 @@ export default function PlanningCanvas(props: any) {
               );
               context.restore();
             }
-          });
+          }});
         }
       }, [children]);
       
@@ -62,8 +83,8 @@ export default function PlanningCanvas(props: any) {
         const canvas = canvasRef.current;
         if (canvas) {
           const rect = canvas.getBoundingClientRect();
-          const x = e.clientX - rect.left - pos.x;
-          const y = e.clientY - rect.top - pos.y;
+          const x = Math.round(e.clientX - rect.left - pos.x);
+          const y = Math.round(e.clientY - rect.top - pos.y);
           return { x, y };
         }
         return { x: 0, y: 0 };
@@ -73,10 +94,12 @@ export default function PlanningCanvas(props: any) {
         e.preventDefault();
         
         const dropObj = onDrop(e);
-
-        if(dropObj) {
-            const obj = new IconModel( {name: dropObj.name, pos: calcPosOnCanvas(dropObj.offset, e), size: {x: 30, y: 30}, img: dropObj?.src} );
-
+        const result = onDrop2(e);
+        if(dropObj && result) {
+            const obj = new IconModel( {name: dropObj.name, pos: calcPosOnCanvas(dropObj.offset, e), size: {x: 30, y: 30}, img: dropObj?.src, type: dropObj.type} );
+            const newObj = {...result[0], pos: calcPosOnCanvas(result[1], e)};
+            console.log(newObj);
+            console.log(obj);
             setChildren([...children, obj]);
         };
     }

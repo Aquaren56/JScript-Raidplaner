@@ -6,7 +6,6 @@ import IconModel from './models/IconModel';
 
 import Header from './components/Header';
 import IconBar from './components/IconBar/IconBar';
-//import Steps from './components/StepBar/Steps';
 import PropertyDisplay from './components/PropertyDisplays/PropertyDisplay';
 import PlanningCanvas from './components/Canvases/PlanningCanvas';
 import MapCanvas from './components/Canvases/MapCanvas';
@@ -26,13 +25,6 @@ function App() {
     const [selection, setSelection] = useState<IconModel | null>(null);
     const [area, setArea] = useState(new MapModel({  square: true, radials: 0, grids: [{rows: 4, columns: 4, coloring: []}]}));
     const stepListRef = useRef(new Map());
-
-  const changeItemAt = (item: IconModel, index: number) => {
-    items[index] = item;
-    const newItems = [...items];
-    stepListRef.current.set(selectedStep, newItems);
-    setItems(newItems);
-  };
 
   const updateSelectedStep = (newStep: number) => {
     if (stepListRef.current.get(newStep) === undefined) {

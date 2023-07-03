@@ -4,6 +4,7 @@ import IconTab from './IconTabs';
 import { useState } from 'react';
 
 import FirstTab from './tabs/first';
+import SecondTab from './tabs/second';
 
 
 export default function IconBar() {
@@ -12,6 +13,7 @@ export default function IconBar() {
     const getContent = () => {
         switch(selected) {
             case 1: return <FirstTab/>;
+            case 2: return <SecondTab/>;
             
         }
     }

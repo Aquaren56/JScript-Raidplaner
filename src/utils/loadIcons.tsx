@@ -1,5 +1,6 @@
 import DragIcon from '../components/IconBar/DraggableIcon';
 import { DragIconType } from './DragnDrop';
+import { Objects } from '../types';
 import '../styling/section.css';
 
 import healer from '../icons/player/Healer.png';
@@ -140,6 +141,7 @@ const getDraggableIcon = (key: pIconKeys | jIconKeys) => {
         type={DragIconType.Player}
         src={getIcon(key)} 
         alt={getIconName(key)}
+        SceneObjectProps={getObjectPrefab(key)}
     />
 }
 
@@ -197,3 +199,23 @@ export { getSortedDraggablePlayerIcons }
 export { playerBaseIcons }
 
 export default getBasePlayerIcons;
+
+const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
+    const objectPrefab: Objects = {
+        step: 0,
+        identifier: key,
+        pos: {
+            x: 0,
+            y: 0
+        },
+        size: { x: 30, y: 30 },
+        drawSize: {
+            x: 30,
+            y: 30
+        },
+        img: getIcon(key),
+        rotation: 0,
+        children: []
+    }
+    return objectPrefab;
+}

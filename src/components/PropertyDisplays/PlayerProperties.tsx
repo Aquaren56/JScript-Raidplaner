@@ -31,7 +31,7 @@ export default function ItemForm({ player, changingPlayer }: PProps) {
         {player.identifier}
       <div>
         <label>X:</label>
-        <input type="number" name="x" defaultValue={player.pos.x} onChange={handlePositionChange} />
+        <input type="number" name="x" value={player.pos.x} onChange={handlePositionChange} />
       </div>
       <div>
         <label>Y:</label>
