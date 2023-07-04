@@ -84,6 +84,7 @@ const getWaymarkPrefab = (key: WaymarkIcon): Waymark => {
     const shape = key.includes('way') ? 'square' : 'circle';
     return {
         step: 0,
+        rotation: 0,
         identifier: key,
         pos: { x: 0, y: 0 },
         size: { x: 30, y: 30 },

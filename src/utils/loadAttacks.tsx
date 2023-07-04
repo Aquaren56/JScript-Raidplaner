@@ -55,11 +55,12 @@ const circleAoe: CircleAoe = {
     step: 0,
     identifier: 'circle',
     pos: { x: 0, y: 0 },
-    size: { x: 0, y: 0 },
+    size: { x: 30, y: 30 },
+    img: getIcon('circle'),
     rotation: 0,
-    color: '255, 0, 0',
+    color: '255,0,0',
     alpha: 0.5,
-    radius: 5,
+    radius: 15,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.arc(0, 0, circleAoe.radius, 0, 2 * Math.PI);
@@ -71,13 +72,15 @@ const circleAoe: CircleAoe = {
 const coneAoe: ConeAoe = {
     step: 0,
     identifier: 'cone',
+    shape: 'cone',
     pos: { x: 0, y: 0 },
     size: { x: 30, y: 30 },
+    img: getIcon('cone'),
     rotation: 0,
-    color: '255, 0, 0',
+    color: '255,0,0',
     alpha: 0.5,
     angle: 90,
-    height: 5,
+    height: 100,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.moveTo(0, 0);
@@ -93,12 +96,13 @@ const rectangleAoe: RectangleAoe = {
     step: 0,
     identifier: 'rectangle',
     pos: { x: 0, y: 0 },
-    size: { x: 30, y: 30 },
+    size: { x: 30, y: 100 },
+    img: getIcon('rect'),
     rotation: 0,
-    color: '255, 0, 0',
+    color: '255,0,0',
     alpha: 0.5,
-    width: 5,
-    height: 5,
+    width: 30,
+    height: 100,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.rect(0, 0, rectangleAoe.width, rectangleAoe.height);
@@ -107,21 +111,23 @@ const rectangleAoe: RectangleAoe = {
     }
 }
 
-const triangleAoe: RectangleAoe = {
+const triangleAoe: ConeAoe = {
     step: 0,
     identifier: 'triangle',
+    shape: 'triangle',
+    angle: 90,
     pos: { x: 0, y: 0 },
     size: { x: 30, y: 30 },
+    img: getIcon('triangle'),
     rotation: 0,
-    color: '255, 0, 0',
+    color: '255,0,0',
     alpha: 0.5,
-    width: 5,
     height: 5,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.moveTo(0, 0);
-        context.lineTo(triangleAoe.width, triangleAoe.height);
-        context.lineTo(triangleAoe.width, -triangleAoe.height);
+        context.lineTo(triangleAoe.height, triangleAoe.height);
+        context.lineTo(triangleAoe.height, -triangleAoe.height);
         context.closePath();
         context.fillStyle = `rgba(${triangleAoe.color}, ${triangleAoe.alpha})`;
         context.fill();

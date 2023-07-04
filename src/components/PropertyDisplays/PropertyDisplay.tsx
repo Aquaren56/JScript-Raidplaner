@@ -1,16 +1,14 @@
 import '../../styling/header.css';
-import IconModel from '../../models/IconModel';
 import MapModel from '../../models/MapModel';
+import { SceneObject, isAttack, isObjects } from '../../types';
+import AttackProperties from './Attacks/base';
 
 import MapProperties from './MapProperties';
 import PlayerProperties from './PlayerProperties';
 
-interface Player {
-    player: IconModel;
-}
 
 interface PropertyDisplayProps {
-    selection: Player | MapModel;
+    selection: SceneObject | MapModel;
     changeSelection: Function;
     changeMap: Function;
 }
@@ -21,9 +19,13 @@ export default function PropertyDisplay(props: PropertyDisplayProps) {
             return (
                 <MapProperties map={props.selection} changeMap={props.changeMap}/>
                 )
-            } else {
+            } else if (isObjects(props.selection)) {
                 return (
-                <PlayerProperties player={props.selection.player} changingPlayer={props.changeSelection} />
+                <PlayerProperties player={props.selection} changingPlayer={props.changeSelection} />
+            )
+        } else if (isAttack(props.selection)) {
+            return (
+                <AttackProperties attack={props.selection} changingAttack={props.changeSelection} />
             )
         }
     }

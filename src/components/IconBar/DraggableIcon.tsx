@@ -1,5 +1,5 @@
 import '../../styling/icon-bar.css';
-import { onDrag, onDrag2, DragIconType, calcOffset } from '../../utils/DragnDrop';
+import { onDrag, DragIconType, calcOffset } from '../../utils/DragnDrop';
 import { Icons, Attacks } from '../../types';
 
 interface dragProps {
@@ -13,8 +13,7 @@ interface dragProps {
 export default function DragIcon({src, role, alt, type, SceneObjectProps }: dragProps) {
 
     const dragStart = (e: React.DragEvent<HTMLDivElement>) => {
-        onDrag(e, { type: type, src, name: role, offset: calcOffset(e, e.currentTarget.querySelector('img') as HTMLImageElement) })
-        onDrag2(e, calcOffset(e, e.currentTarget.querySelector('img') as HTMLImageElement), SceneObjectProps)
+        onDrag(e, calcOffset(e, e.currentTarget.querySelector('img') as HTMLImageElement), SceneObjectProps)
     }
 
     return (

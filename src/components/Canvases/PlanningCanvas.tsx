@@ -1,11 +1,9 @@
 import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import IconModel from '../../models/IconModel';
-import { onDrop, onDrop2 } from '../../utils/DragnDrop';
-import { DragIconType } from '../../utils/DragnDrop';
-import { calcMiddlePoint } from '../../utils/maffs';
-import { drawRect } from '../../utils/drawUtils';
+import { onDrop } from '../../utils/DragnDrop';
+import { SceneObject, isAttack, Attacks, Icons } from '../../types';
+import { drawAoe } from '../../utils/drawUtils';
 
 interface Point {
     x: number;
@@ -28,8 +26,8 @@ export default function PlanningCanvas(props: any) {
           context.fillStyle = 'transparent';
           context.fillRect(0, 0, context.canvas.width, context.canvas.height);
           if (!children) return;
-          children.forEach((child: IconModel) => {
-            if(child.type === DragIconType.Attack) {
+          children.forEach((child: Attacks | Icons) => {
+            if(isAttack(child)) {
               context.save();
               context.scale(2,2);
               context.translate(
@@ -41,9 +39,7 @@ export default function PlanningCanvas(props: any) {
                 -(child.pos.x + child.size.x / 2),
                 -(child.pos.y + child.size.y / 2)
               );
-              const mid = calcMiddlePoint(child.pos, child.size.x, child.size.y);
-              console.log(mid);
-              drawRect(context, mid, child.size.x, child.size.y);
+              drawAoe(context, child);
               context.restore();
 
             } else {
@@ -69,7 +65,7 @@ export default function PlanningCanvas(props: any) {
                 child.size.y
               );
               context.restore();
-            }
+              }
           }});
         }
       }, [children]);
@@ -93,18 +89,14 @@ export default function PlanningCanvas(props: any) {
     const dropHandler = (e: React.DragEvent<HTMLCanvasElement>) => {
         e.preventDefault();
         
-        const dropObj = onDrop(e);
-        const result = onDrop2(e);
-        if(dropObj && result) {
-            const obj = new IconModel( {name: dropObj.name, pos: calcPosOnCanvas(dropObj.offset, e), size: {x: 30, y: 30}, img: dropObj?.src, type: dropObj.type} );
+        const result = onDrop(e);
+        if(result) {
             const newObj = {...result[0], pos: calcPosOnCanvas(result[1], e)};
-            console.log(newObj);
-            console.log(obj);
-            setChildren([...children, obj]);
+            setChildren([...children, newObj]);
         };
     }
 
-    const isElementHit = (click: {x: number, y:number}, child: IconModel) => {
+    const isElementHit = (click: {x: number, y:number}, child: SceneObject) => {
         if(click.x > child.pos.x && click.x < child.pos.x+child.size.x && click.y > child.pos.y && click.y < child.pos.y+child.size.y) {
             return true
         }
@@ -117,7 +109,7 @@ export default function PlanningCanvas(props: any) {
             let childHit = false;
             const rect = canvas.getBoundingClientRect();
             const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
-            children.forEach((child: IconModel, index: number) => {
+            children.forEach((child: SceneObject, index: number) => {
                 if(isElementHit(pos, child)) {
                     childHit = true;
                     setSelection(child);

@@ -1,8 +1,8 @@
-import IconModel from '../../models/IconModel';
 import React from 'react';
+import { Objects } from '../../types';
 
 interface PProps {
-    player: IconModel;
+    player: Objects;
     changingPlayer: Function;
 }
 
@@ -49,6 +49,17 @@ export default function ItemForm({ player, changingPlayer }: PProps) {
         <label>Rotation:</label>
         <input type="number" value={player.rotation} onChange={handleRotationChange} />
       </div>
+      <div>
+        <label>Attachments</label>
+        <ul>
+          {player.children.map((attachment, index) => (
+            <li key={index}>
+              {attachment.identifier}
+            </li>
+          ))}
+        </ul>
+      </div>
+      Add Attachment: 
     </div>
   );
 };

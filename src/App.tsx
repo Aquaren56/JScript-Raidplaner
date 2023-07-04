@@ -2,8 +2,6 @@ import './styling/header.css';
 
 import { useRef, useState, createContext } from 'react';
 
-import IconModel from './models/IconModel';
-
 import Header from './components/Header';
 import IconBar from './components/IconBar/IconBar';
 import PropertyDisplay from './components/PropertyDisplays/PropertyDisplay';
@@ -14,6 +12,7 @@ import ElementDisplay from './components/ElementsDisplay/ElementDisplay';
 import ThemeToggle from './components/ThemeToggle';
 
 import StepList from './components/StepBar/StepList';
+import { SceneObject } from './types';
 
 export const StepContext = createContext<number>(0);
 
@@ -21,8 +20,8 @@ export const StepContext = createContext<number>(0);
 function App() {
 
     const [selectedStep, setSelectedStep] = useState(0);
-    const [items, setItems] = useState(new Array<IconModel>());
-    const [selection, setSelection] = useState<IconModel | null>(null);
+    const [items, setItems] = useState(new Array<SceneObject>());
+    const [selection, setSelection] = useState<SceneObject | null>(null);
     const [area, setArea] = useState(new MapModel({  square: true, radials: 0, grids: [{rows: 4, columns: 4, coloring: []}]}));
     const stepListRef = useRef(new Map());
 
@@ -37,7 +36,7 @@ function App() {
     setSelectedStep(newStep);
   };
 
-  const updateItems = (newItems: IconModel[]) => {
+  const updateItems = (newItems: SceneObject[]) => {
     stepListRef.current.set(selectedStep, newItems);
     setItems(newItems);
   };
@@ -63,7 +62,7 @@ function App() {
             </div>
           </div>
           <ElementDisplay sceneChildren={items} selection={selection} setSelection={setSelection}/>
-          <PropertyDisplay selection={selection===null ?  area : {player: selection}} changeSelection={update} changeMap={setArea} />
+          <PropertyDisplay selection={selection===null ?  area : selection} changeSelection={update} changeMap={setArea} />
         </StepContext.Provider>
       </div>
     );

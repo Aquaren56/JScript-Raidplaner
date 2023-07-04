@@ -1,4 +1,3 @@
-import Attacks from "./components/IconBar/tabs/second";
 
 export interface Point {
     x: number;
@@ -26,6 +25,8 @@ export interface SceneObject {
     identifier: string;
     size: Point;
     pos: Point;
+    img: string;
+    rotation: number;
     type?: DragIconType;
 }
 
@@ -41,6 +42,7 @@ export interface CircleAoe extends Attack {
 }
 
 export interface ConeAoe extends Attack {
+    shape: 'cone' | 'triangle';
     angle: number;
     height: number;
 }
@@ -59,7 +61,6 @@ export interface Waymark extends SceneObject {
 export interface Objects extends SceneObject {
     drawSize: Point;
     img: string;
-    rotation: number;
     children: SceneObject[];
 }
 
@@ -71,3 +72,32 @@ export interface Topping extends SceneObject {
 
 export type Attacks = CircleAoe | ConeAoe | RectangleAoe;
 export type Icons = Waymark | Objects | Topping;
+
+export function isAttack(sceneObject: SceneObject): sceneObject is Attack {
+    return (sceneObject as Attack).color !== undefined;
+}
+
+export function isWaymark(sceneObject: SceneObject): sceneObject is Waymark {
+    return (sceneObject as Waymark).shape !== undefined;
+}
+
+export function isObjects(sceneObject: SceneObject): sceneObject is Objects {
+    return (sceneObject as Objects).children !== undefined;
+}
+
+export function isTopping(sceneObject: SceneObject): sceneObject is Topping {
+    return (sceneObject as Topping).drawOffset !== undefined;
+}
+
+export function isCircleAoe(attack: Attack): attack is CircleAoe {
+    return (attack as CircleAoe).radius !== undefined;
+}
+
+export function isConeAoe(attack: Attack): attack is ConeAoe {
+    return (attack as ConeAoe).angle !== undefined;
+}
+
+export function isRectangleAoe(attack: Attack): attack is RectangleAoe {
+    return (attack as RectangleAoe).width !== undefined;
+}
+

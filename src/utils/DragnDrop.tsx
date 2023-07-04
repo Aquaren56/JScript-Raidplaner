@@ -1,27 +1,11 @@
 import { Icons, Attacks } from '../types';
 
-export const onDrag = (event: React.DragEvent<HTMLDivElement>, dragProps: DragIconProps) => {
-
-    event.dataTransfer.setData("text", JSON.stringify(dragProps));
-}
-
-export const onDrag2 = (event: React.DragEvent<HTMLDivElement>, offset: Point, dragProps: Icons | Attacks) => {
-    
+export const onDrag = (event: React.DragEvent<HTMLDivElement>, offset: Point, dragProps: Icons | Attacks) => {
         event.dataTransfer.setData("props", JSON.stringify(dragProps));
         event.dataTransfer.setData("offset", JSON.stringify(offset));
     }
 
-export const onDrop = (event: React.DragEvent<HTMLCanvasElement>) => {
-    event.preventDefault();
-    const data = event.dataTransfer.getData("text");
-
-    if (data) {
-        const dragProps: DragIconProps = JSON.parse(data);
-        return dragProps;
-    }
-}
-
-export const onDrop2 = (event: React.DragEvent<HTMLCanvasElement>): [Icons|Attacks, Point] | undefined => {
+export const onDrop = (event: React.DragEvent<HTMLCanvasElement>): [Icons|Attacks, Point] | undefined => {
     event.preventDefault();
     const data = event.dataTransfer.getData("props");
     const offsetString = event.dataTransfer.getData("offset");
@@ -57,11 +41,4 @@ export enum DragIconType {
 interface Point {
     x: number;
     y: number;
-}
-
-interface DragIconProps {
-    type: DragIconType;
-    src: string;
-    name: string;
-    offset: Point;
 }
