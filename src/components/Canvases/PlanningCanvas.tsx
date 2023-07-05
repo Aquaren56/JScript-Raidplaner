@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
 import { SceneObject, isAttack, Attacks, Icons } from '../../types';
 import { drawAoe } from '../../utils/drawUtils';
+import { calcDrawRotForSceneObject, isElementHit } from '../../utils/maffs';
 
 interface Point {
     x: number;
@@ -15,6 +16,8 @@ export default function PlanningCanvas(props: any) {
     const {children, setChildren, selection, setSelection, ...rest} = props;
     
     const [dragging, setDragging] = useState<Point | null>(null);
+    const [dragging2, setDragging2] = useState<Point | null>(null);
+
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const draw = useCallback(() => {
@@ -31,13 +34,13 @@ export default function PlanningCanvas(props: any) {
               context.save();
               context.scale(2,2);
               context.translate(
-                child.pos.x + child.size.x / 2,
-                child.pos.y + child.size.y / 2
+                child.drawRotPoint.x,
+                child.drawRotPoint.y
               );
               context.rotate((child.rotation * Math.PI) / 180);
               context.translate(
-                -(child.pos.x + child.size.x / 2),
-                -(child.pos.y + child.size.y / 2)
+                -(child.drawRotPoint.x),
+                -(child.drawRotPoint.y)
               );
               drawAoe(context, child);
               context.restore();
@@ -48,14 +51,15 @@ export default function PlanningCanvas(props: any) {
               context.scale(2,2)
               const image = new Image();
               image.src = child.img;
-              context.translate(
-                child.pos.x + child.size.x / 2,
-                child.pos.y + child.size.y / 2
+              
+                context.translate(
+                child.drawRotPoint.x,
+                child.drawRotPoint.y
               );
               context.rotate((child.rotation * Math.PI) / 180);
               context.translate(
-                -(child.pos.x + child.size.x / 2),
-                -(child.pos.y + child.size.y / 2)
+                -(child.drawRotPoint.x),
+                -(child.drawRotPoint.y)
               );
               context.drawImage(
                 image,
@@ -65,7 +69,8 @@ export default function PlanningCanvas(props: any) {
                 child.size.y
               );
               context.restore();
-              }
+              
+            }
           }});
         }
       }, [children]);
@@ -92,15 +97,9 @@ export default function PlanningCanvas(props: any) {
         const result = onDrop(e);
         if(result) {
             const newObj = {...result[0], pos: calcPosOnCanvas(result[1], e)};
+            newObj.drawRotPoint = calcDrawRotForSceneObject(newObj);
             setChildren([...children, newObj]);
         };
-    }
-
-    const isElementHit = (click: {x: number, y:number}, child: SceneObject) => {
-        if(click.x > child.pos.x && click.x < child.pos.x+child.size.x && click.y > child.pos.y && click.y < child.pos.y+child.size.y) {
-            return true
-        }
-        return false;
     }
 
     const onCanvasClicked = (e: React.MouseEvent) => {
@@ -114,7 +113,9 @@ export default function PlanningCanvas(props: any) {
                     childHit = true;
                     setSelection(child);
                     const offset = { x: child.pos.x - e.clientX + rect.left, y: child.pos.y - e.clientY + rect.top }
+                    const offset2 = { x: child.drawRotPoint.x - e.clientX + rect.left, y: child.drawRotPoint.y - e.clientY + rect.top }
                     setDragging(offset);
+                    setDragging2(offset2);
                 }
             });
             if(!childHit) {
@@ -124,15 +125,32 @@ export default function PlanningCanvas(props: any) {
     }
 
     const onMouseMove = (e: React.MouseEvent) => {
-        if(dragging) {
+        if(dragging && dragging2) {
             const canvas = canvasRef.current;
             if(canvas) {
                 const rect = canvas.getBoundingClientRect();
                 const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
                 selection.pos = { x: pos.x + dragging.x, y: pos.y + dragging.y}
+                selection.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y};
                 const newChildren = [...children];
                 setChildren(newChildren);
             }
+        }
+        const canvas = canvasRef.current;
+
+        if(canvas) {
+          let childHit = false;
+          const rect = canvas.getBoundingClientRect();
+          const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
+          children.forEach((child: SceneObject, index: number) => {
+            if(isElementHit(pos, child)) {
+              document.body.style.cursor = 'crosshair';
+              childHit = true;
+            } 
+          });
+          if(!childHit) {
+            document.body.style.cursor = 'default';
+          }
         }
     }
 

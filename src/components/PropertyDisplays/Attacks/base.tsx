@@ -1,6 +1,8 @@
 import { Attack, isCircleAoe, isConeAoe, isRectangleAoe } from "../../../types";
 import RectAoeProperties from "./rectAoeProps";
 import CircleAoeProperties from "./circleAoeProps";
+import ConeAoeProperties from "./coneAoeProps";
+import TriangleAoeProperties from "./triangleAoeProps";
 
 interface Props {
     attack: Attack;
@@ -14,9 +16,11 @@ export default function AttackProperties(props: Props) {
                 <CircleAoeProperties attack={props.attack} changeAttack={props.changingAttack}/>
             )
         } else if (isConeAoe(props.attack)) {
-            return (
-                <div>Cone</div>
-            )
+            if(props.attack.shape === 'cone') {
+            return <ConeAoeProperties attack={props.attack} changeAttack={props.changingAttack}/> 
+        } else { 
+            return <TriangleAoeProperties attack={props.attack} changeAttack={props.changingAttack}/> 
+        }
         } else if (isRectangleAoe(props.attack)) {
             return <RectAoeProperties attack={props.attack} changeAttack={props.changingAttack}/>
         } else {
@@ -52,6 +56,18 @@ export default function AttackProperties(props: Props) {
         
     return (
         <div>
+            Nicht x und y benutzen, die machen dinge kaputt
+            <br />
+            x: <input type="number" value={props.attack.pos.x} onChange={(e) => {
+                        props.attack.pos.x = parseInt(e.target.value, 10);
+                        props.changingAttack();
+                    }} />
+            <br />
+            y: <input type="number" value={props.attack.pos.y} onChange={(e) => {
+                        props.attack.pos.y = parseInt(e.target.value, 10);
+                        props.changingAttack();
+                    }} />
+            <br />
             Color: <input type="color" value={rgbToHex(props.attack.color)} onChange={(e) => {
                         const rgb = hexToRgb(e.target.value);
                         props.attack.color = rgb;

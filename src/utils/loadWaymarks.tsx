@@ -87,6 +87,7 @@ const getWaymarkPrefab = (key: WaymarkIcon): Waymark => {
         rotation: 0,
         identifier: key,
         pos: { x: 0, y: 0 },
+        drawRotPoint: { x: 0, y: 0 },
         size: { x: 30, y: 30 },
         img: icon,
         shape,

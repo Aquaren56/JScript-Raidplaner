@@ -27,7 +27,9 @@ export interface SceneObject {
     pos: Point;
     img: string;
     rotation: number;
+    drawRotPoint: Point;
     type?: DragIconType;
+    isChild?: boolean;
 }
 
 export interface Attack extends SceneObject {
@@ -50,6 +52,7 @@ export interface ConeAoe extends Attack {
 export interface RectangleAoe extends Attack {
     width: number;
     height: number;
+    rotAtBottom?: boolean;
 }
 
 export interface Waymark extends SceneObject {
@@ -65,8 +68,6 @@ export interface Objects extends SceneObject {
 }
 
 export interface Topping extends SceneObject {
-    drawSize: Point;
-    img: string;
     drawOffset: Point;
 }
 

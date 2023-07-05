@@ -208,6 +208,7 @@ const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
             x: 0,
             y: 0
         },
+        drawRotPoint: { x: 0, y: 0 },
         size: { x: 30, y: 30 },
         drawSize: {
             x: 30,
