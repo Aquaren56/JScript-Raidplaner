@@ -2,7 +2,7 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
-import { SceneObject, isAttack, Attacks, Icons } from '../../types';
+import { SceneObject, isAttack, Attacks, Icons, isObjects, isTopping } from '../../types';
 import { drawAoe } from '../../utils/drawUtils';
 import { calcDrawRotForSceneObject, isElementHit } from '../../utils/maffs';
 
@@ -63,13 +63,57 @@ export default function PlanningCanvas(props: any) {
               );
               context.drawImage(
                 image,
-                child.pos.x,
-                child.pos.y,
+                child.drawRotPoint.x - child.size.x / 2,
+                child.drawRotPoint.y - child.size.y / 2,
                 child.size.x,
                 child.size.y
               );
               context.restore();
               
+            }
+            if(isObjects(child)) {
+              child.children.forEach((dwarf: SceneObject) => {
+                if(isAttack(dwarf)) {
+                  context.save();
+                  context.scale(2,2);
+                  context.translate(
+                    dwarf.drawRotPoint.x,
+                    dwarf.drawRotPoint.y
+                  );
+                  context.rotate((child.rotation * Math.PI) / 180);
+                  context.translate(
+                    -(dwarf.drawRotPoint.x),
+                    -(dwarf.drawRotPoint.y)
+                  );
+                  drawAoe(context, dwarf);
+                  context.restore();
+                } else {
+                  if (dwarf.img) {
+                    context.save();
+                    context.scale(2,2)
+                    const image = new Image();
+                    image.src = dwarf.img;
+                    
+                      context.translate(
+                      child.drawRotPoint.x,
+                      child.drawRotPoint.y
+                    );
+                    context.rotate((child.rotation * Math.PI) / 180);
+                    context.translate(
+                      -(child.drawRotPoint.x),
+                      -(child.drawRotPoint.y)
+                    );
+                    context.drawImage(
+                      image,
+                      dwarf.drawRotPoint.x - dwarf.size.x / 2,
+                      dwarf.drawRotPoint.y - dwarf.size.y / 2,
+                      dwarf.size.x,
+                      dwarf.size.y
+                    );
+                    context.restore();
+                  }
+                }
+              })
             }
           }});
         }
@@ -132,6 +176,14 @@ export default function PlanningCanvas(props: any) {
                 const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
                 selection.pos = { x: pos.x + dragging.x, y: pos.y + dragging.y}
                 selection.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y};
+                if(isObjects(selection)) {
+                  selection.children.forEach((dwarf: SceneObject) => {
+                    if(isTopping(dwarf)) {
+                      dwarf.pos = { x: selection.pos.x, y: selection.pos.y - selection.size.y - dwarf.drawOffset.y}
+                      dwarf.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y - selection.size.y - dwarf.drawOffset.y};
+                    }
+                  })
+                }
                 const newChildren = [...children];
                 setChildren(newChildren);
             }

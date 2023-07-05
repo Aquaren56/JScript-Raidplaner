@@ -99,6 +99,7 @@ const rectangleAoe: RectangleAoe = {
     identifier: 'rectangle',
     pos: { x: 0, y: 0 },
     drawRotPoint: { x: 0, y: 0 },
+    rotAtBottom: false,
     size: { x: 30, y: 100 },
     img: getIcon('rect'),
     rotation: 0,

@@ -18,6 +18,16 @@ export default function RectAoeProperties(props: Props) {
                 props.attack.size.x = parseInt(e.target.value);
                 props.changeAttack();
             }} />
+            <br />
+            PointOfRotationBottom: <input type='checkbox' checked={props.attack.rotAtBottom} onChange={(e) => {
+                props.attack.rotAtBottom = e.target.checked;
+                if(props.attack.rotAtBottom) {
+                    props.attack.drawRotPoint.y = props.attack.drawRotPoint.y + props.attack.size.y/2;
+                } else {
+                    props.attack.drawRotPoint.y = props.attack.drawRotPoint.y + props.attack.size.y/2;
+                }
+                props.changeAttack();
+            }} />
         </>
     )
 }

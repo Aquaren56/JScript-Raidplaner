@@ -1,5 +1,4 @@
-import { Attacks, CircleAoe, ConeAoe, Point, RectangleAoe, isCircleAoe, isConeAoe, isRectangleAoe } from '../types';
-import { calcMiddlePoint } from './maffs';
+import { Attacks, CircleAoe, ConeAoe, Point, RectangleAoe, isCircleAoe, isConeAoe, isRectangleAoe, Attack } from '../types';
 
 export const drawLine = (ctx: CanvasRenderingContext2D, from: Point, to: Point) => {
     ctx.beginPath();
@@ -54,7 +53,7 @@ export const drawTriangle = (context: CanvasRenderingContext2D, aoe: ConeAoe) =>
     context.fill();
 }
 
-export const drawAoe = (ctx: CanvasRenderingContext2D, aoe: Attacks) => {
+export const drawAoe = (ctx: CanvasRenderingContext2D, aoe: Attack) => {
     if(isConeAoe(aoe)) {
         if(aoe.shape === 'cone') {
             drawCone(ctx, aoe);

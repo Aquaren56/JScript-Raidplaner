@@ -56,15 +56,14 @@ export default function AttackProperties(props: Props) {
         
     return (
         <div>
-            Nicht x und y benutzen, die machen dinge kaputt
             <br />
-            x: <input type="number" value={props.attack.pos.x} onChange={(e) => {
-                        props.attack.pos.x = parseInt(e.target.value, 10);
+            x: <input type="number" value={props.attack.drawRotPoint.x} onChange={(e) => {
+                        props.attack.drawRotPoint.x = parseInt(e.target.value, 10);
                         props.changingAttack();
                     }} />
             <br />
-            y: <input type="number" value={props.attack.pos.y} onChange={(e) => {
-                        props.attack.pos.y = parseInt(e.target.value, 10);
+            y: <input type="number" value={props.attack.drawRotPoint.y} onChange={(e) => {
+                        props.attack.drawRotPoint.y = parseInt(e.target.value, 10);
                         props.changingAttack();
                     }} />
             <br />

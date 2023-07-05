@@ -1,11 +1,11 @@
-import lc1 from '../icons/toppings/limitcut/FFXIV_Dice_1.png';
-import lc2 from '../icons/toppings/limitcut/FFXIV_Dice_2.png';
-import lc3 from '../icons/toppings/limitcut/FFXIV_Dice_3.png';
-import lc4 from '../icons/toppings/limitcut/FFXIV_Dice_4.png';
-import lc5 from '../icons/toppings/limitcut/FFXIV_Dice_5.png';
-import lc6 from '../icons/toppings/limitcut/FFXIV_Dice_6.png';
-import lc7 from '../icons/toppings/limitcut/FFXIV_Dice_7.png';
-import lc8 from '../icons/toppings/limitcut/FFXIV_Dice_8.png';
+import lc1 from '../icons/toppings/limitcut/lc1.png';
+import lc2 from '../icons/toppings/limitcut/lc2.png';
+import lc3 from '../icons/toppings/limitcut/lc3.png';
+import lc4 from '../icons/toppings/limitcut/lc4.png';
+import lc5 from '../icons/toppings/limitcut/lc5.png';
+import lc6 from '../icons/toppings/limitcut/lc6.png';
+import lc7 from '../icons/toppings/limitcut/lc7.png';
+import lc8 from '../icons/toppings/limitcut/lc8.png';
 
 import DragIcon from '../components/IconBar/DraggableIcon';
 import { DragIconType } from './DragnDrop';
@@ -24,7 +24,7 @@ const lc = {
 
 type Lc = keyof typeof lc;
 
-const getAllLcIcons = () => {
+export const getAllLcIcons = () => {
     return {
         ...lc
     }
@@ -59,11 +59,12 @@ export const getLcDragIcons = () => {
     return getDraggableLCIcons(Object.keys(lc) as Lc[]);
 }
 
-const getLcPrefab = (key: Lc): Topping => {
+export const getLcPrefab = (key: Lc): Topping => {
+    const width = parseInt(key[2],10) > 4 ? 60 : 30;
     return {
         step: 1,
         identifier: key,
-        size: { x: 50, y: 50 },
+        size: { x: width, y: 30 },
         pos: { x: 0, y: 0 },
         img: getIcon(key),
         rotation: 0,
@@ -72,4 +73,10 @@ const getLcPrefab = (key: Lc): Topping => {
         isChild: false,
         drawOffset: { x: 0, y: -20 },
     }
+}
+
+export const getLcPrefabs = () => {
+    return Object.keys(lc).map((key) => {
+        return getLcPrefab(key as Lc);
+    })
 }
