@@ -64,6 +64,7 @@ export interface Waymark extends SceneObject {
 export interface Objects extends SceneObject {
     drawSize: Point;
     img: string;
+    topping?: Topping;
     children: SceneObject[];
 }
 

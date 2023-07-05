@@ -16,13 +16,13 @@ const attackShapes = {
     circle: circle,
 }
 
-type AttackShape = keyof typeof attackShapes;
+export type AttackShape = keyof typeof attackShapes;
 
 const getIconName = (key: AttackShape) => {
     return key;
 }
 
-const getIcon = (key: AttackShape) => {
+export const getIcon = (key: AttackShape) => {
     return attackShapes[key];
 }
 
@@ -38,7 +38,7 @@ export const loadAttacks = () => {
     })
 }
 
-const getAttack = (key: AttackShape) => {
+export const getAttack = (key: AttackShape) => {
     switch (key) {
         case 'cone':
             return coneAoe;
@@ -48,6 +48,21 @@ const getAttack = (key: AttackShape) => {
             return rectangleAoe;
         case 'circle':
             return circleAoe;
+    }
+}
+
+export const getAllAttacks = () => {
+    return {
+        ...attackShapes
+    }
+}
+
+export const getAttackPrefabs = () => {
+    return {
+        coneAoe,
+        triangleAoe,
+        rectangleAoe,
+        circleAoe
     }
 }
 

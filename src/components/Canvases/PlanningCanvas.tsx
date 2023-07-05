@@ -2,7 +2,7 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
-import { SceneObject, isAttack, Attacks, Icons, isObjects, isTopping } from '../../types';
+import { SceneObject, isAttack, Attacks, Icons, isObjects } from '../../types';
 import { drawAoe } from '../../utils/drawUtils';
 import { calcDrawRotForSceneObject, isElementHit } from '../../utils/maffs';
 
@@ -114,6 +114,30 @@ export default function PlanningCanvas(props: any) {
                   }
                 }
               })
+              if(child.topping) {
+                context.save();
+                    context.scale(2,2)
+                    const image = new Image();
+                    image.src = child.topping.img;
+                    
+                      context.translate(
+                      child.drawRotPoint.x,
+                      child.drawRotPoint.y
+                    );
+                    context.rotate((child.rotation * Math.PI) / 180);
+                    context.translate(
+                      -(child.drawRotPoint.x),
+                      -(child.drawRotPoint.y)
+                    );
+                    context.drawImage(
+                      image,
+                      child.topping.drawRotPoint.x - child.topping.size.x / 2,
+                      child.topping.drawRotPoint.y - child.topping.size.y / 2,
+                      child.topping.size.x,
+                      child.topping.size.y
+                    );
+                    context.restore();
+              }
             }
           }});
         }
@@ -178,11 +202,13 @@ export default function PlanningCanvas(props: any) {
                 selection.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y};
                 if(isObjects(selection)) {
                   selection.children.forEach((dwarf: SceneObject) => {
-                    if(isTopping(dwarf)) {
-                      dwarf.pos = { x: selection.pos.x, y: selection.pos.y - selection.size.y - dwarf.drawOffset.y}
-                      dwarf.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y - selection.size.y - dwarf.drawOffset.y};
-                    }
+                    dwarf.pos = { x: selection.pos.x, y: selection.pos.y - selection.size.y}
+                    dwarf.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y - selection.size.y};
                   })
+                  if(selection.topping) {
+                    selection.topping.pos = { x: selection.pos.x, y: selection.pos.y - selection.size.y - selection.topping.drawOffset.y}
+                    selection.topping.drawRotPoint = { x: pos.x + dragging2.x, y: pos.y + dragging2.y - selection.size.y - selection.topping.drawOffset.y};
+                  }
                 }
                 const newChildren = [...children];
                 setChildren(newChildren);

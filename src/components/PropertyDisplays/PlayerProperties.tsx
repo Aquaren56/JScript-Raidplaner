@@ -1,6 +1,7 @@
 import React from 'react';
 import { Objects, isTopping } from '../../types';
-import { getLcPrefabs } from '../../utils/loadLimitCut';
+import Toppings from './Attachments/Toppings';
+import Attacks from './Attachments/Attacks';
 
 interface PProps {
     player: Objects;
@@ -68,6 +69,7 @@ export default function ItemForm({ player, changingPlayer }: PProps) {
       <div>
         <label>Attachments</label>
         <ul>
+          {player.topping ? <li>{player.topping.identifier}</li> : null}
           {player.children.map((attachment, index) => (
             <li key={index}>
               {attachment.identifier}
@@ -76,16 +78,9 @@ export default function ItemForm({ player, changingPlayer }: PProps) {
         </ul>
       </div>
       Add Attachment: 
-      <button onClick={() => {
-        const newAttachment = getLcPrefabs()[0];
-        newAttachment.drawOffset = { x: 0, y: 0 };
-        newAttachment.pos = {...newAttachment.pos, x: player.pos.x, y: player.pos.y - player.size.y - newAttachment.drawOffset.y};
-        newAttachment.drawRotPoint = { x: player.drawRotPoint.x, y: player.drawRotPoint.y - player.size.y - newAttachment.drawOffset.y };
-        newAttachment.isChild = true;
-        player.children.push(newAttachment);
-        changingPlayer();
-      }
-      }>+</button>
+      <br />
+      <Toppings object={player} changingPlayer={changingPlayer} />
+      <Attacks object={player} changingPlayer={changingPlayer} />
     </div>
   );
 };
