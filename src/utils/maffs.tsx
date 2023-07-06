@@ -21,19 +21,25 @@ export const calcMiddlePoint = (a:Point, width: number, height: number):Point =>
 }
 
 export function calculateAngle(A: Point, B: Point, Z: Point): number {
-  const sideA = Math.sqrt((A.x - B.x) ** 2 + (A.y - B.y) ** 2);
-  const sideB = Math.sqrt((Z.x - B.x) ** 2 + (Z.y - B.y) ** 2);
-  const sideC = Math.sqrt((A.x - Z.x) ** 2 + (A.y - Z.y) ** 2);
-
-  const angleRadians = Math.acos(
-    (sideB ** 2 + sideC ** 2 - sideA ** 2) / (2 * sideB * sideC)
-  );
-
-  const angleDegrees = angleRadians * (180 / Math.PI);
-
-  return angleDegrees;
-}
-
+    const sideA = Math.sqrt((A.x - B.x) ** 2 + (A.y - B.y) ** 2);
+    const sideB = Math.sqrt((Z.x - B.x) ** 2 + (Z.y - B.y) ** 2);
+    const sideC = Math.sqrt((A.x - Z.x) ** 2 + (A.y - Z.y) ** 2);
+  
+    const angleRadians = Math.acos(
+      (sideB ** 2 + sideC ** 2 - sideA ** 2) / (2 * sideB * sideC)
+    );
+  
+    let angleDegrees = angleRadians * (180 / Math.PI);
+  
+    // Adjust the angle to cover the full 360 degrees range
+    const crossProduct = (A.x - B.x) * (Z.y - B.y) - (A.y - B.y) * (Z.x - B.x);
+    if (crossProduct < 0) {
+      angleDegrees = 360 - angleDegrees;
+    }
+  
+    return -angleDegrees;
+  }
+  
 export const calcBottomRotPoint = (sceneObj: Attacks): Point => {
     return {x: sceneObj.pos.x + sceneObj.size.x / 2, y: sceneObj.pos.y + sceneObj.size.y};
 }

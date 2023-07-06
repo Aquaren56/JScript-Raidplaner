@@ -1,40 +1,48 @@
 import React, { useState } from 'react';
-import { Objects, Attack, Topping } from '../../types';
+import { Attack } from '../../../types';
 
 interface DropdownProps {
-    nonObject: Attack | Topping;
-    objects: Objects[];
+    attack: Attack;
     change: Function;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ objects, nonObject, change }) => {
+const Dropdown: React.FC<DropdownProps> = ({ attack, change }) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
-    const valuesToInt = (values: string[]) => {
-        return values.map((value) => parseInt(value));
-    }
+  const values = ['1', '2', '3', '4', '5', '6', '7', '8', 'dps', 'healer', 'tank', 'support'];
+
+    const valuesMaybeToInt = (values: string[]) => {
+        return values.map((value) => {
+            parseInt(value)
+            if (value === '1' || value === '2' || value === '3' || value === '4' || value === '5' || value === '6' || value === '7' || value === '8') {
+                return parseInt(value);
+            }
+            return value;
+        });
+    };
+    
 
   const handleValueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(event.target.selectedOptions);
     const selectedValues = selectedOptions.map((option) => option.value);
-    nonObject.parents = objects.filter((object) => valuesToInt(selectedValues).includes(object.id));
+    attack.target = valuesMaybeToInt(selectedValues);
     setSelectedValues(selectedValues);
     change();
   };
 
   return (
     <div style={{ minWidth: '100px' }}>
-      Base:
-      <br />
+        Targets:
+        <br />
       <select
         multiple
         value={selectedValues}
         onChange={handleValueChange}
         style={{ width: '100px', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
       >
-        {objects.map((object: Objects) => (
-          <option key={object.id} value={object.id}>
-            {object.identifier}
+        {values.map((key: string ) => (
+          <option key={key} value={key}>
+            {key}
           </option>
         ))}
         <option value="">None</option>

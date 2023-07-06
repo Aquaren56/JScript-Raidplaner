@@ -29,13 +29,26 @@ export default function ElementDisplay({sceneChildren, selection, setSelection}:
                         {element.parents.map((parent: SceneObject, index: number) => {
                             return (
                                 <div className="element" key={index}>
-                                    {isCircleAoe(element) ? ' at: ' : ' from: '}
+                                    {' from: '}
                                     {parent.identifier}
                                 </div>
                             )
                         }
                     )}
                 </>
+                )
+            }
+        }
+    }
+
+    const displayTarget = (element: SceneObject) => {
+        if(isAttack(element)) {
+            if(element.target !== null) {
+                return (
+                    <div className="element">
+                        {' to: '}
+                        {element.target}
+                    </div>
                 )
             }
         }
@@ -48,7 +61,7 @@ export default function ElementDisplay({sceneChildren, selection, setSelection}:
                 return (
                     <div className="element" style={{ backgroundColor: style.bgc, color: style.c }} key={index} onClick={() => setSelection(child)}>
                         <img src={child.img} alt={child.identifier} />
-                        <span style={{ marginRight: '4px' }}>{child.identifier}</span> {display(child)}
+                        <span style={{ marginRight: '4px' }}>{child.identifier}</span> {display(child)} {displayTarget(child)}
                     </div>
                 )
             })}

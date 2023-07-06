@@ -47,6 +47,7 @@ export interface Attack extends NonObject {
     rotation: number;
     color: string;
     alpha: number;
+    target: (string | number)[] | null;
     draw: (context: CanvasRenderingContext2D) => void;
 }
 
@@ -77,6 +78,10 @@ export interface Objects extends SceneObject {
     img: string;
     topping?: Topping;
     children: SceneObject[];
+}
+
+export interface Player extends Objects {
+    role: 'tank' | 'healer' | 'dps';
 }
 
 export interface Topping extends NonObject {
@@ -116,4 +121,8 @@ export function isRectangleAoe(attack: Attack): attack is RectangleAoe {
 
 export function isNonObject(sceneObject: SceneObject): sceneObject is NonObject {
     return (sceneObject as NonObject).parents !== undefined;
+}
+
+export function isPlayer(sceneObject: SceneObject): sceneObject is Player {
+    return (sceneObject as Player).role !== undefined;
 }

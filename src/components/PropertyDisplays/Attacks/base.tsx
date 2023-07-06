@@ -4,6 +4,7 @@ import CircleAoeProperties from "./circleAoeProps";
 import ConeAoeProperties from "./coneAoeProps";
 import TriangleAoeProperties from "./triangleAoeProps";
 import Dropdown from '../YetAnotherDropdown';
+import Dd from './TagretDropdown'
 
 interface Props {
     attack: Attack;
@@ -108,6 +109,8 @@ export default function AttackProperties(props: Props) {
             <br />
 
             <Dropdown objects={getAllObjects()} nonObject={props.attack} change={props.changingAttack}/>
+
+            <Dd attack={props.attack} change={props.changingAttack}/>
         </div>
     )
 }

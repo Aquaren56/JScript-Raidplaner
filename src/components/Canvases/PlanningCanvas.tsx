@@ -2,9 +2,9 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
-import { SceneObject, isAttack, Attacks, Icons, isObjects, Objects, Topping, isTopping, isNonObject } from '../../types';
+import { SceneObject, isAttack, Attacks, Icons, isObjects, Objects, Topping, isTopping, isNonObject, isCircleAoe, Player, isPlayer } from '../../types';
 import { drawAoe, drawAttackAtParent } from '../../utils/drawUtils';
-import { calcDrawRotForSceneObject, isElementHit } from '../../utils/maffs';
+import { calcDrawRotForSceneObject, isElementHit, calculateAngle } from '../../utils/maffs';
 import { useCounter } from '../../IdProvider';
 
 
@@ -25,23 +25,134 @@ export default function PlanningCanvas(props: any) {
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
+    const getPlayersByDistance = useCallback((players: Player[], point: Point) => {
+        return players.sort((a: Player, b: Player) => {
+            const aDist = Math.sqrt(Math.pow(a.drawRotPoint.x - point.x, 2) + Math.pow(a.drawRotPoint.y - point.y, 2));
+            const bDist = Math.sqrt(Math.pow(b.drawRotPoint.x - point.x, 2) + Math.pow(b.drawRotPoint.y - point.y, 2));
+            return aDist - bDist;
+        });
+    }, []);
+
+    const getPlayer = (objects: SceneObject[]): Player[] => {
+      const arr = objects.filter((element: SceneObject) => {
+          return isPlayer(element);
+      })
+      
+      if(arr.every((element: SceneObject) => {
+          return isPlayer(element);
+      })) {
+          return arr as Player[];
+      }
+      return [];
+    }
+
+    const getTargetAngles = useCallback((attack: Attacks, indexMain: number) => {
+      const players = getPlayer(children as SceneObject[]);
+      const playerByDist = getPlayersByDistance(players, attack.parents[indexMain].drawRotPoint);
+      if(attack.target === null) return [];
+        return attack.target.map((tar: number|string) => {
+            if(typeof tar === 'number') {
+                return [playerByDist[tar]];
+            } else {
+              console.log(players)
+                switch(tar) {
+                    case 'dps': {
+                        return players.filter((player: Player) => {
+                            return player.role === 'dps';
+                            }).map((player: Player) => {
+                                return player;
+                                });
+                              }
+                    case 'healer': {
+                        return players.filter((player: Player) => {
+                            return player.role === 'healer';
+                            }
+                            ).map((player: Player) => {
+                                return player;
+                                }
+                                );
+                              }
+                    case 'tank': {
+                        return players.filter((player: Player) => {
+                            return player.role === 'tank';
+                            }
+                            ).map((player: Player) => {
+                                return player;
+                                }
+                                );
+                              }
+                    case 'support': {
+                        return players.filter((player: Player) => {
+                            return player.role === 'tank' || player.role === 'healer';
+                            }
+                            ).map((player: Player) => {
+                                return player;
+                                }
+                                );
+                              }
+                    default: {
+                        return [];
+                  }
+            }
+            }
+        });
+
+    }, [children, getPlayersByDistance]);
+
     const drawAttack = useCallback((context: CanvasRenderingContext2D, attack: Attacks) => {
       if(attack.parents.length > 0) {
-        attack.parents.forEach((parent: Objects) => {
-          context.save();
-          context.scale(2,2);
-            context.translate(
-              parent.drawRotPoint.x,
-              parent.drawRotPoint.y
-            );
-            context.rotate((parent.rotation * Math.PI) / 180);
-            context.rotate((attack.rotation * Math.PI) / 180);
-            context.translate(
-              -(parent.drawRotPoint.x),
-              -(parent.drawRotPoint.y)
-            );
-            drawAttackAtParent(context, parent.drawRotPoint, attack);
-            context.restore();
+        attack.parents.forEach((parent: Objects, index) => {
+            if(attack.target) {
+              const targetAngles = getTargetAngles(attack, index);
+              console.log(targetAngles);
+              if(targetAngles) {
+                targetAngles.forEach((angles: Player[]) => {
+                  angles.forEach((player: Player) => {
+                    context.save();
+                    context.scale(2,2);
+                    
+                    if(isCircleAoe(attack)) {
+                      console.log(player.drawRotPoint)
+                      drawAttackAtParent(context, player.drawRotPoint, attack);
+                    } else {
+                    context.translate(
+                      parent.drawRotPoint.x,
+                      parent.drawRotPoint.y
+                    );
+                    const angle = calculateAngle(attack.parents[index].drawRotPoint, player.drawRotPoint, {x: attack.parents[index].drawRotPoint.x, y: attack.parents[index].drawRotPoint.y + 1});
+                    context.rotate((angle * Math.PI) / 180);
+
+                    context.translate(
+                      -(parent.drawRotPoint.x),
+                      -(parent.drawRotPoint.y)
+                    );
+                    
+
+                      drawAttackAtParent(context, parent.drawRotPoint, attack);
+                    }
+                    context.restore();
+                  })
+                })
+              }
+
+            } else {
+              context.save();
+              context.scale(2,2);
+
+              context.translate(
+                parent.drawRotPoint.x,
+                parent.drawRotPoint.y
+              );
+              context.rotate((parent.rotation * Math.PI) / 180);
+              context.rotate((attack.rotation * Math.PI) / 180);
+
+              context.translate(
+                -(parent.drawRotPoint.x),
+                -(parent.drawRotPoint.y)
+              );
+              drawAttackAtParent(context, parent.drawRotPoint, attack);
+              context.restore();
+            }
           })
         } else {
           context.save();
@@ -57,7 +168,7 @@ export default function PlanningCanvas(props: any) {
               );
               drawAoe(context, attack);
               context.restore();
-    }}, []);
+    }}, [getTargetAngles]);
 
     const drawTopping = useCallback((context: CanvasRenderingContext2D, topping: Topping) => {
       if(topping.parents.length > 0) {

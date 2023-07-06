@@ -23,7 +23,7 @@ interface CounterProviderProps {
 
 // CounterProvider component to wrap around the app
 const CounterProvider = ({ children }: CounterProviderProps) => {
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(9);
 
   const incrementCounter = () => {
     setCounter((prevCounter) => prevCounter + 1);

@@ -1,12 +1,13 @@
 import DragIcon from '../components/IconBar/DraggableIcon';
 import { DragIconType } from './DragnDrop';
-import { Objects } from '../types';
+import { Player } from '../types';
 import '../styling/section.css';
 
 import healer from '../icons/player/Healer.png';
 import tank from '../icons/player/Tank.png';
 import melee from '../icons/player/Melee.png';
 import ranged from '../icons/player/Ranged.png';
+import caster from '../icons/player/Magic.png';
 
 import nin from '../icons/player/all/Ninja.png';
 import drg from '../icons/player/all/Dragoon.png';
@@ -29,7 +30,7 @@ import rpr from '../icons/player/all/Reaper.png';
 import sge from '../icons/player/all/Sage.png';
 
 const playerBaseIcons = {
-    healer, tank, melee, ranged
+    healer, tank, melee, ranged, caster
 }
 
 const playerJobIcons = {
@@ -55,6 +56,7 @@ const playerJobIcons = {
 }
 
 const meleeJobIcons = {
+    melee,
     nin,
     drg,
     sam,
@@ -63,18 +65,21 @@ const meleeJobIcons = {
 }
 
 const rangedJobIcons = {
+    ranged,
     brd,
     mch,
     dnc
 }
 
 const casterJobIcons = {
+    caster,
     blm,
     smn,
     rdm
 }
 
 const healerJobIcons = {
+    healer,
     whm,
     sch,
     ast,
@@ -82,6 +87,7 @@ const healerJobIcons = {
 }
 
 const tankJobIcons = {
+    tank,
     gnb,
     pld,
     war,
@@ -90,6 +96,12 @@ const tankJobIcons = {
 
 export type pIconKeys = keyof typeof playerBaseIcons
 export type jIconKeys = keyof typeof playerJobIcons
+type tankKeys = keyof typeof tankJobIcons
+type healerKeys = keyof typeof healerJobIcons
+type meleeKeys = keyof typeof meleeJobIcons
+type rangedKeys = keyof typeof rangedJobIcons
+type casterKeys = keyof typeof casterJobIcons
+
 export type iconKeys = pIconKeys | jIconKeys
 
 const getBasePlayerIcons = (key: pIconKeys) => {
@@ -115,23 +127,23 @@ const getIconKeys = () => {
 }
 
 const getMeleeIconKeys = () => {
-    return Object.keys(meleeJobIcons) as jIconKeys[];
+    return Object.keys(meleeJobIcons) as meleeKeys[];
 }
 
 const getRangedIconKeys = () => {
-    return Object.keys(rangedJobIcons) as jIconKeys[];
+    return Object.keys(rangedJobIcons) as rangedKeys[];
 }
 
 const getCasterIconKeys = () => {
-    return Object.keys(casterJobIcons) as jIconKeys[];
+    return Object.keys(casterJobIcons) as casterKeys[];
 }
 
 const getHealerIconKeys = () => {
-    return Object.keys(healerJobIcons) as jIconKeys[];
+    return Object.keys(healerJobIcons) as healerKeys[];
 }
 
 const getTankIconKeys = () => {
-    return Object.keys(tankJobIcons) as jIconKeys[];
+    return Object.keys(tankJobIcons) as tankKeys[];
 }
 
 const getDraggableIcon = (key: pIconKeys | jIconKeys) => {
@@ -201,7 +213,7 @@ export { playerBaseIcons }
 export default getBasePlayerIcons;
 
 const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
-    const objectPrefab: Objects = {
+    const objectPrefab: Player = {
         id: 0,
         step: 0,
         identifier: key,
@@ -218,7 +230,8 @@ const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
         img: getIcon(key),
         rotation: 0,
         type: 'a' as DragIconType,
-        children: []
+        children: [],
+        role: getRoleByKey(key),
     }
     return objectPrefab;
 }
@@ -226,20 +239,36 @@ const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
 export const initPlayerSetup = () => {
     const group1 = Object.keys(playerBaseIcons).map(((key, index) => {
         const player = getObjectPrefab(key as pIconKeys);
+        console.log(getRoleByKey(key as pIconKeys));
         player.id = index;
         player.drawRotPoint = { x: 140 + 73*index, y: 400 };
         player.pos = { x: 100 + 70*index, y: 400 };
 
         return player;
     }))
-    const group2 = Object.keys(playerBaseIcons).map(((key, index) => {
+    const group2 = Object.keys(playerBaseIcons).slice(0,3).map(((key, index) => {
         const player = getObjectPrefab(key as jIconKeys);
-        player.id = index+4;
+        player.id = index+5;
         player.drawRotPoint = { x: 140 + 73*index, y: 450 };
         player.pos = { x: 100 + 70*index, y: 450 };
+        console.log(player.role, key);
 
         return player;
     }))
 
     return group1.concat(group2);
+}
+
+const getRoleByKey = (key: pIconKeys | jIconKeys) => {
+    if (getTankIconKeys().includes(key as tankKeys)) {
+        return 'tank';
+    } else if (Object.keys(healerJobIcons).includes(key as jIconKeys)) {
+        return 'healer';
+    } else if (Object.keys(meleeJobIcons).includes(key as jIconKeys)) {
+        return 'dps';
+    } else if (Object.keys(rangedJobIcons).includes(key as jIconKeys)) {
+        return 'dps';
+    } else {
+        return 'dps';
+    }
 }

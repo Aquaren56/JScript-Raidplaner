@@ -8,7 +8,7 @@ export const drawLine = (ctx: CanvasRenderingContext2D, from: Point, to: Point) 
 }
 
 export const drawCircle = (context: CanvasRenderingContext2D, aoe: CircleAoe) => {
-    
+    console.log(aoe.alpha)
     context.beginPath();
     context.arc(aoe.drawRotPoint.x, aoe.drawRotPoint.y, aoe.size.x/2, 0, 2 * Math.PI);
     context.fillStyle = `rgba(${aoe.color}, ${aoe.alpha})`;
