@@ -2,9 +2,11 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
-import { SceneObject, isAttack, Attacks, Icons, isObjects } from '../../types';
-import { drawAoe } from '../../utils/drawUtils';
+import { SceneObject, isAttack, Attacks, Icons, isObjects, Objects, Topping, isTopping, isNonObject } from '../../types';
+import { drawAoe, drawAttackAtParent } from '../../utils/drawUtils';
 import { calcDrawRotForSceneObject, isElementHit } from '../../utils/maffs';
+import { useCounter } from '../../IdProvider';
+
 
 interface Point {
     x: number;
@@ -13,12 +15,90 @@ interface Point {
 
 export default function PlanningCanvas(props: any) {
 
+    const { counter, incrementCounter } = useCounter();
+
+
     const {children, setChildren, selection, setSelection, ...rest} = props;
     
     const [dragging, setDragging] = useState<Point | null>(null);
     const [dragging2, setDragging2] = useState<Point | null>(null);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    const drawAttack = useCallback((context: CanvasRenderingContext2D, attack: Attacks) => {
+      if(attack.parents.length > 0) {
+        attack.parents.forEach((parent: Objects) => {
+          context.save();
+          context.scale(2,2);
+            context.translate(
+              parent.drawRotPoint.x,
+              parent.drawRotPoint.y
+            );
+            context.rotate((parent.rotation * Math.PI) / 180);
+            context.rotate((attack.rotation * Math.PI) / 180);
+            context.translate(
+              -(parent.drawRotPoint.x),
+              -(parent.drawRotPoint.y)
+            );
+            drawAttackAtParent(context, parent.drawRotPoint, attack);
+            context.restore();
+          })
+        } else {
+          context.save();
+              context.scale(2,2);
+              context.translate(
+                attack.drawRotPoint.x,
+                attack.drawRotPoint.y
+              );
+              context.rotate((attack.rotation * Math.PI) / 180);
+              context.translate(
+                -(attack.drawRotPoint.x),
+                -(attack.drawRotPoint.y)
+              );
+              drawAoe(context, attack);
+              context.restore();
+    }}, []);
+
+    const drawTopping = useCallback((context: CanvasRenderingContext2D, topping: Topping) => {
+      if(topping.parents.length > 0) {
+          context.save();
+          context.scale(2,2);
+          topping.parents.forEach((parent: Objects) => {
+            context.translate(
+              parent.drawRotPoint.x,
+              parent.drawRotPoint.y
+            );
+            context.rotate((parent.rotation * Math.PI) / 180);
+            context.translate(
+              -(parent.drawRotPoint.x),
+              -(parent.drawRotPoint.y)
+            );
+            const image = new Image();
+              image.src = topping.img;
+            context.drawImage(
+              image,
+              parent.drawRotPoint.x - topping.size.x / 2,
+              parent.drawRotPoint.y - parent.size.y - topping.drawOffset.y -10,
+              topping.size.x,
+              topping.size.y
+            );          
+            context.restore();
+          })
+        } else {
+          context.save();
+          context.scale(2,2);
+          const image = new Image();
+              image.src = topping.img;
+            context.drawImage(
+              image,
+              topping.drawRotPoint.x - topping.size.x / 2,
+              topping.drawRotPoint.y - topping.size.y / 2,
+              topping.size.x,
+              topping.size.y
+            );
+            context.restore();
+        }
+    }, []);
 
     const draw = useCallback(() => {
         const canvas = canvasRef.current;
@@ -31,28 +111,17 @@ export default function PlanningCanvas(props: any) {
           if (!children) return;
           children.forEach((child: Attacks | Icons) => {
             if(isAttack(child)) {
-              context.save();
-              context.scale(2,2);
-              context.translate(
-                child.drawRotPoint.x,
-                child.drawRotPoint.y
-              );
-              context.rotate((child.rotation * Math.PI) / 180);
-              context.translate(
-                -(child.drawRotPoint.x),
-                -(child.drawRotPoint.y)
-              );
-              drawAoe(context, child);
-              context.restore();
-
+              drawAttack(context, child);
+            } else if(isTopping(child)) {
+              drawTopping(context, child);
             } else {
-            if (child.img) {
+            if (isObjects(child)) {
               context.save();
               context.scale(2,2)
               const image = new Image();
               image.src = child.img;
               
-                context.translate(
+              context.translate(
                 child.drawRotPoint.x,
                 child.drawRotPoint.y
               );
@@ -68,80 +137,11 @@ export default function PlanningCanvas(props: any) {
                 child.size.x,
                 child.size.y
               );
-              context.restore();
-              
-            }
-            if(isObjects(child)) {
-              child.children.forEach((dwarf: SceneObject) => {
-                if(isAttack(dwarf)) {
-                  context.save();
-                  context.scale(2,2);
-                  context.translate(
-                    dwarf.drawRotPoint.x,
-                    dwarf.drawRotPoint.y
-                  );
-                  context.rotate((child.rotation * Math.PI) / 180);
-                  context.translate(
-                    -(dwarf.drawRotPoint.x),
-                    -(dwarf.drawRotPoint.y)
-                  );
-                  drawAoe(context, dwarf);
-                  context.restore();
-                } else {
-                  if (dwarf.img) {
-                    context.save();
-                    context.scale(2,2)
-                    const image = new Image();
-                    image.src = dwarf.img;
-                    
-                      context.translate(
-                      child.drawRotPoint.x,
-                      child.drawRotPoint.y
-                    );
-                    context.rotate((child.rotation * Math.PI) / 180);
-                    context.translate(
-                      -(child.drawRotPoint.x),
-                      -(child.drawRotPoint.y)
-                    );
-                    context.drawImage(
-                      image,
-                      dwarf.drawRotPoint.x - dwarf.size.x / 2,
-                      dwarf.drawRotPoint.y - dwarf.size.y / 2,
-                      dwarf.size.x,
-                      dwarf.size.y
-                    );
-                    context.restore();
-                  }
-                }
-              })
-              if(child.topping) {
-                context.save();
-                    context.scale(2,2)
-                    const image = new Image();
-                    image.src = child.topping.img;
-                    
-                      context.translate(
-                      child.drawRotPoint.x,
-                      child.drawRotPoint.y
-                    );
-                    context.rotate((child.rotation * Math.PI) / 180);
-                    context.translate(
-                      -(child.drawRotPoint.x),
-                      -(child.drawRotPoint.y)
-                    );
-                    context.drawImage(
-                      image,
-                      child.topping.drawRotPoint.x - child.topping.size.x / 2,
-                      child.topping.drawRotPoint.y - child.topping.size.y / 2,
-                      child.topping.size.x,
-                      child.topping.size.y
-                    );
-                    context.restore();
-              }
+              context.restore();    
             }
           }});
         }
-      }, [children]);
+      }, [children, drawAttack, drawTopping]);
       
 
     useEffect(() => {
@@ -166,6 +166,8 @@ export default function PlanningCanvas(props: any) {
         if(result) {
             const newObj = {...result[0], pos: calcPosOnCanvas(result[1], e)};
             newObj.drawRotPoint = calcDrawRotForSceneObject(newObj);
+            newObj.id = counter;
+            incrementCounter();
             setChildren([...children, newObj]);
         };
     }
@@ -177,6 +179,8 @@ export default function PlanningCanvas(props: any) {
             const rect = canvas.getBoundingClientRect();
             const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
             children.forEach((child: SceneObject, index: number) => {
+
+              if( isNonObject(child) && child.parents.length > 0) return;
                 if(isElementHit(pos, child)) {
                     childHit = true;
                     setSelection(child);
@@ -221,6 +225,7 @@ export default function PlanningCanvas(props: any) {
           const rect = canvas.getBoundingClientRect();
           const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top }
           children.forEach((child: SceneObject, index: number) => {
+            if( isNonObject(child) && child.parents.length > 0) return;
             if(isElementHit(pos, child)) {
               document.body.style.cursor = 'crosshair';
               childHit = true;

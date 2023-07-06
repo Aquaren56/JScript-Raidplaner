@@ -202,6 +202,7 @@ export default getBasePlayerIcons;
 
 const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
     const objectPrefab: Objects = {
+        id: 0,
         step: 0,
         identifier: key,
         pos: {
@@ -216,7 +217,29 @@ const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
         },
         img: getIcon(key),
         rotation: 0,
+        type: 'a' as DragIconType,
         children: []
     }
     return objectPrefab;
+}
+
+export const initPlayerSetup = () => {
+    const group1 = Object.keys(playerBaseIcons).map(((key, index) => {
+        const player = getObjectPrefab(key as pIconKeys);
+        player.id = index;
+        player.drawRotPoint = { x: 140 + 73*index, y: 400 };
+        player.pos = { x: 100 + 70*index, y: 400 };
+
+        return player;
+    }))
+    const group2 = Object.keys(playerBaseIcons).map(((key, index) => {
+        const player = getObjectPrefab(key as jIconKeys);
+        player.id = index+4;
+        player.drawRotPoint = { x: 140 + 73*index, y: 450 };
+        player.pos = { x: 100 + 70*index, y: 450 };
+
+        return player;
+    }))
+
+    return group1.concat(group2);
 }

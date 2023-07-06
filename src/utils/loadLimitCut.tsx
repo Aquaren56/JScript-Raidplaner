@@ -86,6 +86,7 @@ export const getLcDragIcons = () => {
 export const getLcPrefab = (key: Lc): Topping => {
     const width = parseInt(key[2],10) > 4 ? 60 : 30;
     return {
+        id: 0,
         step: 1,
         identifier: key,
         size: { x: width, y: 30 },
@@ -93,14 +94,16 @@ export const getLcPrefab = (key: Lc): Topping => {
         img: getLcIcon(key),
         rotation: 0,
         drawRotPoint: { x: 0, y: 0 },
-        type: DragIconType.Player,
+        type: 'd' as DragIconType,
         isChild: false,
-        drawOffset: { x: 0, y: 0 },
+        parents: [],
+        drawOffset: { x: 0, y: 5 },
     }
 }
 
 export const getDsrPrefab = (key: Dsr): Topping => {
     return {
+        id: 0,
         step: 1,
         identifier: key,
         size: { x: 30, y: 30 },
@@ -108,9 +111,10 @@ export const getDsrPrefab = (key: Dsr): Topping => {
         img: getDSRIcon(key),
         rotation: 0,
         drawRotPoint: { x: 0, y: 0 },
-        type: DragIconType.Player,
+        type: 'd' as DragIconType,
         isChild: false,
-        drawOffset: { x: 0, y: 0 },
+        drawOffset: { x: 0, y: 5 },
+        parents: [],
     }
 }
 

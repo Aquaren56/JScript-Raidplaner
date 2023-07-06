@@ -17,10 +17,17 @@ export enum DragIconType {
     Player = 'player',
     Enemy = 'enemy',
     Object = 'object',
-    Attack = 'attack'
+    Attack = 'attack',
+    Topping = 'topping',
+    A = 'a',
+    B = 'b',
+    C = 'c',
+    D = 'd',
+    E = 'e',
 }
 
 export interface SceneObject {
+    id: number;
     step: number;
     identifier: string;
     size: Point;
@@ -28,11 +35,15 @@ export interface SceneObject {
     img: string;
     rotation: number;
     drawRotPoint: Point;
-    type?: DragIconType;
-    isChild?: boolean;
+    type: DragIconType;
 }
 
-export interface Attack extends SceneObject {
+export interface NonObject extends SceneObject {
+    isChild?: boolean;
+    parents: Objects[];
+}
+
+export interface Attack extends NonObject {
     rotation: number;
     color: string;
     alpha: number;
@@ -68,7 +79,7 @@ export interface Objects extends SceneObject {
     children: SceneObject[];
 }
 
-export interface Topping extends SceneObject {
+export interface Topping extends NonObject {
     drawOffset: Point;
 }
 
@@ -103,3 +114,6 @@ export function isRectangleAoe(attack: Attack): attack is RectangleAoe {
     return (attack as RectangleAoe).width !== undefined;
 }
 
+export function isNonObject(sceneObject: SceneObject): sceneObject is NonObject {
+    return (sceneObject as NonObject).parents !== undefined;
+}

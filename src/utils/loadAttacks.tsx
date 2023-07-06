@@ -67,16 +67,19 @@ export const getAttackPrefabs = () => {
 }
 
 const circleAoe: CircleAoe = {
+    id: 0,
     step: 0,
     identifier: 'circle',
     pos: { x: 0, y: 0 },
     drawRotPoint: { x: 0, y: 0 },
-    size: { x: 30, y: 30 },
+    size: { x: 40, y: 40 },
     img: getIcon('circle'),
     rotation: 0,
     color: '255,0,0',
     alpha: 0.5,
-    radius: 15,
+    radius: 20,
+    parents: [],
+    type: 'c' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.arc(0, 0, circleAoe.radius, 0, 2 * Math.PI);
@@ -86,6 +89,7 @@ const circleAoe: CircleAoe = {
 }
 
 const coneAoe: ConeAoe = {
+    id: 0,
     step: 0,
     identifier: 'cone',
     shape: 'cone',
@@ -98,6 +102,8 @@ const coneAoe: ConeAoe = {
     alpha: 0.5,
     angle: 90,
     height: 100,
+    parents: [],
+    type: 'c' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.moveTo(0, 0);
@@ -110,6 +116,7 @@ const coneAoe: ConeAoe = {
 }
 
 const rectangleAoe: RectangleAoe = {
+    id: 0,
     step: 0,
     identifier: 'rectangle',
     pos: { x: 0, y: 0 },
@@ -121,7 +128,9 @@ const rectangleAoe: RectangleAoe = {
     color: '255,0,0',
     alpha: 0.5,
     width: 30,
+    parents: [],
     height: 100,
+    type: 'c' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.rect(0, 0, rectangleAoe.width, rectangleAoe.height);
@@ -131,6 +140,7 @@ const rectangleAoe: RectangleAoe = {
 }
 
 const triangleAoe: ConeAoe = {
+    id: 0,
     step: 0,
     identifier: 'triangle',
     shape: 'triangle',
@@ -143,6 +153,8 @@ const triangleAoe: ConeAoe = {
     color: '255,0,0',
     alpha: 0.5,
     height: 5,
+    parents: [],
+    type: 'c' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.moveTo(0, 0);

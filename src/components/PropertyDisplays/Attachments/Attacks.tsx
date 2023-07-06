@@ -1,22 +1,32 @@
-import { Objects, Attacks } from '../../../types';
+import { Objects, Attacks, SceneObject } from '../../../types';
 import { getAllAttacks, getIcon, AttackShape, getAttack } from '../../../utils/loadAttacks';
 import Section from '../../section';
+import { useCounter } from '../../../IdProvider';
 
 interface Props {
     object: Objects;
     changingPlayer: Function;
+    addElements: Function;
+    allElements: SceneObject[];
 }
 
 
-export default function AttackAttachments({ object, changingPlayer }: Props) {
+export default function AttackAttachments({ object, changingPlayer, addElements, allElements }: Props) {
+    const { counter, incrementCounter } = useCounter();
+
     const configureAttack = (attack: Attacks) => {
+
         attack = {
             ...attack,
+            id: counter,
             pos: {x: object.pos.x, y: object.pos.y},
             drawRotPoint: {x: object.drawRotPoint.x, y: object.drawRotPoint.y},
             isChild: true,
         }
-        object.children.push(attack);
+        incrementCounter();
+        attack.parents.push(object);
+        const newElements = allElements.push(attack);
+        addElements(newElements);
         changingPlayer();
     }
 

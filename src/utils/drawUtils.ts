@@ -1,4 +1,4 @@
-import { Attacks, CircleAoe, ConeAoe, Point, RectangleAoe, isCircleAoe, isConeAoe, isRectangleAoe, Attack } from '../types';
+import { CircleAoe, ConeAoe, Point, RectangleAoe, isCircleAoe, isConeAoe, isRectangleAoe, Attack } from '../types';
 
 export const drawLine = (ctx: CanvasRenderingContext2D, from: Point, to: Point) => {
     ctx.beginPath();
@@ -70,5 +70,10 @@ export const drawAoe = (ctx: CanvasRenderingContext2D, aoe: Attack) => {
     }
 }
 
-
+export const drawAttackAtParent = (ctx: CanvasRenderingContext2D, parent: Point, aoe: Attack) => {
+    const savePoint = aoe.drawRotPoint;
+    aoe.drawRotPoint = parent;
+    drawAoe(ctx, aoe);
+    aoe.drawRotPoint = savePoint;
+}
 

@@ -1,14 +1,16 @@
 import React from 'react';
-import { Objects, isTopping } from '../../types';
+import { Objects, SceneObject, isTopping } from '../../types';
 import Toppings from './Attachments/Toppings';
 import Attacks from './Attachments/Attacks';
 
 interface PProps {
     player: Objects;
     changingPlayer: Function;
+    addElements: Function;
+    allElements: SceneObject[];
 }
 
-export default function ItemForm({ player, changingPlayer }: PProps) {
+export default function ItemForm({ player, changingPlayer, allElements, addElements }: PProps) {
 
   const handlePositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -79,8 +81,8 @@ export default function ItemForm({ player, changingPlayer }: PProps) {
       </div>
       Add Attachment: 
       <br />
-      <Toppings object={player} changingPlayer={changingPlayer} />
-      <Attacks object={player} changingPlayer={changingPlayer} />
+      <Toppings object={player} changingPlayer={changingPlayer} addElements={addElements} allElements={allElements }/>
+      <Attacks object={player} changingPlayer={changingPlayer} addElements={addElements} allElements={allElements }/>
     </div>
   );
 };

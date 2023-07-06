@@ -1,15 +1,33 @@
-import { Attack, isCircleAoe, isConeAoe, isRectangleAoe } from "../../../types";
+import { Attack, SceneObject, isCircleAoe, isConeAoe, isRectangleAoe, isObjects, Objects } from "../../../types";
 import RectAoeProperties from "./rectAoeProps";
 import CircleAoeProperties from "./circleAoeProps";
 import ConeAoeProperties from "./coneAoeProps";
 import TriangleAoeProperties from "./triangleAoeProps";
+import Dropdown from '../YetAnotherDropdown';
 
 interface Props {
     attack: Attack;
     changingAttack: Function;
+    allElements: (SceneObject | Objects)[];
 }
 
 export default function AttackProperties(props: Props) {
+
+    const getAllObjects = (): Objects[] => {
+        const arr = props.allElements.filter((element) => {
+            return isObjects(element);
+        })
+        
+        if(arr.every((element) => {
+            return isObjects(element);
+        })) {
+            return arr as Objects[];
+        }
+        return [];
+
+    }
+
+
     const displayAttackSpecificProps = () => {
         if (isCircleAoe(props.attack)) {
             return (
@@ -86,6 +104,10 @@ export default function AttackProperties(props: Props) {
             <br />
             
             {displayAttackSpecificProps()}
+
+            <br />
+
+            <Dropdown objects={getAllObjects()} nonObject={props.attack} change={props.changingAttack}/>
         </div>
     )
 }
