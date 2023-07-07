@@ -50,7 +50,7 @@ export interface Attack extends NonObject {
     rotation: number;
     color: string;
     alpha: number;
-    target: (string | number)[] | null;
+    target: (string | number)[];
     draw: (context: CanvasRenderingContext2D) => void;
 }
 

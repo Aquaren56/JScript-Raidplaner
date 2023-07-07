@@ -8,7 +8,7 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ objects, nonObject, change }) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<string[]>(nonObject.parents.map((parent) => parent.id.toString()));
 
     const valuesToInt = (values: string[]) => {
         return values.map((value) => {
@@ -45,7 +45,7 @@ const Dropdown: React.FC<DropdownProps> = ({ objects, nonObject, change }) => {
         ))}
         <option value="">None</option>
       </select>
-      <p>Selected values: {selectedValues.join(', ')}</p>
+      <p>Selected values: {objects.filter((object) => valuesToInt(selectedValues).includes(object.id)).map(obj => obj.identifier).join(' ')}</p>
     </div>
   );
 };

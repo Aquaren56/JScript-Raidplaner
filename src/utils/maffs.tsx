@@ -74,3 +74,27 @@ export const isElementHit = (mouse: Point, sceneObj: SceneObject): boolean => {
         && adjustedMouse.y >= sceneObj.drawRotPoint.y - sceneObj.size.y / 2 
         && adjustedMouse.y <= sceneObj.drawRotPoint.y + sceneObj.size.y / 2;
 }
+
+export const orderChildren = (sceneChildren: SceneObject[]) => {
+  return sceneChildren.sort((a: SceneObject, b: SceneObject) => {
+      if(a.type < b.type) {
+          return -1;
+      } else if (a.type > b.type) {
+          return 1;
+      } else {
+          return 0;
+      }
+  })
+}
+
+export const reverseOrderChildren = (sceneChildren: SceneObject[]) => {
+  return sceneChildren.sort((a: SceneObject, b: SceneObject) => {
+      if(a.type > b.type) {
+          return -1;
+      } else if (a.type < b.type) {
+          return 1;
+      } else {
+          return 0;
+      }
+  })
+}

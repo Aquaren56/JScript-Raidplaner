@@ -2,9 +2,9 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
-import { SceneObject, isAttack, Attacks, Icons, isObjects, Objects, Topping, isTopping, isNonObject, isCircleAoe, Player, isPlayer } from '../../types';
+import { SceneObject, isAttack, Attacks, Icons, Attack,isObjects, Objects, Topping, isTopping, isNonObject, isCircleAoe, Player, isPlayer } from '../../types';
 import { drawAoe, drawAttackAtParent } from '../../utils/drawUtils';
-import { calcDrawRotForSceneObject, isElementHit, calculateAngle } from '../../utils/maffs';
+import { calcDrawRotForSceneObject, isElementHit, calculateAngle, reverseOrderChildren } from '../../utils/maffs';
 import { useCounter } from '../../IdProvider';
 
 
@@ -50,7 +50,7 @@ export default function PlanningCanvas(props: any) {
       return [];
     }
 
-    const getTargetAngles = useCallback((attack: Attacks, indexMain: number) => {
+    const getTargetAngles = useCallback((attack: Attack, indexMain: number) => {
       const players = getPlayer(children as SceneObject[]);
       const playerByDist = getPlayersByDistance(players, attack.parents[indexMain].drawRotPoint);
       if(attack.target === null) return [];
@@ -91,7 +91,7 @@ export default function PlanningCanvas(props: any) {
 
     }, [children, getPlayersByDistance]);
 
-    const drawAttack = useCallback((context: CanvasRenderingContext2D, attack: Attacks) => {
+    const drawAttack = useCallback((context: CanvasRenderingContext2D, attack: Attack) => {
       if(attack.parents.length > 0) {
         attack.parents.forEach((parent: Objects, index) => {
             if(attack.target !== null) {
@@ -211,7 +211,8 @@ export default function PlanningCanvas(props: any) {
           context.fillStyle = 'transparent';
           context.fillRect(0, 0, context.canvas.width, context.canvas.height);
           if (!children) return;
-          children.forEach((child: Attacks | Icons) => {
+          const drawOrder = reverseOrderChildren(children);
+          drawOrder.forEach((child: SceneObject) => {
             if(isAttack(child)) {
               drawAttack(context, child);
             } else if(isTopping(child)) {
@@ -239,7 +240,7 @@ export default function PlanningCanvas(props: any) {
                 child.size.x,
                 child.size.y
               );
-              context.restore();    
+              context.restore();
             }
           }});
         }

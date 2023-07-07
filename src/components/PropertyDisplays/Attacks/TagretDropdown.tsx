@@ -7,7 +7,7 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = ({ attack, change }) => {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<string[]>(attack.target.map((value) => value.toString()));
 
   const values = ['1', '2', '3', '4', '5', '6', '7', '8', 'dps', 'healer', 'tank', 'support'];
 
@@ -27,7 +27,7 @@ const Dropdown: React.FC<DropdownProps> = ({ attack, change }) => {
     const selectedValues = selectedOptions.map((option) => option.value);
     const values = valuesMaybeToInt(selectedValues);
     if(values[0] === '') {
-        attack.target = null;
+        attack.target = [];
     } else {
         attack.target = values;
     }
