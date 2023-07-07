@@ -11,13 +11,19 @@ const Dropdown: React.FC<DropdownProps> = ({ objects, nonObject, change }) => {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
     const valuesToInt = (values: string[]) => {
-        return values.map((value) => parseInt(value));
+        return values.map((value) => {
+          if(value === '') {
+              return Infinity;
+          }
+          return parseInt(value)
+        });
     }
 
   const handleValueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(event.target.selectedOptions);
     const selectedValues = selectedOptions.map((option) => option.value);
-    nonObject.parents = objects.filter((object) => valuesToInt(selectedValues).includes(object.id));
+    const parents = objects.filter((object) => valuesToInt(selectedValues).includes(object.id));
+    nonObject.parents = parents;
     setSelectedValues(selectedValues);
     change();
   };

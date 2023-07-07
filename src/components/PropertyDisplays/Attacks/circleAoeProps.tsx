@@ -8,7 +8,7 @@ interface Props {
 export default function CircleAoeProperties(props: Props) {
     return (
         <>
-            radius: <input type='number' value={props.attack.size.y/2} onChange={(e) => {
+            radius: <input type='number' value={props.attack.size.x/2} onChange={(e) => {
                 props.attack.size.y = parseInt(e.target.value)*2;
                 props.attack.size.x = parseInt(e.target.value)*2;
                 props.changeAttack();

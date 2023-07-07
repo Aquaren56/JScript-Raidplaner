@@ -25,7 +25,12 @@ const Dropdown: React.FC<DropdownProps> = ({ attack, change }) => {
   const handleValueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedOptions = Array.from(event.target.selectedOptions);
     const selectedValues = selectedOptions.map((option) => option.value);
-    attack.target = valuesMaybeToInt(selectedValues);
+    const values = valuesMaybeToInt(selectedValues);
+    if(values[0] === '') {
+        attack.target = null;
+    } else {
+        attack.target = values;
+    }
     setSelectedValues(selectedValues);
     change();
   };

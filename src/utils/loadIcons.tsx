@@ -229,7 +229,7 @@ const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
         },
         img: getIcon(key),
         rotation: 0,
-        type: 'a' as DragIconType,
+        type: 'b' as DragIconType,
         children: [],
         role: getRoleByKey(key),
     }

@@ -14,8 +14,8 @@ export default function ConeAoeProperties(props: Props) {
             }}
                 />
             <br />
-            radius: <input type='number' value={props.attack.size.y} onChange={(e) => {
-                props.attack.size.y = parseInt(e.target.value);
+            radius: <input type='number' value={props.attack.size.x/2} onChange={(e) => {
+                props.attack.size.x = parseInt(e.target.value)*2;
                 props.changeAttack();
             }} />
         </>

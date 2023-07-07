@@ -73,14 +73,14 @@ const circleAoe: CircleAoe = {
     target: null,
     pos: { x: 0, y: 0 },
     drawRotPoint: { x: 0, y: 0 },
-    size: { x: 40, y: 40 },
+    size: { x: 200, y: 200 },
     img: getIcon('circle'),
     rotation: 0,
     color: '255,0,0',
     alpha: 0.5,
-    radius: 20,
+    radius: 100,
     parents: [],
-    type: 'c' as DragIconType,
+    type: 'd' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.arc(0, 0, circleAoe.radius, 0, 2 * Math.PI);
@@ -97,15 +97,15 @@ const coneAoe: ConeAoe = {
     shape: 'cone',
     pos: { x: 0, y: 0 },
     drawRotPoint: { x: 0, y: 0 },
-    size: { x: 30, y: 30 },
+    size: { x: 500, y: 500 },
     img: getIcon('cone'),
     rotation: 0,
     color: '255,0,0',
     alpha: 0.5,
-    angle: 90,
+    angle: 70,
     height: 100,
     parents: [],
-    type: 'c' as DragIconType,
+    type: 'd' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.moveTo(0, 0);
@@ -125,7 +125,7 @@ const rectangleAoe: RectangleAoe = {
     pos: { x: 0, y: 0 },
     drawRotPoint: { x: 0, y: 0 },
     rotAtBottom: false,
-    size: { x: 30, y: 100 },
+    size: { x: 125, y: 1000 },
     img: getIcon('rect'),
     rotation: 0,
     color: '255,0,0',
@@ -133,7 +133,7 @@ const rectangleAoe: RectangleAoe = {
     width: 30,
     parents: [],
     height: 100,
-    type: 'c' as DragIconType,
+    type: 'd' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.rect(0, 0, rectangleAoe.width, rectangleAoe.height);
@@ -148,17 +148,17 @@ const triangleAoe: ConeAoe = {
     identifier: 'triangle',
     target: null,
     shape: 'triangle',
-    angle: 90,
+    angle: 70,
     pos: { x: 0, y: 0 },
     drawRotPoint: { x: 0, y: 0 },
-    size: { x: 30, y: 30 },
+    size: { x: 250, y: 700 },
     img: getIcon('triangle'),
     rotation: 0,
     color: '255,0,0',
     alpha: 0.5,
     height: 5,
     parents: [],
-    type: 'c' as DragIconType,
+    type: 'd' as DragIconType,
     draw: (context: CanvasRenderingContext2D) => {
         context.beginPath();
         context.moveTo(0, 0);

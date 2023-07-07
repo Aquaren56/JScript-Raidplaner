@@ -1,12 +1,5 @@
 import { CircleAoe, ConeAoe, Point, RectangleAoe, isCircleAoe, isConeAoe, isRectangleAoe, Attack } from '../types';
 
-export const drawLine = (ctx: CanvasRenderingContext2D, from: Point, to: Point) => {
-    ctx.beginPath();
-    ctx.moveTo(from.x, from.y);
-    ctx.lineTo(to.x, to.y);
-    ctx.stroke();
-}
-
 export const drawCircle = (context: CanvasRenderingContext2D, aoe: CircleAoe) => {
     console.log(aoe.alpha)
     context.beginPath();

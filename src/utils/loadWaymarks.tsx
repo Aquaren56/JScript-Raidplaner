@@ -92,7 +92,7 @@ const getWaymarkPrefab = (key: WaymarkIcon): Waymark => {
         size: { x: 30, y: 30 },
         img: icon,
         shape,
-        type: 'e' as DragIconType,
+        type: 'f' as DragIconType,
         drawSize: { x: 30, y: 30 }
     }
 }

@@ -24,6 +24,9 @@ export enum DragIconType {
     C = 'c',
     D = 'd',
     E = 'e',
+    F = 'f',
+    G = 'g',
+    H = 'h',
 }
 
 export interface SceneObject {

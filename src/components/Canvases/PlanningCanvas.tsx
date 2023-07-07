@@ -29,6 +29,10 @@ export default function PlanningCanvas(props: any) {
         return players.sort((a: Player, b: Player) => {
             const aDist = Math.sqrt(Math.pow(a.drawRotPoint.x - point.x, 2) + Math.pow(a.drawRotPoint.y - point.y, 2));
             const bDist = Math.sqrt(Math.pow(b.drawRotPoint.x - point.x, 2) + Math.pow(b.drawRotPoint.y - point.y, 2));
+            const dist = aDist - bDist;
+            if(dist === 0) {
+              return Infinity;
+            }
             return aDist - bDist;
         });
     }, []);
@@ -52,43 +56,31 @@ export default function PlanningCanvas(props: any) {
       if(attack.target === null) return [];
         return attack.target.map((tar: number|string) => {
             if(typeof tar === 'number') {
-                return [playerByDist[tar]];
+                return [playerByDist[tar-1]];
             } else {
-              console.log(players)
                 switch(tar) {
                     case 'dps': {
                         return players.filter((player: Player) => {
                             return player.role === 'dps';
-                            }).map((player: Player) => {
-                                return player;
-                                });
+                            })
                               }
                     case 'healer': {
                         return players.filter((player: Player) => {
                             return player.role === 'healer';
                             }
-                            ).map((player: Player) => {
-                                return player;
-                                }
-                                );
+                            )
                               }
                     case 'tank': {
                         return players.filter((player: Player) => {
                             return player.role === 'tank';
                             }
-                            ).map((player: Player) => {
-                                return player;
-                                }
-                                );
+                            )
                               }
                     case 'support': {
                         return players.filter((player: Player) => {
                             return player.role === 'tank' || player.role === 'healer';
                             }
-                            ).map((player: Player) => {
-                                return player;
-                                }
-                                );
+                            )
                               }
                     default: {
                         return [];
@@ -102,7 +94,7 @@ export default function PlanningCanvas(props: any) {
     const drawAttack = useCallback((context: CanvasRenderingContext2D, attack: Attacks) => {
       if(attack.parents.length > 0) {
         attack.parents.forEach((parent: Objects, index) => {
-            if(attack.target) {
+            if(attack.target !== null) {
               const targetAngles = getTargetAngles(attack, index);
               console.log(targetAngles);
               if(targetAngles) {
@@ -110,9 +102,7 @@ export default function PlanningCanvas(props: any) {
                   angles.forEach((player: Player) => {
                     context.save();
                     context.scale(2,2);
-                    
                     if(isCircleAoe(attack)) {
-                      console.log(player.drawRotPoint)
                       drawAttackAtParent(context, player.drawRotPoint, attack);
                     } else {
                     context.translate(
@@ -162,6 +152,7 @@ export default function PlanningCanvas(props: any) {
                 attack.drawRotPoint.y
               );
               context.rotate((attack.rotation * Math.PI) / 180);
+
               context.translate(
                 -(attack.drawRotPoint.x),
                 -(attack.drawRotPoint.y)

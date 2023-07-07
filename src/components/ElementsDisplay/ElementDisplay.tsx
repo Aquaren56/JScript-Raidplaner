@@ -1,6 +1,6 @@
 import '../../styling/element-display.css';
 import '../../styling/header.css';
-import { SceneObject, isCircleAoe } from "../../types";
+import { SceneObject } from "../../types";
 import { isAttack } from "../../types";
 
 interface ElementDisplayProps {
