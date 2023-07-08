@@ -51,7 +51,6 @@ export interface Attack extends NonObject {
     color: string;
     alpha: number;
     target: (string | number)[];
-    draw: (context: CanvasRenderingContext2D) => void;
 }
 
 export interface CircleAoe extends Attack {
@@ -61,7 +60,6 @@ export interface CircleAoe extends Attack {
 export interface ConeAoe extends Attack {
     shape: 'cone' | 'triangle';
     angle: number;
-    height: number;
 }
 
 export interface RectangleAoe extends Attack {

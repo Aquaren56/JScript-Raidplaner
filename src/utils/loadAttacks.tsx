@@ -41,13 +41,13 @@ export const loadAttacks = () => {
 export const getAttack = (key: AttackShape) => {
     switch (key) {
         case 'cone':
-            return coneAoe;
+            return {...coneAoe};
         case 'triangle':
-            return triangleAoe;
+            return {...triangleAoe};
         case 'rect':
-            return rectangleAoe;
+            return {...rectangleAoe};
         case 'circle':
-            return circleAoe;
+            return {...circleAoe};
     }
 }
 
@@ -81,12 +81,6 @@ const circleAoe: CircleAoe = {
     radius: 100,
     parents: [],
     type: 'd' as DragIconType,
-    draw: (context: CanvasRenderingContext2D) => {
-        context.beginPath();
-        context.arc(0, 0, circleAoe.radius, 0, 2 * Math.PI);
-        context.fillStyle = `rgba(${circleAoe.color}, ${circleAoe.alpha})`;
-        context.fill();
-    }
 }
 
 const coneAoe: ConeAoe = {
@@ -103,18 +97,8 @@ const coneAoe: ConeAoe = {
     color: '255,0,0',
     alpha: 0.5,
     angle: 70,
-    height: 100,
     parents: [],
     type: 'd' as DragIconType,
-    draw: (context: CanvasRenderingContext2D) => {
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.lineTo(coneAoe.height, coneAoe.angle / 2);
-        context.lineTo(coneAoe.height, -coneAoe.angle / 2);
-        context.closePath();
-        context.fillStyle = `rgba(${coneAoe.color}, ${coneAoe.alpha})`;
-        context.fill();
-    }
 }
 
 const rectangleAoe: RectangleAoe = {
@@ -134,12 +118,6 @@ const rectangleAoe: RectangleAoe = {
     parents: [],
     height: 100,
     type: 'd' as DragIconType,
-    draw: (context: CanvasRenderingContext2D) => {
-        context.beginPath();
-        context.rect(0, 0, rectangleAoe.width, rectangleAoe.height);
-        context.fillStyle = `rgba(${rectangleAoe.color}, ${rectangleAoe.alpha})`;
-        context.fill();
-    }
 }
 
 const triangleAoe: ConeAoe = {
@@ -156,16 +134,6 @@ const triangleAoe: ConeAoe = {
     rotation: 0,
     color: '255,0,0',
     alpha: 0.5,
-    height: 5,
     parents: [],
     type: 'd' as DragIconType,
-    draw: (context: CanvasRenderingContext2D) => {
-        context.beginPath();
-        context.moveTo(0, 0);
-        context.lineTo(triangleAoe.height, triangleAoe.height);
-        context.lineTo(triangleAoe.height, -triangleAoe.height);
-        context.closePath();
-        context.fillStyle = `rgba(${triangleAoe.color}, ${triangleAoe.alpha})`;
-        context.fill();
-    }
 }

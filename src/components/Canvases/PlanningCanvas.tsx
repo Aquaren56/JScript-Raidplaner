@@ -2,7 +2,7 @@ import '../../styling/canvases.css';
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { onDrop } from '../../utils/DragnDrop';
-import { SceneObject, isAttack, Attacks, Icons, Attack,isObjects, Objects, Topping, isTopping, isNonObject, isCircleAoe, Player, isPlayer } from '../../types';
+import { SceneObject, isAttack, Attack,isObjects, Objects, Topping, isTopping, isNonObject, isCircleAoe, Player, isPlayer } from '../../types';
 import { drawAoe, drawAttackAtParent } from '../../utils/drawUtils';
 import { calcDrawRotForSceneObject, isElementHit, calculateAngle, reverseOrderChildren } from '../../utils/maffs';
 import { useCounter } from '../../IdProvider';
@@ -29,9 +29,11 @@ export default function PlanningCanvas(props: any) {
         return players.sort((a: Player, b: Player) => {
             const aDist = Math.sqrt(Math.pow(a.drawRotPoint.x - point.x, 2) + Math.pow(a.drawRotPoint.y - point.y, 2));
             const bDist = Math.sqrt(Math.pow(b.drawRotPoint.x - point.x, 2) + Math.pow(b.drawRotPoint.y - point.y, 2));
-            const dist = aDist - bDist;
-            if(dist === 0) {
-              return Infinity;
+            if(aDist === 0) {
+                return Infinity
+            }
+            if(bDist === 0) {
+                return -Infinity
             }
             return aDist - bDist;
         });
@@ -94,9 +96,8 @@ export default function PlanningCanvas(props: any) {
     const drawAttack = useCallback((context: CanvasRenderingContext2D, attack: Attack) => {
       if(attack.parents.length > 0) {
         attack.parents.forEach((parent: Objects, index) => {
-            if(attack.target !== null) {
+            if(attack.target.length > 0) {
               const targetAngles = getTargetAngles(attack, index);
-              console.log(targetAngles);
               if(targetAngles) {
                 targetAngles.forEach((angles: Player[]) => {
                   angles.forEach((player: Player) => {
@@ -208,8 +209,7 @@ export default function PlanningCanvas(props: any) {
         if (canvas && context) {
           canvas.width = canvas.height = 1000;
           canvas.style.width = canvas.style.height = '500px';
-          context.fillStyle = 'transparent';
-          context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+          context.clearRect(0, 0, canvas.width, canvas.height);
           if (!children) return;
           const drawOrder = reverseOrderChildren(children);
           drawOrder.forEach((child: SceneObject) => {
@@ -247,6 +247,7 @@ export default function PlanningCanvas(props: any) {
       }, [children, drawAttack, drawTopping]);
       
 
+    
     useEffect(() => {
             draw();
     }, [draw])

@@ -239,7 +239,6 @@ const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
 export const initPlayerSetup = () => {
     const group1 = Object.keys(playerBaseIcons).map(((key, index) => {
         const player = getObjectPrefab(key as pIconKeys);
-        console.log(getRoleByKey(key as pIconKeys));
         player.id = index;
         player.drawRotPoint = { x: 140 + 73*index, y: 400 };
         player.pos = { x: 100 + 70*index, y: 400 };
@@ -251,7 +250,6 @@ export const initPlayerSetup = () => {
         player.id = index+5;
         player.drawRotPoint = { x: 140 + 73*index, y: 450 };
         player.pos = { x: 100 + 70*index, y: 450 };
-        console.log(player.role, key);
 
         return player;
     }))

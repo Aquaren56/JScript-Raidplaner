@@ -19,6 +19,7 @@ export default function AttackAttachments({ object, changingPlayer, addElements,
         attack = {
             ...attack,
             id: counter,
+            parents: [],
             pos: {x: object.pos.x, y: object.pos.y},
             drawRotPoint: {x: object.drawRotPoint.x, y: object.drawRotPoint.y},
             isChild: true,

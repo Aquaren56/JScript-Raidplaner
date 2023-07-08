@@ -3,6 +3,8 @@ import { Objects, SceneObject, isTopping } from '../../types';
 import Toppings from './Attachments/Toppings';
 import Attacks from './Attachments/Attacks';
 
+import '../../styling/property.css'
+
 interface PProps {
     player: Objects;
     changingPlayer: Function;
@@ -48,37 +50,34 @@ export default function ItemForm({ player, changingPlayer, allElements, addEleme
   return (
     <div>
         {player.identifier}
-      <div>
-        <label>X:</label>
-        <input type="number" name="x" value={player.drawRotPoint.x} onChange={handlePositionChange} />
-      </div>
-      <div>
-        <label>Y:</label>
-        <input type="number" name="y" value={player.drawRotPoint.y} onChange={handlePositionChange} />
-      </div>
-      <div>
-        <label>Size X:</label>
-        <input type="number" name="x" value={player.size.x} onChange={handleSizeChange} />
-      </div>
-      <div>
-        <label>Size Y:</label>
-        <input type="number" name="y" value={player.size.y} onChange={handleSizeChange} />
-      </div>
-      <div>
-        <label>Rotation:</label>
-        <input type="number" value={player.rotation} onChange={handleRotationChange} />
-      </div>
-      <div>
-        <label>Attachments</label>
-        <ul>
-          {player.topping ? <li>{player.topping.identifier}</li> : null}
-          {player.children.map((attachment, index) => (
-            <li key={index}>
-              {attachment.identifier}
-            </li>
-          ))}
-        </ul>
-      </div>
+        <div className="input-number-row-2">
+          <div className="input-number-con">
+              <label className="input-label">Pos X:</label>
+              <input className='input-number' type="number" name="x" step={5} value={player.drawRotPoint.x} onChange={handlePositionChange} />
+          </div>
+          <div className="input-number-con">
+              <label className="input-label">Pos Y:</label>
+              <input className='input-number' type="number" name="y" step={5} value={player.drawRotPoint.y} onChange={handlePositionChange} />
+          </div>
+        </div>
+        <div className="input-number-row-2">
+            <div className="input-number-con">
+                <label className="input-label">Height:</label>
+                <input className='input-number' type="number" name="y" step={10} value={player.size.y} onChange={handleSizeChange} />
+            </div>
+            <div className="input-number-con">
+                <label className="input-label">Width:</label>
+                <input className='input-number' type="number" name="x" step={10} value={player.size.x} onChange={handleSizeChange} />
+            </div>
+        </div>
+        <div className="input-number-row-1">
+          <div className="input-number-con">
+              <label className="input-label">Rotation:</label>
+              <input className='input-number single' type="number" step={15} value={player.rotation} onChange={handleRotationChange} />
+
+          </div>
+        </div>
+      <br />
       Add Attachment: 
       <br />
       <Toppings object={player} changingPlayer={changingPlayer} addElements={addElements} allElements={allElements }/>
@@ -86,3 +85,4 @@ export default function ItemForm({ player, changingPlayer, allElements, addEleme
     </div>
   );
 };
+

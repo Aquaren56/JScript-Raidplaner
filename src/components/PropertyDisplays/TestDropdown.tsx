@@ -1,15 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Objects, Attack, Topping } from '../../types';
 
-interface DropdownProps {
-  nonObject: Attack | Topping;
-  objects: Objects[];
-  updateValues: Function;
+interface DisplayedItems {
+    value: string;
+    label: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ objects, nonObject, updateValues }) => {
+interface DropdownProps {
+  selection: string[];
+  objects: DisplayedItems[];
+  updateValues: Function;
+  dropdownLabel: string;
+}
+
+const Dropdown: React.FC<DropdownProps> = ({ objects, selection, updateValues, dropdownLabel }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValues, setSelectedValues] = useState<string[]>(nonObject.parents.map((parent) => parent.id.toString()));
+  const [selectedValues, setSelectedValues] = useState<string[]>(selection);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleOutsideClick = (event: MouseEvent) => {
@@ -47,22 +52,31 @@ const Dropdown: React.FC<DropdownProps> = ({ objects, nonObject, updateValues })
   return (
     <div style={{ position: 'relative', minWidth: '100px' }} ref={dropdownRef}>
       <button onClick={toggleDropdown} style={{ marginBottom: '8px', backgroundColor: 'var(--dark)', color: 'var(--text-color)' }}>
-        Attack From: 
+        {dropdownLabel}
       </button>
       {isOpen && (
         <div style={{ position: 'absolute', top: '100%', left: 0, borderRadius: '4px', padding: '8px', zIndex: 100, backgroundColor: 'var(--dark)' }}>
-          {objects.map((object: Objects) => (
-            <label key={object.id} style={{ display: 'block', marginBottom: '4px' }}>
+          {objects.map((object: DisplayedItems) => (
+            <label key={object.value} style={{ display: 'block', marginBottom: '4px' }}>
               <input
                 type="checkbox"
-                checked={selectedValues.includes(object.id.toString())}
-                onChange={() => handleOptionClick(object.id.toString())}
+                checked={selectedValues.includes(object.value.toString())}
+                onChange={() => handleOptionClick(object.value.toString())}
               />
-              {object.identifier}
+              {object.label}
             </label>
           ))}
         </div>
       )}
+      {selectedValues.length > 0 && (
+        <div style={{ display: 'inline-flex', flexWrap: 'wrap' }}>
+            {selectedValues.map((value) => (
+                <div key={value} style={{ backgroundColor: 'var(--dark)', color: 'var(--text-color)', padding: '4px', marginRight: '4px', marginBottom: '4px' }}>
+                    {value}
+                </div>
+            ))}
+        </div>
+        )}
     </div>
   );
 };
