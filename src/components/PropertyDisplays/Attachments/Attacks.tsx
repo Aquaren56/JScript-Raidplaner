@@ -35,7 +35,6 @@ export default function AttackAttachments({
       [object],
       []
     );
-    console.log(attack);
     if (!attack) return;
     const newElements = allElements.push(attack);
     addElements(newElements);

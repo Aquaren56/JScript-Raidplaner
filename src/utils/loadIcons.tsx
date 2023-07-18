@@ -1,6 +1,5 @@
 import DragIcon from "../components/IconBar/DraggableIcon";
-import { DragIconType } from "./DragnDrop";
-import { Player, ObjectType, Players } from "../types";
+import { ObjectType, Players } from "../types";
 import "../styling/section.css";
 
 import healer from "../icons/player/Healer.png";
@@ -154,11 +153,9 @@ const getDraggableIcon = (key: pIconKeys | jIconKeys) => {
   return (
     <DragIcon
       key={key}
-      role={key}
-      type={DragIconType.Player}
+      type={ObjectType[key]}
       src={getIcon(key)}
       alt={getIconName(key)}
-      SceneObjectProps={getObjectPrefab(key)}
     />
   );
 };
@@ -217,61 +214,6 @@ export { getSortedDraggablePlayerIcons };
 export { playerBaseIcons };
 
 export default getBasePlayerIcons;
-
-const getObjectPrefab = (key: pIconKeys | jIconKeys) => {
-  const objectPrefab: Player = {
-    id: 0,
-    step: 0,
-    identifier: key,
-    drawRotPoint: { x: 0, y: 0 },
-    size: { x: 30, y: 30 },
-    drawSize: {
-      x: 30,
-      y: 30,
-    },
-    img: getIcon(key),
-    rotation: 0,
-    type: ObjectType.Player,
-    children: [],
-    role: getRoleByKey(key),
-  };
-  return objectPrefab;
-};
-
-export const initPlayerSetup = () => {
-  const group1 = Object.keys(playerBaseIcons).map((key, index) => {
-    const player = getObjectPrefab(key as pIconKeys);
-    player.id = index;
-    player.drawRotPoint = { x: 140 + 73 * index, y: 400 };
-
-    return player;
-  });
-  const group2 = Object.keys(playerBaseIcons)
-    .slice(0, 3)
-    .map((key, index) => {
-      const player = getObjectPrefab(key as jIconKeys);
-      player.id = index + 5;
-      player.drawRotPoint = { x: 140 + 73 * index, y: 450 };
-
-      return player;
-    });
-
-  return group1.concat(group2);
-};
-
-const getRoleByKey = (key: pIconKeys | jIconKeys) => {
-  if (getTankIconKeys().includes(key as tankKeys)) {
-    return "tank";
-  } else if (Object.keys(healerJobIcons).includes(key as jIconKeys)) {
-    return "healer";
-  } else if (Object.keys(meleeJobIcons).includes(key as jIconKeys)) {
-    return "dps";
-  } else if (Object.keys(rangedJobIcons).includes(key as jIconKeys)) {
-    return "dps";
-  } else {
-    return "dps";
-  }
-};
 
 export const initSetupPlayer = (step: number) => {
   const group1 = Object.keys(playerBaseIcons).map((key, index) => {

@@ -1,13 +1,8 @@
 import {
   AnObject,
-  Attacks,
-  SceneObject,
-  isAttack,
-  isConeAoe,
   isEnemys,
   isPlayers,
   isRectangle,
-  isRectangleAoe,
   isToppings,
   isWaymarks,
   isCone,
@@ -34,14 +29,6 @@ export const calcDistance = (a: Point, b: Point): number => {
   return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 };
 
-export const calcMiddlePoint = (
-  a: Point,
-  width: number,
-  height: number
-): Point => {
-  return { x: (a.x + a.x + width) / 2, y: (a.y + a.y + height) / 2 };
-};
-
 export function calculateAngle(A: Point, B: Point, Z: Point): number {
   const sideA = Math.sqrt((A.x - B.x) ** 2 + (A.y - B.y) ** 2);
   const sideB = Math.sqrt((Z.x - B.x) ** 2 + (Z.y - B.y) ** 2);
@@ -62,33 +49,6 @@ export function calculateAngle(A: Point, B: Point, Z: Point): number {
   return -angleDegrees;
 }
 
-export const calcBottomRotPoint = (
-  sceneObj: Attacks,
-  topLeft: Point
-): Point => {
-  return {
-    x: topLeft.x + sceneObj.size.x / 2,
-    y: topLeft.y + sceneObj.size.y,
-  };
-};
-
-//Point where its drawn and rotated from
-export const calcDrawRotForSceneObject = (
-  sceneObj: SceneObject,
-  topLeft: Point
-): Point => {
-  if (
-    isAttack(sceneObj) &&
-    (isConeAoe(sceneObj) || (isRectangleAoe(sceneObj) && sceneObj.rotAtBottom))
-  ) {
-    return calcBottomRotPoint(sceneObj, topLeft);
-  }
-  return {
-    x: topLeft.x + sceneObj.size.x / 2,
-    y: topLeft.y + sceneObj.size.y / 2,
-  };
-};
-
 export const calcPointForAngle = (
   angle: number,
   rotPoint: Point,
@@ -102,32 +62,6 @@ export const calcPointForAngle = (
     x: rotPoint.x + dist * Math.cos(rad),
     y: rotPoint.y + dist * Math.sin(rad),
   };
-};
-
-export const isElementHit = (mouse: Point, sceneObj: SceneObject): boolean => {
-  const adjustedPoint = calcPointForAngle(
-    (-sceneObj.rotation * Math.PI) / 180,
-    sceneObj.drawRotPoint,
-    mouse
-  );
-  if (
-    isAttack(sceneObj) &&
-    (isConeAoe(sceneObj) || (isRectangleAoe(sceneObj) && sceneObj.rotAtBottom))
-  ) {
-    return (
-      adjustedPoint.x >= sceneObj.drawRotPoint.x - sceneObj.size.x / 2 &&
-      adjustedPoint.x <= sceneObj.drawRotPoint.x + sceneObj.size.x / 2 &&
-      adjustedPoint.y <= sceneObj.drawRotPoint.y &&
-      adjustedPoint.y >= sceneObj.drawRotPoint.y - sceneObj.size.y
-    );
-  }
-
-  return (
-    adjustedPoint.x >= sceneObj.drawRotPoint.x - sceneObj.size.x / 2 &&
-    adjustedPoint.x <= sceneObj.drawRotPoint.x + sceneObj.size.x / 2 &&
-    adjustedPoint.y >= sceneObj.drawRotPoint.y - sceneObj.size.y / 2 &&
-    adjustedPoint.y <= sceneObj.drawRotPoint.y + sceneObj.size.y / 2
-  );
 };
 
 export const isStepItemHit = (
@@ -187,8 +121,8 @@ export const isStepItemHit = (
   return false;
 };
 
-export const orderChildren = (sceneChildren: SceneObject[]) => {
-  return sceneChildren.sort((a: SceneObject, b: SceneObject) => {
+export const orderChildren = (sceneChildren: AnObject[]) => {
+  return sceneChildren.sort((a: AnObject, b: AnObject) => {
     if (a.type < b.type) {
       return -1;
     } else if (a.type > b.type) {
@@ -199,8 +133,8 @@ export const orderChildren = (sceneChildren: SceneObject[]) => {
   });
 };
 
-export const reverseOrderChildren = (sceneChildren: SceneObject[]) => {
-  return sceneChildren.sort((a: SceneObject, b: SceneObject) => {
+export const reverseOrderChildren = (sceneChildren: AnObject[]) => {
+  return sceneChildren.sort((a: AnObject, b: AnObject) => {
     if (a.type > b.type) {
       return -1;
     } else if (a.type < b.type) {

@@ -1,35 +1,28 @@
-import { Icons, Attacks } from "../types";
+import { ObjectType } from "../types";
 
 export const onDrag = (
   event: React.DragEvent<HTMLDivElement>,
   offset: Point,
-  dragProps: Icons | Attacks
+  type: ObjectType
 ) => {
-  event.dataTransfer.setData("props", JSON.stringify(dragProps));
   event.dataTransfer.setData("offset", JSON.stringify(offset));
-  event.dataTransfer.setData("type", dragProps.identifier);
+  event.dataTransfer.setData("type", type);
 };
 
 export const onDrop = (
   event: React.DragEvent<HTMLCanvasElement>
-): [Icons | Attacks, Point] | undefined => {
+): [ObjectType, Point] | undefined => {
   event.preventDefault();
-  const data = event.dataTransfer.getData("props");
   const offsetString = event.dataTransfer.getData("offset");
+  const data = event.dataTransfer.getData("type");
 
   if (data && offsetString) {
-    const dragProps: Icons | Attacks = JSON.parse(data);
+    const type = data as ObjectType;
     const offset: Point = JSON.parse(offsetString) as Point;
-    return [dragProps, offset];
+    return [type, offset];
   }
 
   return undefined;
-};
-
-export const onDrop2 = (event: React.DragEvent<HTMLCanvasElement>): string => {
-  event.preventDefault();
-  const data = event.dataTransfer.getData("type");
-  return data;
 };
 
 export const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {

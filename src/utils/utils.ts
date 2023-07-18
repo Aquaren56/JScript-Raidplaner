@@ -104,7 +104,7 @@ export const createAnObject = (
     case "wayD": {
       return createWaymarkObject(type, id, pos);
     }
-    case "boss": {
+    case "Boss": {
       return createEnemy(step, type, id, pos);
     }
     case "cone": {
@@ -113,7 +113,7 @@ export const createAnObject = (
     case "circle": {
       return createCircle(step, id, pos, targets, parents);
     }
-    case "rectangle": {
+    case "rect": {
       return createRect(step, id, pos, targets, parents);
     }
     default:

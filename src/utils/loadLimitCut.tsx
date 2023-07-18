@@ -13,13 +13,7 @@ import dsrSquare from "../icons/toppings/playstation/dsrSquare.png";
 import dsrTriangle from "../icons/toppings/playstation/dsrTriangle.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
-import { DragIconType } from "./DragnDrop";
-import {
-  Topping,
-  ObjectType,
-  ToppingObject,
-  PossibleParentObject,
-} from "../types";
+import { ObjectType, ToppingObject, PossibleParentObject } from "../types";
 
 const lc = {
   lc1: lc1,
@@ -72,11 +66,9 @@ const getDraggableIcon = (key: Lc) => {
   return (
     <DragIcon
       key={key}
-      role={key}
-      type={DragIconType.Player}
+      type={ObjectType[key]}
       src={getLcIcon(key)}
       alt={getIconName(key)}
-      SceneObjectProps={getLcPrefab(key)}
     />
   );
 };
@@ -89,45 +81,6 @@ export const getDraggableLCIcons = (keys: Lc[]) => {
 
 export const getLcDragIcons = () => {
   return getDraggableLCIcons(Object.keys(lc) as Lc[]);
-};
-
-export const getLcPrefab = (key: Lc): Topping => {
-  const width = parseInt(key[2], 10) > 4 ? 60 : 30;
-  return {
-    id: 0,
-    step: 1,
-    identifier: key,
-    size: { x: width, y: 30 },
-    img: getLcIcon(key),
-    rotation: 0,
-    drawRotPoint: { x: 0, y: 0 },
-    type: ObjectType.Topping,
-    isChild: false,
-    parents: [],
-    drawOffset: { x: 0, y: 5 },
-  };
-};
-
-export const getDsrPrefab = (key: Dsr): Topping => {
-  return {
-    id: 0,
-    step: 1,
-    identifier: key,
-    size: { x: 30, y: 30 },
-    img: getDSRIcon(key),
-    rotation: 0,
-    drawRotPoint: { x: 0, y: 0 },
-    type: ObjectType.Topping,
-    isChild: false,
-    drawOffset: { x: 0, y: 5 },
-    parents: [],
-  };
-};
-
-export const getLcPrefabs = () => {
-  return Object.keys(lc).map((key) => {
-    return getLcPrefab(key as Lc);
-  });
 };
 
 export const createLcObject = (

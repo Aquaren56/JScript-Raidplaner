@@ -94,8 +94,8 @@ export default function ElementDisplay({
           style={{
             width: "0",
             height: "0",
-            borderLeft: "10px solid transparent",
-            borderRight: "10px solid transparent",
+            borderLeft: "15px solid transparent",
+            borderRight: "15px solid transparent",
             borderTop: "30px solid " + rgbToHex(element.color),
             borderRadius: "20px",
           }}
@@ -104,9 +104,14 @@ export default function ElementDisplay({
     } else if (isRectangle(element)) {
       const widthRatio =
         (30 * element[currentStep].size.x) / element[currentStep].size.y;
+      const margin = (30 - widthRatio) / 2 + 5;
       return (
         <div
           style={{
+            marginTop: "5",
+            marginBottom: "5",
+            marginLeft: margin + "px",
+            marginRight: margin + "px",
             backgroundColor: rgbToHex(element.color),
             height: "30px",
             width: widthRatio + "px",
