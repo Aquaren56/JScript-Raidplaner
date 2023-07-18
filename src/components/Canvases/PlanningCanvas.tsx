@@ -1,7 +1,13 @@
 import "../../styling/canvases.css";
 
-import React, { useRef, useEffect, useCallback, useState } from "react";
-import { onDrop } from "../../utils/DragnDrop";
+import React, {
+  useRef,
+  useEffect,
+  useCallback,
+  useState,
+  useContext,
+} from "react";
+import { onDrop, onDrop2 } from "../../utils/DragnDrop";
 import {
   SceneObject,
   isAttack,
@@ -14,17 +20,25 @@ import {
   isCircleAoe,
   Player,
   isPlayer,
+  AnObject,
+  isWaymarks,
 } from "../../types";
-import { drawAoe, drawAttackAtParent } from "../../utils/drawUtils";
+import {
+  drawAoe,
+  drawAttackAtParent,
+  drawAnObject,
+} from "../../utils/drawUtils";
 import {
   calcDrawRotForSceneObject,
   isElementHit,
+  isStepItemHit,
   calculateAngle,
   reverseOrderChildren,
   calcDistance,
 } from "../../utils/maffs";
-import { rotateCanvas } from "../../utils/utils";
+import { rotateCanvas, createAnObject } from "../../utils/utils";
 import { useCounter } from "../../IdProvider";
+import { StepContext } from "../../App";
 
 interface Point {
   x: number;
@@ -33,12 +47,28 @@ interface Point {
 
 export default function PlanningCanvas(props: any) {
   const { counter, incrementCounter } = useCounter();
+  const currentStep = useContext(StepContext);
 
-  const { children, setChildren, selection, setSelection, ...rest } = props;
+  const {
+    children,
+    setChildren,
+    selection,
+    setSelection,
+    allElements,
+    setAllElements,
+    selectedElement,
+    setSelectedElement,
+    ...rest
+  } = props;
 
   const [dragging2, setDragging2] = useState<Point | null>(null);
+  const [dragging, setDragging] = useState<Point | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const stepItems = allElements.filter((element: AnObject) => {
+    return element[currentStep] !== undefined || isWaymarks(element);
+  });
 
   const getPlayersByDistance = useCallback(
     (players: Player[], point: Point) => {
@@ -230,8 +260,19 @@ export default function PlanningCanvas(props: any) {
   }, [children, drawAttack, drawTopping]);
 
   useEffect(() => {
-    draw();
-  }, [draw]);
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        canvas.width = canvas.height = 1000;
+        canvas.style.width = canvas.style.height = "500px";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stepItems.forEach((item: AnObject) => {
+          drawAnObject(ctx, item, currentStep, stepItems);
+        });
+      }
+    }
+  }, [currentStep, stepItems]);
 
   const calcPosOnCanvas = (
     offset: Point,
@@ -251,12 +292,15 @@ export default function PlanningCanvas(props: any) {
     e.preventDefault();
 
     const result = onDrop(e);
-    if (result) {
+    const data = onDrop2(e);
+    if (result && data) {
       const newObj = { ...result[0] };
       const topLeft = calcPosOnCanvas(result[1], e);
+      const betterObj = createAnObject(data, currentStep, counter, topLeft);
       newObj.drawRotPoint = calcDrawRotForSceneObject(newObj, topLeft);
       newObj.id = counter;
       incrementCounter();
+      setAllElements([...allElements, betterObj]);
       setChildren([...children, newObj]);
     }
   };
@@ -282,6 +326,29 @@ export default function PlanningCanvas(props: any) {
       if (!childHit) {
         setSelection(null);
       }
+      let childHit2 = false;
+      stepItems.forEach((item: AnObject) => {
+        let offset;
+        if (isStepItemHit(pos, item, currentStep)) {
+          setSelectedElement(item);
+          if (isWaymarks(item)) {
+            offset = {
+              x: item.pos.x - e.clientX + rect.left,
+              y: item.pos.y - e.clientY + rect.top,
+            };
+          } else {
+            offset = {
+              x: item[currentStep].pos.x - e.clientX + rect.left,
+              y: item[currentStep].pos.y - e.clientY + rect.top,
+            };
+          }
+          setDragging(offset);
+          childHit2 = true;
+        }
+      });
+      if (!childHit2) {
+        setSelectedElement(null);
+      }
     }
   };
 
@@ -299,9 +366,32 @@ export default function PlanningCanvas(props: any) {
         setChildren(newChildren);
       }
     }
+
+    if (dragging) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        if (isWaymarks(selectedElement)) {
+          selectedElement.pos = {
+            x: pos.x + dragging.x,
+            y: pos.y + dragging.y,
+          };
+        } else {
+          selectedElement[currentStep].pos = {
+            x: pos.x + dragging.x,
+            y: pos.y + dragging.y,
+          };
+        }
+        const newElements = [...allElements];
+        setAllElements(newElements);
+      }
+    }
+
     const canvas = canvasRef.current;
 
     if (canvas) {
+      /*
       let childHit = false;
       const rect = canvas.getBoundingClientRect();
       const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
@@ -315,11 +405,26 @@ export default function PlanningCanvas(props: any) {
       if (!childHit) {
         document.body.style.cursor = "default";
       }
+      */
+
+      let childHit = false;
+      const rect = canvas.getBoundingClientRect();
+      const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      stepItems.forEach((item: AnObject) => {
+        if (isStepItemHit(pos, item, currentStep)) {
+          document.body.style.cursor = "crosshair";
+          childHit = true;
+        }
+      });
+      if (!childHit) {
+        document.body.style.cursor = "default";
+      }
     }
   };
 
   const onMouseUp = (e: React.MouseEvent) => {
     setDragging2(null);
+    setDragging(null);
   };
 
   const allowDrop = (e: React.DragEvent<HTMLCanvasElement>) => {

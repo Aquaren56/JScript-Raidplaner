@@ -1,55 +1,78 @@
-import { SceneObject, Topping, isObjects, Objects } from "../../types";
-import Dropdown from './YetAnotherDropdown';
+import {
+  ToppingObject,
+  PossibleParentObject,
+  isPossibleParent,
+  AnObject,
+} from "../../types";
+import Dropdown from "./YetAnotherDropdown";
 import { valuesToInt } from "../../utils/utils";
+import { StepContext } from "../../App";
+import { useContext } from "react";
 
 interface Props {
-    topping: Topping;
-    changingTopping: Function;
-    allElements: (SceneObject | Objects)[];
+  topping: ToppingObject;
+  changingTopping: Function;
+  allElements: AnObject[];
 }
 
-export default function AttackProperties(props: Props) {
+export default function AttackProperties({
+  topping,
+  changingTopping,
+  allElements,
+}: Props) {
+  const step = useContext(StepContext);
 
-    const getAllObjects = (): Objects[] => {
-        const arr = props.allElements.filter((element) => {
-            return isObjects(element);
-        })
-        
-        if(arr.every((element) => {
-            return isObjects(element);
-        })) {
-            return arr as Objects[];
-        }
-        return [];
-    }
+  const getAllObjects = (): PossibleParentObject[] => {
+    return allElements.filter((element) => {
+      return isPossibleParent(element);
+    }) as PossibleParentObject[];
+  };
 
-    const onNewTarget = (updatedValues: string[]) => {
-        const parents = getAllObjects().filter((object) => valuesToInt(updatedValues).includes(object.id));
-        props.topping.parents = parents;
-        props.changingTopping();
-    }
-        
-    return (
-        <div>
-             <div className="input-number-row-2">
-                <div className="input-number-con">
-                    <label className="input-label">Pos X:</label>
-                    <input className='input-number' step='10' type="number" value={props.topping.drawRotPoint.x} onChange={(e) => {
-                        props.topping.drawRotPoint.x = parseInt(e.target.value, 10);
-                        props.changingTopping();
-                    }} />
-                </div>
-                <div className="input-number-con">
-                    <label className="input-label">Pos Y:</label>
-                    <input className='input-number' step='10' type="number" value={props.topping.drawRotPoint.y} onChange={(e) => {
-                            props.topping.drawRotPoint.y = parseInt(e.target.value, 10);
-                            props.changingTopping();
-                        }} />
-                </div>
-            </div>
-            <br />
+  const onNewTarget = (updatedValues: string[]) => {
+    const parents = getAllObjects().filter((object) =>
+      valuesToInt(updatedValues).includes(object.id)
+    );
+    topping[step].parents = parents;
+    changingTopping();
+  };
 
-            <Dropdown objects={getAllObjects()} nonObject={props.topping} updateValues={onNewTarget}/>
+  return (
+    <div>
+      <div className="input-number-row-2">
+        <div className="input-number-con">
+          <label className="input-label">Pos X:</label>
+          <input
+            className="input-number"
+            step="10"
+            type="number"
+            value={topping[step].pos.x}
+            onChange={(e) => {
+              topping[step].pos.x = parseInt(e.target.value, 10);
+              changingTopping();
+            }}
+          />
         </div>
-    )
+        <div className="input-number-con">
+          <label className="input-label">Pos Y:</label>
+          <input
+            className="input-number"
+            step="10"
+            type="number"
+            value={topping[step].pos.y}
+            onChange={(e) => {
+              topping[step].pos.y = parseInt(e.target.value, 10);
+              changingTopping();
+            }}
+          />
+        </div>
+      </div>
+      <br />
+
+      <Dropdown
+        objects={getAllObjects()}
+        nonObject={topping}
+        updateValues={onNewTarget}
+      />
+    </div>
+  );
 }

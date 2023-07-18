@@ -14,7 +14,12 @@ import dsrTriangle from "../icons/toppings/playstation/dsrTriangle.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { DragIconType } from "./DragnDrop";
-import { Topping, ObjectType } from "../types";
+import {
+  Topping,
+  ObjectType,
+  ToppingObject,
+  PossibleParentObject,
+} from "../types";
 
 const lc = {
   lc1: lc1,
@@ -123,4 +128,47 @@ export const getLcPrefabs = () => {
   return Object.keys(lc).map((key) => {
     return getLcPrefab(key as Lc);
   });
+};
+
+export const createLcObject = (
+  key: Lc,
+  step: number,
+  id = 0,
+  parents = new Array<PossibleParentObject>(),
+  pos = { x: 250, y: 250 }
+): ToppingObject => {
+  const width = parseInt(key[2], 10) > 4 ? 64 : 32;
+  return {
+    id: id,
+    label: key,
+    size: { x: width, y: 32 },
+    img: getLcIcon(key),
+    type: ObjectType[key],
+    offset: { x: 0, y: 32 },
+    [step]: {
+      pos: { x: pos.x + width / 2, y: pos.y + 32 / 2 },
+      parents: parents,
+    },
+  };
+};
+
+export const createDsrObject = (
+  key: Dsr,
+  step: number,
+  id = 0,
+  parents = new Array<PossibleParentObject>(),
+  pos = { x: 250, y: 250 }
+): ToppingObject => {
+  return {
+    id: id,
+    label: key,
+    size: { x: 32, y: 32 },
+    img: getDSRIcon(key),
+    type: ObjectType[key],
+    offset: { x: 0, y: 32 },
+    [step]: {
+      pos: { x: pos.x + 32 / 2, y: pos.y + 32 / 2 },
+      parents: parents,
+    },
+  };
 };

@@ -11,12 +11,12 @@ import MapModel from "./models/MapModel";
 import ElementDisplay from "./components/ElementsDisplay/ElementDisplay";
 import ThemeToggle from "./components/ThemeToggle";
 
-import { initPlayerSetup } from "./utils/loadIcons";
-import { initBossSetup } from "./utils/loadBoss";
+import { initPlayerSetup, initSetupPlayer } from "./utils/loadIcons";
+import { initBossSetup, initSetupBoss } from "./utils/loadBoss";
 
 import { CounterProvider } from "./IdProvider";
 import StepList from "./components/StepBar/StepList";
-import { SceneObject } from "./types";
+import { SceneObject, AnObject } from "./types";
 
 export const StepContext = createContext<number>(0);
 
@@ -24,6 +24,10 @@ function App() {
   const [selectedStep, setSelectedStep] = useState(0);
   const [items, setItems] = useState(new Array<SceneObject>());
   const [selection, setSelection] = useState<SceneObject | null>(null);
+
+  const [allItems, setAllItems] = useState(new Array<AnObject>());
+  const [selectedElement, setSelectedElement] = useState<AnObject | null>(null);
+
   const [area, setArea] = useState(
     new MapModel({
       square: true,
@@ -39,12 +43,22 @@ function App() {
     const init = [...playerSetup, ...bossSetup];
     setItems([...init]);
     stepListRef.current.set(0, init);
+
+    const playerSetup2 = initSetupPlayer(0);
+    const bossSetup2 = initSetupBoss(0);
+    const init2 = [...playerSetup2, ...bossSetup2];
+    setAllItems([...init2]);
   }, []);
 
   const updateSelectedStep = (newStep: number) => {
     if (stepListRef.current.get(newStep) === undefined) {
       stepListRef.current.set(newStep, [...items]);
       setItems(stepListRef.current.get(newStep));
+      allItems.forEach((item) => {
+        if (item[selectedStep]) {
+          item[newStep] = { ...item[selectedStep] };
+        }
+      });
     } else {
       setItems(stepListRef.current.get(newStep));
     }
@@ -57,9 +71,14 @@ function App() {
     setItems(newItems);
   };
 
+  const updateAllItems = (newItems: AnObject[]) => {
+    setAllItems(newItems);
+  };
+
   const update = () => {
     const newItems = [...items];
     stepListRef.current.set(selectedStep, newItems);
+    setAllItems([...allItems]);
     setItems(newItems);
   };
 
@@ -89,21 +108,26 @@ function App() {
                 selection={selection}
                 setSelection={setSelection}
                 key={items}
+                allElements={allItems}
+                setAllElements={setAllItems}
+                selectedElement={selectedElement}
+                setSelectedElement={setSelectedElement}
               />
               <MapCanvas map={area} setMap={setArea} />
             </div>
           </div>
           <ElementDisplay
-            sceneChildren={items}
-            selection={selection}
-            setSelection={setSelection}
+            allElements={allItems}
+            setAllElements={setAllItems}
+            selectedElement={selectedElement}
+            setSelectedElement={setSelectedElement}
           />
           <PropertyDisplay
-            selection={selection === null ? area : selection}
-            changeSelection={update}
+            updateSelected={update}
             changeMap={setArea}
-            allElements={items}
-            addElements={updateItems}
+            allElements={allItems}
+            selectedElement={selectedElement === null ? area : selectedElement}
+            updateAllElements={updateAllItems}
           />
         </StepContext.Provider>
       </CounterProvider>

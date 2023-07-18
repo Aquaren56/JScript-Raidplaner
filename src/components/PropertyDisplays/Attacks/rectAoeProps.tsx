@@ -1,46 +1,76 @@
-import { RectangleAoe } from "../../../types";
+import { RectangleObject } from "../../../types";
+import { StepContext } from "../../../App";
+import { useContext } from "react";
 
-import '../../../styling/property.css'
-
+import "../../../styling/property.css";
 
 interface Props {
-    attack: RectangleAoe;
-    changeAttack: Function;
+  attack: RectangleObject;
+  changeAttack: Function;
 }
 
-export default function RectAoeProperties(props: Props) {
-    return (
-        <>
-            <div className="input-number-row-2">
-                <div className="input-number-con">
-                    <label className="input-label">Height:</label>
-                    <input className='input-number' type='number' value={props.attack.size.y} onChange={(e) => {
-                        props.attack.size.y = parseInt(e.target.value)
-                        props.changeAttack();
-                        }}
-                    />
-                </div>
-                <div className="input-number-con">
-                    <label className="input-label">Width:</label>
-                    <input className='input-number' type='number' value={props.attack.size.x} onChange={(e) => {
-                        props.attack.size.x = parseInt(e.target.value)
-                        props.changeAttack();
-                        }
-                    }/>
-                </div>
-            </div>
-            
-            <br />
-            PointOfRotationBottom: <input type='checkbox' checked={props.attack.rotAtBottom} onChange={(e) => {
-                props.attack.rotAtBottom = e.target.checked;
-                if(props.attack.rotAtBottom) {
-                    props.attack.drawRotPoint.y = props.attack.drawRotPoint.y + props.attack.size.y/2;
-                } else {
-                    props.attack.drawRotPoint.y = props.attack.drawRotPoint.y + props.attack.size.y/2;
-                }
-                props.changeAttack();
-            }} />
-        </>
-    )
-}
+export default function RectAoeProperties({ attack, changeAttack }: Props) {
+  const step = useContext(StepContext);
 
+  return (
+    <>
+      <div className="input-number-row-2">
+        <div className="input-number-con">
+          <label className="input-label">Height:</label>
+          <input
+            className="input-number"
+            type="number"
+            value={attack[step].size.y}
+            onChange={(e) => {
+              attack[step].size.y = parseInt(e.target.value);
+              changeAttack();
+            }}
+          />
+        </div>
+        <div className="input-number-con">
+          <label className="input-label">Width:</label>
+          <input
+            className="input-number"
+            type="number"
+            value={attack[step].size.x}
+            onChange={(e) => {
+              attack[step].size.x = parseInt(e.target.value);
+              changeAttack();
+            }}
+          />
+        </div>
+      </div>
+      <br />
+      <div className="input-number-row-1">
+        <div className="input-number-con">
+          <label className="input-label">Rotation:</label>
+          <input
+            className="input-number single"
+            step="15"
+            type="number"
+            value={attack[step].rotation}
+            onChange={(e) => {
+              attack[step].rotation = parseInt(e.target.value, 10);
+              changeAttack();
+            }}
+          />
+        </div>
+      </div>
+      <br />
+      RotPointInMiddle:{" "}
+      <input
+        type="checkbox"
+        checked={attack.rotAt === "middle"}
+        onChange={(e) => {
+          attack.rotAt = e.target.checked ? "middle" : "bottom";
+          if (attack.rotAt === "middle") {
+            attack[step].pos.y = attack[step].pos.y + attack[step].size.y / 2;
+          } else {
+            attack[step].pos.y = attack[step].pos.y + attack[step].size.y / 2;
+          }
+          changeAttack();
+        }}
+      />
+    </>
+  );
+}

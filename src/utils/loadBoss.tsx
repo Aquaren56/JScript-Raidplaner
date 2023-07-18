@@ -2,7 +2,7 @@ import boss from "../icons/enemy/herbert.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { DragIconType } from "./DragnDrop";
-import { Objects, ObjectType } from "../types";
+import { Objects, ObjectType, EnemyObject } from "../types";
 
 const closs = {
   boss,
@@ -94,4 +94,35 @@ export const getEnemyPrefab = (key: bossy) => {
     children: [],
   };
   return objectPrefab;
+};
+
+export const initSetupBoss = (step: number) => {
+  const bossman = Object.keys(closs).map((key) => {
+    const schmoss = createEnemy(step, key as bossy);
+    schmoss[step].pos = { x: 250, y: 100 };
+    schmoss.id = 8;
+
+    return schmoss;
+  });
+
+  return bossman;
+};
+
+export const createEnemy = (
+  step: number,
+  key: bossy,
+  id = 0,
+  pos = { x: 250, y: 250 }
+): EnemyObject => {
+  return {
+    id: id,
+    label: key,
+    img: getIcon(key),
+    type: ObjectType.Boss,
+    [step]: {
+      size: { x: 100, y: 100 },
+      pos: { x: pos.x + 100 / 2, y: pos.y + 100 / 2 },
+      rotation: 0,
+    },
+  };
 };

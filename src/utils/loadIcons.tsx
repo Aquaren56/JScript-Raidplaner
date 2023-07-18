@@ -1,6 +1,6 @@
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { DragIconType } from "./DragnDrop";
-import { Player, ObjectType } from "../types";
+import { Player, ObjectType, Players } from "../types";
 import "../styling/section.css";
 
 import healer from "../icons/player/Healer.png";
@@ -38,25 +38,25 @@ const playerBaseIcons = {
 };
 
 const playerJobIcons = {
-  nin,
-  drg,
-  sam,
-  mnk,
-  rpr,
-  brd,
-  mch,
-  dnc,
-  blm,
-  smn,
-  rdm,
-  whm,
-  sch,
-  ast,
-  sge,
-  gnb,
-  pld,
-  war,
-  drk,
+  nin: nin,
+  drg: drg,
+  sam: sam,
+  mnk: mnk,
+  brd: brd,
+  mch: mch,
+  dnc: dnc,
+  blm: blm,
+  smn: smn,
+  rdm: rdm,
+  whm: whm,
+  sch: sch,
+  ast: ast,
+  gnb: gnb,
+  pld: pld,
+  war: war,
+  drk: drk,
+  rpr: rpr,
+  sge: sge,
 };
 
 const meleeJobIcons = {
@@ -271,4 +271,44 @@ const getRoleByKey = (key: pIconKeys | jIconKeys) => {
   } else {
     return "dps";
   }
+};
+
+export const initSetupPlayer = (step: number) => {
+  const group1 = Object.keys(playerBaseIcons).map((key, index) => {
+    const player = createJob(step, key as pIconKeys);
+    player.id = index;
+    player[step].pos = { x: 140 + 73 * index, y: 400 };
+
+    return player;
+  });
+  const group2 = Object.keys(playerBaseIcons)
+    .slice(0, 3)
+    .map((key, index) => {
+      const player = createJob(step, key as jIconKeys);
+      player.id = index + 5;
+      player[step].pos = { x: 140 + 73 * index, y: 450 };
+
+      return player;
+    });
+
+  return group1.concat(group2);
+};
+
+export const createJob = (
+  step: number,
+  key: jIconKeys | pIconKeys,
+  id = 0,
+  pos = { x: 250, y: 250 }
+): Players => {
+  return {
+    id: id,
+    label: key,
+    img: getIcon(key),
+    type: ObjectType[key],
+    [step]: {
+      pos: { x: pos.x + 32 / 2, y: pos.y + 32 / 2 },
+      size: { x: 32, y: 32 },
+      rotation: 0,
+    },
+  };
 };

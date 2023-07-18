@@ -1,46 +1,71 @@
-import '../../styling/header.css';
-import MapModel from '../../models/MapModel';
-import { SceneObject, isAttack, isObjects, isTopping } from '../../types';
-import AttackProperties from './Attacks/base';
-import ToppingProperties from './ToppingProperties';
+import "../../styling/header.css";
+import MapModel from "../../models/MapModel";
+import {
+  isAttacks,
+  isToppings,
+  AnObject,
+  isPlayers,
+  isEnemys,
+} from "../../types";
+import AttackProperties from "./Attacks/base";
+import ToppingProperties from "./ToppingProperties";
 
-import MapProperties from './MapProperties';
-import PlayerProperties from './PlayerProperties';
-
+import MapProperties from "./MapProperties";
+import PlayerProperties from "./PlayerProperties";
 
 interface PropertyDisplayProps {
-    selection: SceneObject | MapModel;
-    changeSelection: Function;
-    changeMap: Function;
-    allElements: SceneObject[];
-    addElements: Function;
+  allElements: AnObject[];
+  changeMap: Function;
+  selectedElement: AnObject | MapModel;
+  updateSelected: Function;
+  updateAllElements: Function;
 }
 
-export default function PropertyDisplay(props: PropertyDisplayProps) {
-    const display = () => {
-        if(props.selection instanceof MapModel) {
-            return (
-                <MapProperties map={props.selection} changeMap={props.changeMap}/>
-                )
-            } else if (isObjects(props.selection)) {
-                return (
-                <PlayerProperties player={props.selection} changingPlayer={props.changeSelection} addElements={props.addElements} allElements={props.allElements}/>
-            )
-        } else if (isAttack(props.selection)) {
-            return (
-                <AttackProperties attack={props.selection} changingAttack={props.changeSelection} allElements={props.allElements}/>
-            )
-        } else if(isTopping(props.selection)) {
-            return (
-                <ToppingProperties topping={props.selection} changingTopping={props.changeSelection} allElements={props.allElements}/>
-            )
-        }
+export default function PropertyDisplay({
+  allElements,
+  changeMap,
+  selectedElement,
+  updateSelected,
+  updateAllElements,
+}: PropertyDisplayProps) {
+  const display = () => {
+    if (selectedElement instanceof MapModel) {
+      return <MapProperties map={selectedElement} changeMap={changeMap} />;
+    } else if (isPlayers(selectedElement) || isEnemys(selectedElement)) {
+      return (
+        <PlayerProperties
+          player={selectedElement}
+          changingPlayer={updateSelected}
+          addElements={updateAllElements}
+          allElements={allElements}
+        />
+      );
+    } else if (isAttacks(selectedElement)) {
+      return (
+        <AttackProperties
+          attack={selectedElement}
+          changingAttack={updateSelected}
+          allElements={allElements}
+        />
+      );
+    } else if (isToppings(selectedElement)) {
+      return (
+        <ToppingProperties
+          topping={selectedElement}
+          changingTopping={updateSelected}
+          allElements={allElements}
+        />
+      );
     }
+  };
 
-    return (
-        <div className='property-display' style={{ backgroundColor: 'var(--darkest)'}}>
-            PropertyDIsplay Right Side
-            {display()}
-        </div>
-    )
+  return (
+    <div
+      className="property-display"
+      style={{ backgroundColor: "var(--darkest)" }}
+    >
+      PropertyDIsplay Right Side
+      {display()}
+    </div>
+  );
 }

@@ -1,18 +1,20 @@
-import { Objects, Attacks, SceneObject } from "../../../types";
+import { PossibleParentObject, AnObject, ObjectType } from "../../../types";
 import {
-  getAllAttacks,
   getIcon,
-  AttackShape,
-  getAttack,
+  createAttack,
+  getAttacks,
+  AttackShapes,
 } from "../../../utils/loadAttacks";
 import Section from "../../section";
 import { useCounter } from "../../../IdProvider";
+import { StepContext } from "../../../App";
+import { useContext } from "react";
 
 interface Props {
-  object: Objects;
+  object: PossibleParentObject;
   changingPlayer: Function;
   addElements: Function;
-  allElements: SceneObject[];
+  allElements: AnObject[];
 }
 
 export default function AttackAttachments({
@@ -22,34 +24,50 @@ export default function AttackAttachments({
   allElements,
 }: Props) {
   const { counter, incrementCounter } = useCounter();
+  const currentStep = useContext(StepContext);
 
-  const configureAttack = (attack: Attacks) => {
-    attack = {
-      ...attack,
-      id: counter,
-      parents: [],
-      drawRotPoint: { x: object.drawRotPoint.x, y: object.drawRotPoint.y },
-      isChild: true,
-    };
-    incrementCounter();
-    attack.parents.push(object);
+  const configureAttack = (key: AttackShapes) => {
+    const attack = createAttack(
+      currentStep,
+      ObjectType[key],
+      counter,
+      { x: 250, y: 250 },
+      [object],
+      []
+    );
+    console.log(attack);
+    if (!attack) return;
     const newElements = allElements.push(attack);
     addElements(newElements);
+    incrementCounter();
     changingPlayer();
   };
 
+  const getAttackImg = (key: AttackShapes) => {
+    return (
+      <img
+        key={key}
+        src={getIcon(key)}
+        alt={key}
+        onClick={(e) => configureAttack(key)}
+      />
+    );
+  };
+
   const attackIcons = () => {
-    const icons = getAllAttacks();
+    const icons = getAttacks();
 
     return Object.keys(icons).map((key) => {
-      return (
-        <img
-          key={key}
-          src={getIcon(key as AttackShape)}
-          alt={key}
-          onClick={(e) => configureAttack(getAttack(key as AttackShape))}
-        />
-      );
+      switch (key) {
+        case "Cone":
+          return getAttackImg(key);
+        case "Rect":
+          return getAttackImg(key);
+        case "Circle":
+          return getAttackImg(key);
+        default:
+          return null;
+      }
     });
   };
 

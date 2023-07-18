@@ -1,20 +1,22 @@
 import {
   getAllLcIcons,
   Lc,
-  getLcPrefab,
   Dsr,
   getAllDsrIcons,
-  getDsrPrefab,
+  createLcObject,
+  createDsrObject,
 } from "../../../utils/loadLimitCut";
-import { Topping, Objects, SceneObject } from "../../../types";
+import { AnObject, ToppingObject, PossibleParentObject } from "../../../types";
 import Section from "../../section";
 import { useCounter } from "../../../IdProvider";
+import { StepContext } from "../../../App";
+import { useContext } from "react";
 
 interface Props {
-  object: Objects;
+  object: PossibleParentObject;
   changingPlayer: Function;
   addElements: Function;
-  allElements: SceneObject[];
+  allElements: AnObject[];
 }
 
 export default function Toppings({
@@ -24,19 +26,25 @@ export default function Toppings({
   allElements,
 }: Props) {
   const { counter, incrementCounter } = useCounter();
+  const currentStep = useContext(StepContext);
 
-  const configureTopping = (topping: Topping) => {
+  const configureTopping = (topping: ToppingObject) => {
     topping = {
       ...topping,
       id: counter,
-      drawRotPoint: {
-        x: object.drawRotPoint.x,
-        y: object.drawRotPoint.y - object.size.y - topping.drawOffset.y,
+    };
+
+    topping[currentStep] = {
+      pos: {
+        x: object[currentStep].pos.x,
+        y:
+          object[currentStep].pos.y -
+          object[currentStep].size.y -
+          topping.offset.y,
       },
-      isChild: true,
+      parents: [object],
     };
     incrementCounter();
-    topping.parents.push(object);
     const newElements = allElements.push(topping);
     addElements(newElements);
     changingPlayer();
@@ -50,7 +58,9 @@ export default function Toppings({
           key={key}
           src={icons[key as Lc]}
           alt={key}
-          onClick={(e) => configureTopping(getLcPrefab(key as Lc))}
+          onClick={(e) =>
+            configureTopping(createLcObject(key as Lc, currentStep))
+          }
         />
       );
     });
@@ -65,7 +75,9 @@ export default function Toppings({
           key={key}
           src={icons[key as Dsr]}
           alt={key}
-          onClick={(e) => configureTopping(getDsrPrefab(key as Dsr))}
+          onClick={(e) =>
+            configureTopping(createDsrObject(key as Dsr, currentStep))
+          }
         />
       );
     });

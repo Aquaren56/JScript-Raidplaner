@@ -1,15 +1,16 @@
-import React from "react";
-import { Objects, SceneObject, isTopping } from "../../types";
+import React, { useContext } from "react";
+import { Players, EnemyObject, AnObject } from "../../types";
 import Toppings from "./Attachments/Toppings";
 import Attacks from "./Attachments/Attacks";
+import { StepContext } from "../../App";
 
 import "../../styling/property.css";
 
 interface PProps {
-  player: Objects;
+  player: Players | EnemyObject;
   changingPlayer: Function;
   addElements: Function;
-  allElements: SceneObject[];
+  allElements: AnObject[];
 }
 
 export default function ItemForm({
@@ -18,48 +19,32 @@ export default function ItemForm({
   allElements,
   addElements,
 }: PProps) {
+  const step = useContext(StepContext);
+
   const handlePositionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    player.drawRotPoint = {
-      ...player.drawRotPoint,
+    player[step].pos = {
+      ...player[step].pos,
       [name]: parseInt(value, 10),
     };
-    updateChildren();
     changingPlayer();
   };
 
   const handleSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    player.size = { ...player.size, [name]: parseInt(value, 10) };
-    updateChildren();
+    player[step].size = { ...player[step].size, [name]: parseInt(value, 10) };
     changingPlayer();
   };
 
   const handleRotationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(event.target.value, 10);
-    player.rotation = value;
+    player[step].rotation = value;
     changingPlayer();
-  };
-
-  const updateChildren = () => {
-    player.children.forEach((child) => {
-      if (isTopping(child)) {
-        child.drawRotPoint = {
-          x: player.drawRotPoint.x,
-          y: player.drawRotPoint.y - player.size.y - child.drawOffset.y,
-        };
-      } else {
-        child.drawRotPoint = {
-          x: player.drawRotPoint.x,
-          y: player.drawRotPoint.y - player.size.y,
-        };
-      }
-    });
   };
 
   return (
     <div>
-      {player.identifier}
+      {player.label}
       <div className="input-number-row-2">
         <div className="input-number-con">
           <label className="input-label">Pos X:</label>
@@ -68,7 +53,7 @@ export default function ItemForm({
             type="number"
             name="x"
             step={5}
-            value={player.drawRotPoint.x}
+            value={player[step].pos.x}
             onChange={handlePositionChange}
           />
         </div>
@@ -79,7 +64,7 @@ export default function ItemForm({
             type="number"
             name="y"
             step={5}
-            value={player.drawRotPoint.y}
+            value={player[step].pos.y}
             onChange={handlePositionChange}
           />
         </div>
@@ -92,7 +77,7 @@ export default function ItemForm({
             type="number"
             name="y"
             step={10}
-            value={player.size.y}
+            value={player[step].size.y}
             onChange={handleSizeChange}
           />
         </div>
@@ -103,7 +88,7 @@ export default function ItemForm({
             type="number"
             name="x"
             step={10}
-            value={player.size.x}
+            value={player[step].size.x}
             onChange={handleSizeChange}
           />
         </div>
@@ -115,7 +100,7 @@ export default function ItemForm({
             className="input-number single"
             type="number"
             step={15}
-            value={player.rotation}
+            value={player[step].rotation}
             onChange={handleRotationChange}
           />
         </div>

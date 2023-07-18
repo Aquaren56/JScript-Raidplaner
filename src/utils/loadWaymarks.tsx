@@ -9,7 +9,7 @@ import Way4 from "../icons/waymarks/way_4.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { DragIconType } from "./DragnDrop";
-import { Waymark, ObjectType } from "../types";
+import { Waymark, ObjectType, WaymarkObject } from "../types";
 
 const waymarkNumbers = {
   way1: Way1,
@@ -96,5 +96,21 @@ const getWaymarkPrefab = (key: WaymarkIcon): Waymark => {
     shape,
     type: ObjectType.Waymark,
     drawSize: { x: 30, y: 30 },
+  };
+};
+
+export const createWaymarkObject = (
+  key: WaymarkIcon,
+  id = 0,
+  pos = { x: 250, y: 250 }
+): WaymarkObject => {
+  return {
+    id,
+    label: key,
+    size: { x: 32, y: 32 },
+    pos: { x: pos.x + 32 / 2, y: pos.y + 32 / 2 },
+    img: getIcon(key),
+    shape: key.includes("way") ? "square" : "circle",
+    type: ObjectType[key],
   };
 };

@@ -1,9 +1,17 @@
 import {
+  AnObject,
   Attacks,
   SceneObject,
   isAttack,
   isConeAoe,
+  isEnemys,
+  isPlayers,
+  isRectangle,
   isRectangleAoe,
+  isToppings,
+  isWaymarks,
+  isCone,
+  isCircle,
 } from "../types";
 
 interface Point {
@@ -120,6 +128,63 @@ export const isElementHit = (mouse: Point, sceneObj: SceneObject): boolean => {
     adjustedPoint.y >= sceneObj.drawRotPoint.y - sceneObj.size.y / 2 &&
     adjustedPoint.y <= sceneObj.drawRotPoint.y + sceneObj.size.y / 2
   );
+};
+
+export const isStepItemHit = (
+  mouse: Point,
+  obj: AnObject,
+  step: number
+): boolean => {
+  const rot =
+    isWaymarks(obj) || isToppings(obj) || isCircle(obj)
+      ? 0
+      : obj[step].rotation;
+  const pos = isWaymarks(obj) ? obj.pos : obj[step].pos;
+  const adjustedPoint = calcPointForAngle((rot * Math.PI) / 180, pos, mouse);
+  if (isToppings(obj)) {
+    return (
+      adjustedPoint.x >= obj[step].pos.x - obj.size.x / 2 &&
+      adjustedPoint.x <= obj[step].pos.x + obj.size.x / 2 &&
+      adjustedPoint.y >= obj[step].pos.y - obj.size.y / 2 &&
+      adjustedPoint.y <= obj[step].pos.y + obj.size.y / 2
+    );
+  } else if (isWaymarks(obj)) {
+    return (
+      adjustedPoint.x >= obj.pos.x - obj.size.x / 2 &&
+      adjustedPoint.x <= obj.pos.x + obj.size.x / 2 &&
+      adjustedPoint.y >= obj.pos.y - obj.size.y / 2 &&
+      adjustedPoint.y <= obj.pos.y + obj.size.y / 2
+    );
+  } else if (isPlayers(obj) || isRectangle(obj) || isEnemys(obj)) {
+    const values = obj[step];
+    return (
+      adjustedPoint.x >= values.pos.x - values.size.x / 2 &&
+      adjustedPoint.x <= values.pos.x + values.size.x / 2 &&
+      adjustedPoint.y >= values.pos.y - values.size.y / 2 &&
+      adjustedPoint.y <= values.pos.y + values.size.y / 2
+    );
+  } else if (isCone(obj)) {
+    const angle = (obj.angle * Math.PI) / 180;
+    const mouseAngle =
+      calculateAngle(obj[step].pos, adjustedPoint, {
+        x: obj[step].pos.x,
+        y: obj[step].pos.y + 1,
+      }) + 360;
+    const startAngle = (360 - obj.angle / 2) * (Math.PI / 180);
+    const endAngle = angle / 2;
+    const mouseAngleRad = mouseAngle * (Math.PI / 180);
+
+    return (
+      calcDistance(adjustedPoint, obj[step].pos) <= obj[step].radius &&
+      ((mouseAngleRad >= startAngle &&
+        mouseAngleRad <= endAngle + Math.PI * 2) ||
+        (mouseAngleRad >= startAngle - Math.PI * 2 &&
+          mouseAngleRad <= endAngle))
+    );
+  } else if (isCircle(obj)) {
+    return calcDistance(adjustedPoint, obj[step].pos) <= obj[step].radius;
+  }
+  return false;
 };
 
 export const orderChildren = (sceneChildren: SceneObject[]) => {
