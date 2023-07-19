@@ -83,13 +83,35 @@ export const createWaymarkObject = (
   id = 0,
   pos = { x: 250, y: 250 }
 ): WaymarkObject => {
+  const regex = /way[1234]/;
   return {
     id,
     label: key,
     size: { x: 32, y: 32 },
     pos: { x: pos.x + 32 / 2, y: pos.y + 32 / 2 },
     img: getIcon(key),
-    shape: key.includes("way") ? "square" : "circle",
+    alpha: 1,
+    color: getWaymarkColor(key),
+    shape: regex.test(key) ? "square" : "circle",
     type: ObjectType[key],
   };
+};
+
+const getWaymarkColor = (key: WaymarkIcon) => {
+  switch (key) {
+    case "way1":
+    case "wayA":
+      return "red";
+    case "way2":
+    case "wayB":
+      return "yellow";
+    case "way3":
+    case "wayC":
+      return "blue";
+    case "way4":
+    case "wayD":
+      return "purple";
+    default:
+      return "white";
+  }
 };

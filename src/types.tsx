@@ -133,7 +133,8 @@ export interface WaymarkObject
   extends baseObject,
     imageObject,
     resizableObject,
-    movableObject {
+    movableObject,
+    colorableObject {
   shape: "square" | "circle";
   type:
     | ObjectType.way1

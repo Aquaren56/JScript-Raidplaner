@@ -1,5 +1,5 @@
 import DragIcon from "../components/IconBar/DraggableIcon";
-import { ObjectType, Players } from "../types";
+import { ObjectType, Players, isTanks, isHealers } from "../types";
 import "../styling/section.css";
 
 import healer from "../icons/player/Healer.png";
@@ -79,6 +79,12 @@ const casterJobIcons = {
   blm,
   smn,
   rdm,
+};
+
+const dpsJobIcons = {
+  ...meleeJobIcons,
+  ...rangedJobIcons,
+  ...casterJobIcons,
 };
 
 const healerJobIcons = {
@@ -234,6 +240,17 @@ export const initSetupPlayer = (step: number) => {
     });
 
   return group1.concat(group2);
+};
+
+export const getIconsByRole = (player: Players) => {
+  if (isTanks(player)) {
+    return tankJobIcons;
+  } else if (isHealers(player)) {
+    return healerJobIcons;
+  } else {
+    // isDps(player)
+    return dpsJobIcons;
+  }
 };
 
 export const createJob = (

@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
-import { Players, EnemyObject, AnObject } from "../../types";
+import { Players, EnemyObject, AnObject, isPlayers } from "../../types";
 import Toppings from "./Attachments/Toppings";
 import Attacks from "./Attachments/Attacks";
+import ChangePlayerIcons from "./ChangePlayerIcons";
 import { StepContext } from "../../App";
 
 import "../../styling/property.css";
@@ -120,6 +121,12 @@ export default function ItemForm({
         addElements={addElements}
         allElements={allElements}
       />
+      <br />
+      Change Job:
+      <br />
+      {isPlayers(player) && (
+        <ChangePlayerIcons player={player} changingPlayer={changingPlayer} />
+      )}
     </div>
   );
 }

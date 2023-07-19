@@ -35,7 +35,6 @@ export default function PlanningCanvas(props: any) {
   const [dragging, setDragging] = useState<Point | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const stepItems = allElements.filter((element: AnObject) => {
     return element[currentStep] !== undefined || isWaymarks(element);
   });
@@ -53,7 +52,7 @@ export default function PlanningCanvas(props: any) {
         });
       }
     }
-  }, [currentStep, stepItems]);
+  }, [currentStep, allElements]);
 
   const calcPosOnCanvas = (
     offset: Point,

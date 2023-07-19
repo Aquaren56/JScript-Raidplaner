@@ -111,6 +111,28 @@ export const drawWaymark = (
     obj.size.x,
     obj.size.y
   );
+
+  if (obj.shape === "circle") {
+    ctx.setLineDash([5, 5]);
+
+    ctx.beginPath();
+    ctx.arc(obj.pos.x, obj.pos.y, obj.size.x / 2 + 3, 0, 2 * Math.PI);
+    ctx.strokeStyle = obj.color;
+    ctx.stroke();
+  } else if (obj.shape === "square") {
+    ctx.setLineDash([5, 5]);
+
+    ctx.beginPath();
+    ctx.rect(
+      obj.pos.x - obj.size.x / 2,
+      obj.pos.y - obj.size.y / 2,
+      obj.size.x + 3,
+      obj.size.y + 3
+    );
+    ctx.strokeStyle = obj.color;
+    ctx.stroke();
+  }
+
   ctx.restore();
 };
 

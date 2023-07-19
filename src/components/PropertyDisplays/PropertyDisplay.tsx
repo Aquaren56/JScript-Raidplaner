@@ -13,6 +13,9 @@ import ToppingProperties from "./ToppingProperties";
 import MapProperties from "./MapProperties";
 import PlayerProperties from "./PlayerProperties";
 
+import { StepContext } from "../../App";
+import { useContext } from "react";
+
 interface PropertyDisplayProps {
   allElements: AnObject[];
   changeMap: Function;
@@ -28,10 +31,15 @@ export default function PropertyDisplay({
   updateSelected,
   updateAllElements,
 }: PropertyDisplayProps) {
+  const step = useContext(StepContext);
+
   const display = () => {
     if (selectedElement instanceof MapModel) {
       return <MapProperties map={selectedElement} changeMap={changeMap} />;
-    } else if (isPlayers(selectedElement) || isEnemys(selectedElement)) {
+    } else if (
+      (isPlayers(selectedElement) || isEnemys(selectedElement)) &&
+      selectedElement[step]
+    ) {
       return (
         <PlayerProperties
           player={selectedElement}
@@ -40,7 +48,7 @@ export default function PropertyDisplay({
           allElements={allElements}
         />
       );
-    } else if (isAttacks(selectedElement)) {
+    } else if (isAttacks(selectedElement) && selectedElement[step]) {
       return (
         <AttackProperties
           attack={selectedElement}
@@ -48,7 +56,7 @@ export default function PropertyDisplay({
           allElements={allElements}
         />
       );
-    } else if (isToppings(selectedElement)) {
+    } else if (isToppings(selectedElement) && selectedElement[step]) {
       return (
         <ToppingProperties
           topping={selectedElement}
@@ -59,12 +67,43 @@ export default function PropertyDisplay({
     }
   };
 
+  const makeLabel = () => {
+    if (!(selectedElement instanceof MapModel)) {
+      return (
+        <div className="input-number-row-1">
+          <div className="input-number-con">
+            <label className="input-label">Name:</label>
+            <input
+              className="input-text"
+              style={{
+                backgroundColor: "var(--dark)",
+                color: "white",
+                border: "white 1px solid",
+                borderRadius: "2px",
+                padding: "2px",
+              }}
+              step="15"
+              type="text"
+              value={selectedElement.label}
+              onChange={(e) => {
+                selectedElement.label = e.target.value;
+                updateSelected();
+              }}
+            />
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div
       className="property-display"
       style={{ backgroundColor: "var(--darkest)" }}
     >
       PropertyDIsplay Right Side
+      {makeLabel()}
       {display()}
     </div>
   );

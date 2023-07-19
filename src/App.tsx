@@ -16,16 +16,14 @@ import { initSetupBoss } from "./utils/loadBoss";
 
 import { CounterProvider } from "./IdProvider";
 import StepList from "./components/StepBar/StepList";
-import { AnObject } from "./types";
+import { AnObject, isAttacks, isToppings } from "./types";
 
 export const StepContext = createContext<number>(0);
 
 function App() {
   const [selectedStep, setSelectedStep] = useState(0);
-
   const [allItems, setAllItems] = useState(new Array<AnObject>());
   const [selectedElement, setSelectedElement] = useState<AnObject | null>(null);
-
   const [area, setArea] = useState(
     new MapModel({
       square: true,
@@ -60,6 +58,88 @@ function App() {
     setAllItems([...allItems]);
   };
 
+  const searchAndDestroyAtCurrentStep = (element: AnObject) => {
+    allItems.forEach((item) => {
+      if (isAttacks(item) || isToppings(item)) {
+        if (item[selectedStep]) {
+          if (item[selectedStep].parents.length > 0) {
+            item[selectedStep].parents.forEach((parent, index) => {
+              if (parent.id === element.id) {
+                item[selectedStep].parents.splice(index, 1);
+              }
+            });
+          }
+        }
+      }
+      if (isAttacks(item)) {
+        if (item[selectedStep]) {
+          if (item[selectedStep].targets.length > 0) {
+            item[selectedStep].targets.forEach((child, index) => {
+              if (!(typeof child === "number" || typeof child === "string")) {
+                if (child.id === element.id) {
+                  item[selectedStep].targets.splice(index, 1);
+                }
+              }
+            });
+          }
+        }
+      }
+    });
+  };
+
+  const searchAndDestroy = (element: AnObject) => {
+    allItems.forEach((item) => {
+      if (isAttacks(item) || isToppings(item)) {
+        Object.keys(item).forEach((key) => {
+          const keyNum = parseInt(key);
+          if (!isNaN(keyNum)) {
+            console.log(key);
+            if (item[keyNum].parents.length > 0) {
+              item[keyNum].parents.forEach((parent: any, index: any) => {
+                if (parent.id === element.id) {
+                  item[keyNum].parents.splice(index, 1);
+                }
+              });
+            }
+          }
+        });
+      }
+      if (isAttacks(item)) {
+        Object.keys(item).forEach((key) => {
+          const keyNum = parseInt(key);
+          if (!isNaN(keyNum)) {
+            if (item[keyNum].targets.length > 0) {
+              item[keyNum].targets.forEach((child: any, index: any) => {
+                if (!(typeof child === "number" || typeof child === "string")) {
+                  if (child.id === element.id) {
+                    item[keyNum].targets.splice(index, 1);
+                  }
+                }
+              });
+            }
+          }
+        });
+      }
+    });
+  };
+
+  const deleteElementEntirely = (element: AnObject) => {
+    const index = allItems.indexOf(element);
+    if (index > -1) {
+      allItems.splice(index, 1);
+    }
+    searchAndDestroy(element);
+    setSelectedElement(null);
+    updateAllItems([...allItems]);
+  };
+
+  const deleteElementFromStep = (element: AnObject) => {
+    delete element[selectedStep];
+    searchAndDestroyAtCurrentStep(element);
+    setSelectedElement(null);
+    updateAllItems([...allItems]);
+  };
+
   return (
     <div
       className="App"
@@ -91,9 +171,10 @@ function App() {
           </div>
           <ElementDisplay
             allElements={allItems}
-            setAllElements={setAllItems}
             selectedElement={selectedElement}
             setSelectedElement={setSelectedElement}
+            deleteElementEntirely={deleteElementEntirely}
+            deleteFromStep={deleteElementFromStep}
           />
           <PropertyDisplay
             updateSelected={update}
