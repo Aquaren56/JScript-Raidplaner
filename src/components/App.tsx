@@ -1,22 +1,23 @@
 import "./styling/header.css";
 
 import { useState, createContext, useEffect } from "react";
+import React from "react";
 
-import Header from "./components/Header";
-import IconBar from "./components/IconBar/IconBar";
-import PropertyDisplay from "./components/PropertyDisplays/PropertyDisplay";
-import PlanningCanvas from "./components/Canvases/PlanningCanvas";
-import MapCanvas from "./components/Canvases/MapCanvas";
-import MapModel from "./models/MapModel";
-import ElementDisplay from "./components/ElementsDisplay/ElementDisplay";
-import ThemeToggle from "./components/ThemeToggle";
+import Header from "./Header";
+import IconBar from "./IconBar/IconBar";
+import PropertyDisplay from "./PropertyDisplays/PropertyDisplay";
+import PlanningCanvas from "./Canvases/PlanningCanvas";
+import MapCanvas from "./Canvases/MapCanvas";
+import MapModel from "../models/MapModel";
+import ElementDisplay from "./ElementsDisplay/ElementDisplay";
+import ThemeToggle from "./ThemeToggle";
 
-import { initSetupPlayer } from "./utils/loadIcons";
-import { initSetupBoss } from "./utils/loadBoss";
+import { initSetupPlayer } from "../utils/loadIcons";
+import { initSetupBoss } from "../utils/loadBoss";
 
-import { CounterProvider } from "./IdProvider";
-import StepList from "./components/StepBar/StepList";
-import { AnObject, isAttacks, isToppings } from "./types";
+import { CounterProvider } from "../IdProvider";
+import StepList from "./StepBar/StepList";
+import { AnObject, isAttacks, isToppings } from "../types";
 
 export const StepContext = createContext<number>(0);
 

@@ -14,6 +14,7 @@ import {
 } from "../types";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
+import React from "react";
 
 const getIconName = (key: AttackShapes) => {
   return key;
