@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { AnObject, isCircle, isCone, isRectangle } from "../../types";
-import { StepContext } from "../../App";
-import { useContext } from "react";
 
 import "../../styling/element-display.css";
 
@@ -22,7 +20,6 @@ export default function DisplayType({
   deleteElement,
   deleteFromStep,
 }: DisplayTypeProps) {
-  const currentStep = useContext(StepContext);
   const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpansion = () => {
@@ -69,8 +66,7 @@ export default function DisplayType({
         ></div>
       );
     } else if (isRectangle(element)) {
-      const widthRatio =
-        (30 * element[currentStep].size.x) / element[currentStep].size.y;
+      const widthRatio = (30 * element.size.x) / element.size.y;
       const margin = (30 - widthRatio) / 2 + 5;
       return (
         <div

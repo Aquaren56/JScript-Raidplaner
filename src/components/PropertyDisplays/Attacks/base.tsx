@@ -126,6 +126,9 @@ export default function AttackProperties({
       valuesToInt(updatedValues).includes(object.id)
     );
     attack[step].parents = parents;
+    if (parents.length === 0) {
+      attack[step].targets = [];
+    }
     changingAttack();
   };
 
@@ -279,12 +282,14 @@ export default function AttackProperties({
         updateValues={onNewSource}
         dropdownLabel="Source: "
       />
-      <Dd2
-        objects={getTargetValues()}
-        selection={mapTargetsToString()}
-        updateValues={onNewTarget}
-        dropdownLabel="Target: "
-      />
+      {attack[step].parents.length > 0 && (
+        <Dd2
+          objects={getTargetValues()}
+          selection={mapTargetsToString()}
+          updateValues={onNewTarget}
+          dropdownLabel="Target: "
+        />
+      )}
     </div>
   );
 }

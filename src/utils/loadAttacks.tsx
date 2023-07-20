@@ -58,9 +58,9 @@ export const createCone = (
     label: "coneAoe",
     type: ObjectType.Cone,
     angle: 70,
+    radius: 250,
     [step]: {
       rotation: 0,
-      radius: 250,
       pos: { x: pos.x, y: pos.y },
       targets: targets,
       parents: parents,
@@ -80,9 +80,9 @@ export const createRect = (
     label: "rectAoe",
     type: ObjectType.Rect,
     rotAt: "middle",
+    size: { x: 150, y: 500 },
     [step]: {
       rotation: 0,
-      size: { x: 150, y: 500 },
       pos: { x: pos.x, y: pos.y },
       targets: targets,
       parents: parents,
@@ -101,9 +101,9 @@ export const createCircle = (
     ...createAttackObject(id),
     label: "circleAoe",
     type: ObjectType.Circle,
+    radius: 100,
     [step]: {
       rotation: 0,
-      radius: 100,
       pos: { x: pos.x, y: pos.y },
       targets: targets,
       parents: parents,

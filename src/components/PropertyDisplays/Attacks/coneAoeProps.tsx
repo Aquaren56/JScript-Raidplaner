@@ -32,9 +32,9 @@ export default function ConeAoeProperties({ attack, changeAttack }: Props) {
             className="input-number"
             type="number"
             step={10}
-            value={attack[step].radius}
+            value={attack.radius}
             onChange={(e) => {
-              attack[step].radius = parseInt(e.target.value);
+              attack.radius = parseInt(e.target.value);
               changeAttack();
             }}
           />

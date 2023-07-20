@@ -1,6 +1,4 @@
 import { CircleObject } from "../../../types";
-import { StepContext } from "../../../App";
-import { useContext } from "react";
 
 interface Props {
   attack: CircleObject;
@@ -8,7 +6,6 @@ interface Props {
 }
 
 export default function CircleAoeProperties({ attack, changeAttack }: Props) {
-  const step = useContext(StepContext);
   return (
     <>
       <div className="input-number-row-1">
@@ -18,9 +15,9 @@ export default function CircleAoeProperties({ attack, changeAttack }: Props) {
             className="input-number single"
             step="15"
             type="number"
-            value={attack[step].radius}
+            value={attack.radius}
             onChange={(e) => {
-              attack[step].radius = parseInt(e.target.value);
+              attack.radius = parseInt(e.target.value);
               changeAttack();
             }}
           />

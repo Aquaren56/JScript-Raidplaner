@@ -9,7 +9,7 @@ import {
   isToppings,
   isWaymarks,
 } from "../../types";
-import { drawAnObject } from "../../utils/drawUtils";
+import { drawAnObject, drawElementSelection } from "../../utils/drawUtils";
 import { isStepItemHit } from "../../utils/maffs";
 import { createAnObject } from "../../utils/utils";
 import { useCounter } from "../../IdProvider";
@@ -50,9 +50,12 @@ export default function PlanningCanvas(props: any) {
         stepItems.forEach((item: AnObject) => {
           drawAnObject(ctx, item, currentStep, stepItems);
         });
+        if (selectedElement) {
+          drawElementSelection(ctx, selectedElement, currentStep);
+        }
       }
     }
-  }, [currentStep, allElements]);
+  }, [currentStep, stepItems, selectedElement]);
 
   const calcPosOnCanvas = (
     offset: Point,
@@ -111,8 +114,8 @@ export default function PlanningCanvas(props: any) {
             setDragging(offset);
             childHit2 = true;
           } else if (
-            isAttacks(item) ||
-            (isToppings(item) && item[currentStep].parents.length === 0)
+            (isAttacks(item) || isToppings(item)) &&
+            item[currentStep].parents.length === 0
           ) {
             setSelectedElement(item);
             offset = {

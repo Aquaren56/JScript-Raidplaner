@@ -154,7 +154,7 @@ export const drawCircles = (
             ctx.arc(
               target[step].pos.x,
               target[step].pos.y,
-              obj[step].radius,
+              obj.radius,
               0,
               2 * Math.PI
             );
@@ -167,7 +167,7 @@ export const drawCircles = (
         ctx.arc(
           parent[step].pos.x,
           parent[step].pos.y,
-          obj[step].radius,
+          obj.radius,
           0,
           2 * Math.PI
         );
@@ -177,7 +177,7 @@ export const drawCircles = (
     });
   } else {
     ctx.beginPath();
-    ctx.arc(obj[step].pos.x, obj[step].pos.y, obj[step].radius, 0, 2 * Math.PI);
+    ctx.arc(obj[step].pos.x, obj[step].pos.y, obj.radius, 0, 2 * Math.PI);
     ctx.fillStyle = `rgba(${obj.color}, ${obj.alpha})`;
     ctx.fill();
   }
@@ -237,20 +237,20 @@ const drawRectFunc = (
   if (obj.rotAt === "middle") {
     ctx.beginPath();
     ctx.rect(
-      drawPos.x - obj[step].size.x / 2,
-      drawPos.y - obj[step].size.y / 2,
-      obj[step].size.x,
-      obj[step].size.y
+      drawPos.x - obj.size.x / 2,
+      drawPos.y - obj.size.y / 2,
+      obj.size.x,
+      obj.size.y
     );
     ctx.fillStyle = `rgba(${obj.color}, ${obj.alpha})`;
     ctx.fill();
   } else if (obj.rotAt === "bottom") {
     ctx.beginPath();
     ctx.rect(
-      drawPos.x - obj[step].size.x / 2,
-      drawPos.y - obj[step].size.y,
-      obj[step].size.x,
-      obj[step].size.y
+      drawPos.x - obj.size.x / 2,
+      drawPos.y - obj.size.y,
+      obj.size.x,
+      obj.size.y
     );
     ctx.fillStyle = `rgba(${obj.color}, ${obj.alpha})`;
     ctx.fill();
@@ -314,7 +314,7 @@ const drawConeFunc = (
   ctx.arc(
     drawPos.x,
     drawPos.y,
-    obj[step].radius,
+    obj.radius,
     -angle / 2 + start,
     angle / 2 + start
   );
@@ -392,4 +392,117 @@ const getTargets = (
       }
     }
   });
+};
+
+export const drawElementSelection = (
+  ctx: CanvasRenderingContext2D,
+  selectedElement: AnObject,
+  step: number
+) => {
+  if (isPlayers(selectedElement) || isEnemys(selectedElement)) {
+    drawIntercardinalHandles(
+      ctx,
+      selectedElement[step].pos,
+      selectedElement[step].size,
+      selectedElement[step].rotation
+    );
+  } else if (isRectangle(selectedElement)) {
+    drawIntercardinalHandles(
+      ctx,
+      selectedElement[step].pos,
+      selectedElement.size,
+      selectedElement[step].rotation
+    );
+    drawCardinalHandles(
+      ctx,
+      selectedElement[step].pos,
+      selectedElement.size,
+      selectedElement[step].rotation
+    );
+  } else if (isCone(selectedElement)) {
+    drawHandleForCones(
+      ctx,
+      selectedElement[step].pos,
+      selectedElement.radius,
+      selectedElement.angle,
+      selectedElement[step].rotation
+    );
+  } else if (isCircle(selectedElement)) {
+    drawCardinalHandles(
+      ctx,
+      selectedElement[step].pos,
+      { x: selectedElement.radius * 2, y: selectedElement.radius * 2 },
+      0
+    );
+  }
+};
+
+const drawHandle = (ctx: CanvasRenderingContext2D, pos: Point) => {
+  const handleSize = 8;
+  ctx.beginPath();
+  ctx.rect(
+    pos.x - handleSize / 2,
+    pos.y - handleSize / 2,
+    handleSize,
+    handleSize
+  );
+  ctx.strokeStyle = "blue";
+  ctx.stroke();
+  ctx.fillStyle = "rgba(200, 220, 255, 1)";
+  ctx.fill();
+};
+
+const drawCardinalHandles = (
+  ctx: CanvasRenderingContext2D,
+  pos: Point,
+  size: Point,
+  rotation: number
+) => {
+  ctx.save();
+  ctx.scale(2, 2);
+  rotateCanvas(ctx, rotation, pos);
+  drawHandle(ctx, { x: pos.x, y: pos.y - size.y / 2 });
+  drawHandle(ctx, { x: pos.x, y: pos.y + size.y / 2 });
+  drawHandle(ctx, { x: pos.x - size.x / 2, y: pos.y });
+  drawHandle(ctx, { x: pos.x + size.x / 2, y: pos.y });
+  ctx.restore();
+};
+
+const drawIntercardinalHandles = (
+  ctx: CanvasRenderingContext2D,
+  pos: Point,
+  size: Point,
+  rotation: number
+) => {
+  ctx.save();
+  ctx.scale(2, 2);
+  rotateCanvas(ctx, rotation, pos);
+  drawHandle(ctx, { x: pos.x - size.x / 2, y: pos.y - size.y / 2 });
+  drawHandle(ctx, { x: pos.x + size.x / 2, y: pos.y - size.y / 2 });
+  drawHandle(ctx, { x: pos.x - size.x / 2, y: pos.y + size.y / 2 });
+  drawHandle(ctx, { x: pos.x + size.x / 2, y: pos.y + size.y / 2 });
+  ctx.restore();
+};
+
+const drawHandleForCones = (
+  ctx: CanvasRenderingContext2D,
+  pos: Point,
+  radius: number,
+  angle: number,
+  rotation: number
+) => {
+  ctx.save();
+  ctx.scale(2, 2);
+  rotateCanvas(ctx, rotation, pos);
+  drawHandle(ctx, { x: pos.x, y: pos.y - radius });
+  drawHandle(ctx, { x: pos.x, y: pos.y });
+  const angleRad = (angle * Math.PI) / 180;
+  const start = (-90 * Math.PI) / 180;
+  let x = pos.x + Math.cos(angleRad / 2 + start) * radius;
+  let y = pos.y + Math.sin(angleRad / 2 + start) * radius;
+  drawHandle(ctx, { x, y });
+  x = pos.x + Math.cos(-angleRad / 2 + start) * radius;
+  y = pos.y + Math.sin(-angleRad / 2 + start) * radius;
+  drawHandle(ctx, { x, y });
+  ctx.restore();
 };

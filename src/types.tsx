@@ -155,28 +155,23 @@ export interface AttackObject extends baseObject, colorableObject {
   draw?: Function;
 }
 
-export interface CircleObject extends AttackObject {
+export interface CircleObject extends AttackObject, radiusObject {
   type: ObjectType.Circle;
-  [key: number]: radiusObject &
-    movableObject &
-    aimableObject &
-    attachableObject;
+  [key: number]: movableObject & aimableObject & attachableObject;
 }
 
-export interface ConeObject extends AttackObject, angleObject {
+export interface ConeObject extends AttackObject, angleObject, radiusObject {
   type: ObjectType.Cone;
-  [key: number]: radiusObject &
-    movableObject &
+  [key: number]: movableObject &
     rotatableObject &
     attachableObject &
     aimableObject;
 }
 
-export interface RectangleObject extends AttackObject {
+export interface RectangleObject extends AttackObject, resizableObject {
   type: ObjectType.Rect;
   rotAt: "middle" | "bottom";
-  [key: number]: resizableObject &
-    movableObject &
+  [key: number]: movableObject &
     rotatableObject &
     attachableObject &
     aimableObject;

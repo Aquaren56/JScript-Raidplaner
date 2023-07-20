@@ -75,7 +75,7 @@ export const isStepItemHit = (
       : obj[step].rotation;
   const pos = isWaymarks(obj) ? obj.pos : obj[step].pos;
   const adjustedPoint = calcPointForAngle((rot * Math.PI) / 180, pos, mouse);
-  if (isToppings(obj)) {
+  if (isToppings(obj) || isRectangle(obj)) {
     return (
       adjustedPoint.x >= obj[step].pos.x - obj.size.x / 2 &&
       adjustedPoint.x <= obj[step].pos.x + obj.size.x / 2 &&
@@ -89,7 +89,7 @@ export const isStepItemHit = (
       adjustedPoint.y >= obj.pos.y - obj.size.y / 2 &&
       adjustedPoint.y <= obj.pos.y + obj.size.y / 2
     );
-  } else if (isPlayers(obj) || isRectangle(obj) || isEnemys(obj)) {
+  } else if (isPlayers(obj) || isEnemys(obj)) {
     const values = obj[step];
     return (
       adjustedPoint.x >= values.pos.x - values.size.x / 2 &&
@@ -109,14 +109,14 @@ export const isStepItemHit = (
     const mouseAngleRad = mouseAngle * (Math.PI / 180);
 
     return (
-      calcDistance(adjustedPoint, obj[step].pos) <= obj[step].radius &&
+      calcDistance(adjustedPoint, obj[step].pos) <= obj.radius &&
       ((mouseAngleRad >= startAngle &&
         mouseAngleRad <= endAngle + Math.PI * 2) ||
         (mouseAngleRad >= startAngle - Math.PI * 2 &&
           mouseAngleRad <= endAngle))
     );
   } else if (isCircle(obj)) {
-    return calcDistance(adjustedPoint, obj[step].pos) <= obj[step].radius;
+    return calcDistance(adjustedPoint, obj[step].pos) <= obj.radius;
   }
   return false;
 };

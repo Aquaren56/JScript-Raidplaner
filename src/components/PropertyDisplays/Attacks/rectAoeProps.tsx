@@ -20,9 +20,9 @@ export default function RectAoeProperties({ attack, changeAttack }: Props) {
           <input
             className="input-number"
             type="number"
-            value={attack[step].size.y}
+            value={attack.size.y}
             onChange={(e) => {
-              attack[step].size.y = parseInt(e.target.value);
+              attack.size.y = parseInt(e.target.value);
               changeAttack();
             }}
           />
@@ -32,9 +32,9 @@ export default function RectAoeProperties({ attack, changeAttack }: Props) {
           <input
             className="input-number"
             type="number"
-            value={attack[step].size.x}
+            value={attack.size.x}
             onChange={(e) => {
-              attack[step].size.x = parseInt(e.target.value);
+              attack.size.x = parseInt(e.target.value);
               changeAttack();
             }}
           />
@@ -64,9 +64,9 @@ export default function RectAoeProperties({ attack, changeAttack }: Props) {
         onChange={(e) => {
           attack.rotAt = e.target.checked ? "middle" : "bottom";
           if (attack.rotAt === "middle") {
-            attack[step].pos.y = attack[step].pos.y + attack[step].size.y / 2;
+            attack[step].pos.y = attack[step].pos.y + attack.size.y / 2;
           } else {
-            attack[step].pos.y = attack[step].pos.y + attack[step].size.y / 2;
+            attack[step].pos.y = attack[step].pos.y + attack.size.y / 2;
           }
           changeAttack();
         }}
