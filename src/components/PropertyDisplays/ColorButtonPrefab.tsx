@@ -1,5 +1,6 @@
 import { Attacc } from "../../types";
-import "../../styling/property.css";
+//import "../../styling/property.css";
+import React from "react";
 
 interface Props {
   color: string;

@@ -1,7 +1,14 @@
 import { Players, ObjectType } from "../../types";
-import { getIconsByRole, jIconKeys, pIconKeys } from "../../utils/loadIcons";
-import "../../styling/icon-bar.css";
+import {
+  getIconsByRole,
+  jIconKeys,
+  pIconKeys,
+  iconStrings,
+} from "../../utils/loadIcons";
+//import "../../styling/icon-bar.css";
 import Section from "../section";
+import React from "react";
+import Image from "next/image";
 
 interface ChangePlayerIconsProps {
   player: Players;
@@ -21,6 +28,9 @@ export default function ChangePlayerIcons({
       player.label = type;
     }
     player.img = img;
+    player.iconString = iconStrings[type];
+    player.imgElement.src = iconStrings[type];
+
     player.type = ObjectType[type];
     changingPlayer();
   };
@@ -30,10 +40,12 @@ export default function ChangePlayerIcons({
     return Object.keys(icons).map((icon) => {
       return (
         <div key={icon} className="icon-row">
-          <img
+          <Image
             className="player-icon"
             src={icons[icon as keyof typeof icons]}
             alt={icon}
+            height={30}
+            width={30}
             onClick={() =>
               updatePlayer(
                 player,

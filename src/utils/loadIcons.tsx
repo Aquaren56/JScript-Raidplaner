@@ -1,10 +1,10 @@
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { ObjectType, Players, isTanks, isHealers } from "../types";
-import "../styling/section.css";
+import React from "react";
 
 import healer from "../icons/player/Healer.png";
 import tank from "../icons/player/Tank.png";
-import melee from "../icons/player/Melee.png";
+import melee from "../../public/icons/player/Melee.png";
 import ranged from "../icons/player/Ranged.png";
 import caster from "../icons/player/Magic.png";
 
@@ -27,6 +27,33 @@ import war from "../icons/player/all/Warrior.png";
 import drk from "../icons/player/all/DarkKnight.png";
 import rpr from "../icons/player/all/Reaper.png";
 import sge from "../icons/player/all/Sage.png";
+
+export const iconStrings = {
+  healer: "/icons/player/Healer.png",
+  tank: "/icons/player/Tank.png",
+  melee: "/icons/player/Melee.png",
+  ranged: "/icons/player/Ranged.png",
+  caster: "/icons/player/Magic.png",
+  nin: "/icons/player/all/Ninja.png",
+  drg: "/icons/player/all/Dragoon.png",
+  sam: "/icons/player/all/Samurai.png",
+  mnk: "/icons/player/all/Monk.png",
+  brd: "/icons/player/all/Bard.png",
+  mch: "/icons/player/all/Machinist.png",
+  dnc: "/icons/player/all/Dancer.png",
+  rpr: "/icons/player/all/Reaper.png",
+  whm: "/icons/player/all/WhiteMage.png",
+  sch: "/icons/player/all/Scholar.png",
+  ast: "/icons/player/all/Astrologian.png",
+  sge: "/icons/player/all/Sage.png",
+  blm: "/icons/player/all/BlackMage.png",
+  smn: "/icons/player/all/Summoner.png",
+  rdm: "/icons/player/all/RedMage.png",
+  gnb: "/icons/player/all/Gunbreaker.png",
+  pld: "/icons/player/all/Paladin.png",
+  war: "/icons/player/all/Warrior.png",
+  drk: "/icons/player/all/DarkKnight.png",
+};
 
 const playerBaseIcons = {
   healer,
@@ -160,7 +187,7 @@ const getDraggableIcon = (key: pIconKeys | jIconKeys) => {
     <DragIcon
       key={key}
       type={ObjectType[key]}
-      src={getIcon(key)}
+      src={iconStrings[key]}
       alt={getIconName(key)}
     />
   );
@@ -262,7 +289,7 @@ export const createJob = (
   return {
     id: id,
     label: key,
-    img: getIcon(key),
+    iconString: iconStrings[key],
     type: ObjectType[key],
     [step]: {
       pos: { x: pos.x + 32 / 2, y: pos.y + 32 / 2 },

@@ -7,8 +7,10 @@ import {
 } from "../../../utils/loadAttacks";
 import Section from "../../section";
 import { useCounter } from "../../../IdProvider";
-import { StepContext } from "../../../App";
+import { StepContext } from "../../App";
 import { useContext } from "react";
+import React from "react";
+import Image from "next/image";
 
 interface Props {
   object: PossibleParentObject;
@@ -44,10 +46,12 @@ export default function AttackAttachments({
 
   const getAttackImg = (key: AttackShapes) => {
     return (
-      <img
+      <Image
         key={key}
         src={getIcon(key)}
         alt={key}
+        width={30}
+        height={30}
         onClick={(e) => configureAttack(key)}
       />
     );

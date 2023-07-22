@@ -1,6 +1,8 @@
 import { ConeObject } from "../../../types";
-import { StepContext } from "../../../App";
+import { StepContext } from "../../App";
 import { useContext } from "react";
+import React from "react";
+import styles from "./attack.module.css";
 
 interface Props {
   attack: ConeObject;

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { AnObject, isCircle, isCone, isRectangle } from "../../types";
+import React from "react";
+import Image from "next/image";
 
-import "../../styling/element-display.css";
+import styles from "./elementdisplay.module.css";
 
 type DisplayTypeProps = {
   arr: AnObject[];
@@ -82,7 +84,14 @@ export default function DisplayType({
         ></div>
       );
     } else {
-      return <img src={element.img} alt={element.label} />;
+      return (
+        <Image
+          src={element.iconString}
+          alt={element.label}
+          width={30}
+          height={30}
+        />
+      );
     }
   };
 
@@ -114,7 +123,7 @@ export default function DisplayType({
             const color = isSelected ? "black" : "inherit";
             return (
               <div
-                className="element"
+                className={styles.element}
                 key={element.id}
                 onClick={() => handleClick(element)}
                 style={{
@@ -129,7 +138,10 @@ export default function DisplayType({
                 {element.label}
                 <div
                   style={{ float: "right" }}
-                  onClick={(e) => deleteFromStep(element)}
+                  onClick={(e) => {
+                    deleteFromStep(element);
+                    setSelected(null);
+                  }}
                 >
                   🥷🏼
                 </div>

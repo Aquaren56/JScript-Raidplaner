@@ -1,6 +1,12 @@
-import "../../styling/canvases.css";
-
-import React, { useRef, useEffect, useState, useContext } from "react";
+import styles from "./canvases.module.css";
+import React, {
+  useRef,
+  useMemo,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
 import { onDrop } from "../../utils/DragnDrop";
 import {
   AnObject,
@@ -13,7 +19,7 @@ import { drawAnObject, drawElementSelection } from "../../utils/drawUtils";
 import { isStepItemHit } from "../../utils/maffs";
 import { createAnObject } from "../../utils/utils";
 import { useCounter } from "../../IdProvider";
-import { StepContext } from "../../App";
+import { StepContext } from "../App";
 
 interface Point {
   x: number;
@@ -35,17 +41,19 @@ export default function PlanningCanvas(props: any) {
   const [dragging, setDragging] = useState<Point | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stepItems = allElements.filter((element: AnObject) => {
-    return element[currentStep] !== undefined || isWaymarks(element);
-  });
+  const stepItems = useMemo(() => {
+    return allElements.filter((element: AnObject) => {
+      return element[currentStep] !== undefined || isWaymarks(element);
+    });
+  }, [allElements, currentStep]);
 
-  useEffect(() => {
+  const drawCanvas = () => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        canvas.width = canvas.height = 1000;
-        canvas.style.width = canvas.style.height = "500px";
+        //canvas.width = canvas.height = 1000;
+        //canvas.style.width = canvas.style.height = "500px";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         stepItems.forEach((item: AnObject) => {
           drawAnObject(ctx, item, currentStep, stepItems);
@@ -55,7 +63,16 @@ export default function PlanningCanvas(props: any) {
         }
       }
     }
-  }, [currentStep, stepItems, selectedElement]);
+  };
+
+  const animate = () => {
+    drawCanvas();
+    requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    animate();
+  }, [drawCanvas]);
 
   const calcPosOnCanvas = (
     offset: Point,
@@ -183,7 +200,7 @@ export default function PlanningCanvas(props: any) {
 
   return (
     <canvas
-      className="planning-canvas"
+      className={styles.planningcanvas}
       ref={canvasRef}
       {...rest}
       onDrop={dropHandler}
@@ -191,6 +208,9 @@ export default function PlanningCanvas(props: any) {
       onMouseDown={onCanvasClicked}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
+      height={1000}
+      width={1000}
+      style={{ width: "500px", height: "500px" }}
     />
   );
 }

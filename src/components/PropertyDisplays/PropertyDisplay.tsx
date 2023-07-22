@@ -1,4 +1,5 @@
-import "../../styling/header.css";
+//import "../../styling/header.css";
+import styles from "./property.module.css";
 import MapModel from "../../models/MapModel";
 import {
   isAttacks,
@@ -13,8 +14,8 @@ import ToppingProperties from "./ToppingProperties";
 import MapProperties from "./MapProperties";
 import PlayerProperties from "./PlayerProperties";
 
-import { StepContext } from "../../App";
-import { useContext } from "react";
+import { StepContext } from "../App";
+import React, { useContext } from "react";
 
 interface PropertyDisplayProps {
   allElements: AnObject[];
@@ -99,7 +100,7 @@ export default function PropertyDisplay({
 
   return (
     <div
-      className="property-display"
+      className={styles.propertydisplay}
       style={{ backgroundColor: "var(--darkest)" }}
     >
       PropertyDIsplay Right Side

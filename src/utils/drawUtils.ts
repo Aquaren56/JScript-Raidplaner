@@ -52,9 +52,11 @@ export const drawIcon = (
 ) => {
   ctx.save();
   ctx.scale(2, 2);
-  rotateCanvas(ctx, obj[step].rotation, obj[step].pos);
+  if (obj[step].rotation !== 0) {
+    rotateCanvas(ctx, obj[step].rotation, obj[step].pos);
+  }
   const img = new Image();
-  img.src = obj.img;
+  img.src = obj.iconString;
   ctx.drawImage(
     img,
     obj[step].pos.x - obj[step].size.x / 2,
@@ -73,7 +75,7 @@ export const drawTopping = (
   ctx.save();
   ctx.scale(2, 2);
   const img = new Image();
-  img.src = obj.img;
+  img.src = obj.iconString;
   if (obj[step].parents.length > 0) {
     obj[step].parents.forEach((parent) => {
       ctx.drawImage(
@@ -103,7 +105,7 @@ export const drawWaymark = (
   ctx.save();
   ctx.scale(2, 2);
   const img = new Image();
-  img.src = obj.img;
+  img.src = obj.iconString;
   ctx.drawImage(
     img,
     obj.pos.x - obj.size.x / 2,
@@ -202,7 +204,9 @@ export const drawRects = (
               x: parent[step].pos.x,
               y: parent[step].pos.y + 1,
             });
-            rotateCanvas(ctx, angle, parent[step].pos);
+            if (angle !== 0) {
+              rotateCanvas(ctx, angle, parent[step].pos);
+            }
             drawRectFunc(ctx, obj, step, parent[step].pos);
             ctx.restore();
           });
@@ -210,11 +214,13 @@ export const drawRects = (
       } else {
         ctx.save();
         ctx.scale(2, 2);
-        rotateCanvas(
-          ctx,
-          obj[step].rotation + parent[step].rotation,
-          parent[step].pos
-        );
+        if (obj[step].rotation + parent[step].rotation !== 0) {
+          rotateCanvas(
+            ctx,
+            obj[step].rotation + parent[step].rotation,
+            parent[step].pos
+          );
+        }
         drawRectFunc(ctx, obj, step, parent[step].pos);
         ctx.restore();
       }
@@ -275,7 +281,9 @@ export const drawCones = (
               x: parent[step].pos.x,
               y: parent[step].pos.y + 1,
             });
-            rotateCanvas(ctx, angle, parent[step].pos);
+            if (angle !== 0) {
+              rotateCanvas(ctx, angle, parent[step].pos);
+            }
             drawConeFunc(ctx, obj, step, parent[step].pos);
             ctx.restore();
           });

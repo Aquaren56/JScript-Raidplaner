@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 // Define the CounterContext
 interface CounterContextType {
@@ -12,18 +12,21 @@ const CounterContext = createContext<CounterContextType | undefined>(undefined);
 const useCounter = (): CounterContextType => {
   const context = useContext(CounterContext);
   if (!context) {
-    throw new Error('useCounter must be used within a CounterProvider');
+    throw new Error("useCounter must be used within a CounterProvider");
   }
   return context;
 };
 
 interface CounterProviderProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
+  initialCounter: number;
 }
 
-// CounterProvider component to wrap around the app
-const CounterProvider = ({ children }: CounterProviderProps) => {
-  const [counter, setCounter] = useState(9);
+const CounterProvider = ({
+  children,
+  initialCounter,
+}: CounterProviderProps) => {
+  const [counter, setCounter] = useState(initialCounter);
 
   const incrementCounter = () => {
     setCounter((prevCounter) => prevCounter + 1);
@@ -34,7 +37,10 @@ const CounterProvider = ({ children }: CounterProviderProps) => {
     incrementCounter,
   };
 
-  return <CounterContext.Provider value={contextValue}>{children}</CounterContext.Provider>;
+  return (
+    <CounterContext.Provider value={contextValue}>
+      {children}
+    </CounterContext.Provider>
+  );
 };
-
 export { useCounter, CounterProvider };

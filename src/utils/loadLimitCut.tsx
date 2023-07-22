@@ -14,6 +14,22 @@ import dsrTriangle from "../icons/toppings/playstation/dsrTriangle.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { ObjectType, ToppingObject, PossibleParentObject } from "../types";
+import React from "react";
+
+const toppingStrings = {
+  lc1: "/icons/toppings/limitcut/lc1.png",
+  lc2: "/icons/toppings/limitcut/lc2.png",
+  lc3: "/icons/toppings/limitcut/lc3.png",
+  lc4: "/icons/toppings/limitcut/lc4.png",
+  lc5: "/icons/toppings/limitcut/lc5.png",
+  lc6: "/icons/toppings/limitcut/lc6.png",
+  lc7: "/icons/toppings/limitcut/lc7.png",
+  lc8: "/icons/toppings/limitcut/lc8.png",
+  dsrX: "/icons/toppings/playstation/dsrX.png",
+  dsrO: "/icons/toppings/playstation/dsrO.png",
+  dsrSquare: "/icons/toppings/playstation/dsrSquare.png",
+  dsrTriangle: "/icons/toppings/playstation/dsrTriangle.png",
+};
 
 const lc = {
   lc1: lc1,
@@ -95,7 +111,7 @@ export const createLcObject = (
     id: id,
     label: key,
     size: { x: width, y: 32 },
-    img: getLcIcon(key),
+    iconString: toppingStrings[key],
     type: ObjectType[key],
     offset: { x: 0, y: 32 },
     [step]: {
@@ -116,7 +132,7 @@ export const createDsrObject = (
     id: id,
     label: key,
     size: { x: 32, y: 32 },
-    img: getDSRIcon(key),
+    iconString: toppingStrings[key],
     type: ObjectType[key],
     offset: { x: 0, y: 32 },
     [step]: {

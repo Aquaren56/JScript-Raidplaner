@@ -1,4 +1,6 @@
 import { CircleObject } from "../../../types";
+import React from "react";
+import styles from "./attack.module.css";
 
 interface Props {
   attack: CircleObject;

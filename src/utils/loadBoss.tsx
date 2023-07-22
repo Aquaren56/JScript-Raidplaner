@@ -2,6 +2,11 @@ import Boss from "../icons/enemy/herbert.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { ObjectType, EnemyObject } from "../types";
+import React from "react";
+
+const enemyStrings = {
+  Boss: "/icons/enemy/herbert.png",
+};
 
 const closs = {
   Boss,
@@ -33,7 +38,7 @@ const getDraggableIcon = (key: bossy) => {
     <DragIcon
       key={key}
       type={ObjectType[key]}
-      src={getIcon(key)}
+      src={enemyStrings[key]}
       alt={getIconName(key)}
     />
   );
@@ -66,7 +71,7 @@ export const createEnemy = (
   return {
     id: id,
     label: key,
-    img: getIcon(key),
+    iconString: enemyStrings[key],
     type: ObjectType.Boss,
     [step]: {
       size: { x: 100, y: 100 },

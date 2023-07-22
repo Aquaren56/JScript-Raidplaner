@@ -1,8 +1,10 @@
 import { RectangleObject } from "../../../types";
-import { StepContext } from "../../../App";
+import { StepContext } from "../../App";
 import { useContext } from "react";
+import React from "react";
 
-import "../../../styling/property.css";
+//import "../../../styling/property.css";
+import styles from "./attack.module.css";
 
 interface Props {
   attack: RectangleObject;

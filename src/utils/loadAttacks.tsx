@@ -2,6 +2,8 @@ import cone from "../icons/attacks/cone.png";
 import rect from "../icons/attacks/rect.png";
 import circle from "../icons/attacks/circle.png";
 
+import React from "react";
+
 import {
   ObjectType,
   ConeObject,
@@ -14,6 +16,12 @@ import {
 } from "../types";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
+
+const attackStrings = {
+  Cone: "/icons/attacks/cone.png",
+  Rect: "/icons/attacks/rect.png",
+  Circle: "/icons/attacks/circle.png",
+};
 
 const getIconName = (key: AttackShapes) => {
   return key;
@@ -29,7 +37,7 @@ export const loadAttacks = () => {
       <DragIcon
         key={key}
         type={ObjectType[key as AttackShapes]}
-        src={getIcon(key as AttackShapes)}
+        src={attackStrings[key]}
         alt={getIconName(key as AttackShapes)}
       />
     );

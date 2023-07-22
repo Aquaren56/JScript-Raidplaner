@@ -1,17 +1,23 @@
-import "../../styling/step-list.css";
+//import "../../styling/step-list.css";
+import styles from "./StepList.module.css";
 
-import { useContext, useState, useRef } from "react";
-import { StepContext } from "../../App";
+import React, { useContext, useState, useRef, MutableRefObject } from "react";
+import { StepContext } from "../App";
 
 interface StepListProps {
   selectStep: Function;
-  //currentStep: number;
+  stepList: MutableRefObject<number[]>;
+  initSteps: number[];
 }
 
-export default function StepList({ selectStep }: StepListProps) {
+export default function StepList({
+  selectStep,
+  stepList,
+  initSteps,
+}: StepListProps) {
   const currentStep = useContext(StepContext);
 
-  const [steps, setSteps] = useState([0]);
+  const [steps, setSteps] = useState(initSteps);
   const [nextStepId, setNextStepId] = useState(1);
 
   const addStepAtIndex = (index: number) => {
@@ -21,6 +27,7 @@ export default function StepList({ selectStep }: StepListProps) {
       ...steps.slice(index + 1),
     ];
     setSteps(newSteps);
+    stepList.current = newSteps;
     setNextStepId(nextStepId + 1);
     selectStep(newSteps[index + 1], true);
   };
@@ -30,11 +37,13 @@ export default function StepList({ selectStep }: StepListProps) {
     if (index === 0) {
       selectStep(steps[1], false);
       setSteps(steps.slice(1));
+      stepList.current = steps.slice(1);
       return;
     }
 
     const newSteps = [...steps.slice(0, index), ...steps.slice(index + 1)];
     setSteps(newSteps);
+    stepList.current = newSteps;
     selectStep(newSteps[index - 1], false);
   };
 
@@ -86,17 +95,19 @@ export default function StepList({ selectStep }: StepListProps) {
     const newDisplayedArr = deleteDragItem();
     const newDisplayedArr2 = insertItem(dragId, targetIndex, newDisplayedArr);
     setSteps(newDisplayedArr2);
+    stepList.current = newDisplayedArr2;
   };
 
   const dragLeave = (e: React.DragEvent<HTMLButtonElement>) => {
     setSteps(savedArr);
+    stepList.current = savedArr;
   };
 
   return (
     <div style={{ backgroundColor: "var(--dark)" }}>
       {steps.map((step, index) => (
         <button
-          className={`step-button`}
+          className={styles.stepbutton}
           id={step.toString()}
           key={index}
           draggable={true}

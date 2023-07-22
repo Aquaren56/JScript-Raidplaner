@@ -1,6 +1,8 @@
-import "../../styling/icon-bar.css";
+import styles from "./iconbar.module.css";
 import { onDrag, calcOffset } from "../../utils/DragnDrop";
+import Image from "next/image";
 import { ObjectType } from "../../types";
+import React from "react";
 
 interface dragProps {
   src: string;
@@ -18,8 +20,8 @@ export default function DragIcon({ src, alt, type }: dragProps) {
   };
 
   return (
-    <div className="player-icon" draggable={true} onDragStart={dragStart}>
-      <img src={src} alt={alt} />
+    <div className={styles.playericon} draggable={true} onDragStart={dragStart}>
+      <Image src={src} alt={alt} height={30} width={30} priority={true} />
     </div>
   );
 }

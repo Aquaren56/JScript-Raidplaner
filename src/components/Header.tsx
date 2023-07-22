@@ -1,11 +1,6 @@
-
-import '../styling/header.css';
+import styles from "./header.module.css";
+import React from "react";
 
 export default function Header(props: any) {
-
-    return (
-        <div className='header' style={{ backgroundColor: 'var(--light)'}}>
-            {props.children}
-        </div>
-    )
+  return <div className={styles.header}>{props.children}</div>;
 }

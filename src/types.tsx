@@ -93,7 +93,7 @@ export interface resizableObject {
 }
 
 export interface imageObject {
-  img: string;
+  iconString: string;
 }
 
 export interface radiusObject {
@@ -148,7 +148,7 @@ export interface WaymarkObject
 }
 
 export interface aimableObject {
-  targets: (baseObject | number | string)[];
+  targets: (Players | number | string)[];
 }
 
 export interface AttackObject extends baseObject, colorableObject {

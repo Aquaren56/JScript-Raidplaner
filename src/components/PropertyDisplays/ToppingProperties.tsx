@@ -6,8 +6,8 @@ import {
 } from "../../types";
 import Dropdown from "./YetAnotherDropdown";
 import { valuesToInt } from "../../utils/utils";
-import { StepContext } from "../../App";
-import { useContext } from "react";
+import { StepContext } from "../App";
+import React, { useContext } from "react";
 
 interface Props {
   topping: ToppingObject;

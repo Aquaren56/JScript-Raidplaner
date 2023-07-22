@@ -1,5 +1,6 @@
-import "../../styling/element-display.css";
-import "../../styling/header.css";
+import styles from "./elementdisplay.module.css";
+
+//import "../../styling/header.css";
 import {
   AnObject,
   isEnemys,
@@ -8,9 +9,10 @@ import {
   isWaymarks,
 } from "../../types";
 import { isAttacks } from "../../types";
-import { StepContext } from "../../App";
+import { StepContext } from "../App";
 import { useContext } from "react";
 import DisplayType from "./ElementTypeDisplay";
+import React from "react";
 
 interface ElementDisplayProps {
   allElements: AnObject[];
@@ -96,10 +98,7 @@ export default function ElementDisplay({
   };
 
   return (
-    <div
-      className="element-display"
-      style={{ backgroundColor: "var(--darkest)" }}
-    >
+    <div className={styles.elementdisplay}>
       {getElementsByType(getElementsOnStep()).map(
         (typeArray: AnObject[], index: number) => {
           return (

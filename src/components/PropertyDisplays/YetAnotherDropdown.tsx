@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { AttackObject, ToppingObject, PossibleParentObject } from "../../types";
-import { StepContext } from "../../App";
+import { StepContext } from "../App";
 import { useContext } from "react";
 
 interface DropdownProps {

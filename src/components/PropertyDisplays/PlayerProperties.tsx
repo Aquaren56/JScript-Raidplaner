@@ -3,9 +3,9 @@ import { Players, EnemyObject, AnObject, isPlayers } from "../../types";
 import Toppings from "./Attachments/Toppings";
 import Attacks from "./Attachments/Attacks";
 import ChangePlayerIcons from "./ChangePlayerIcons";
-import { StepContext } from "../../App";
+import { StepContext } from "../App";
 
-import "../../styling/property.css";
+//import "../../styling/property.css";
 
 interface PProps {
   player: Players | EnemyObject;
@@ -121,8 +121,6 @@ export default function ItemForm({
         addElements={addElements}
         allElements={allElements}
       />
-      <br />
-      Change Job:
       <br />
       {isPlayers(player) && (
         <ChangePlayerIcons player={player} changingPlayer={changingPlayer} />

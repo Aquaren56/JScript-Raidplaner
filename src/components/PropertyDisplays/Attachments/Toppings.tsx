@@ -9,8 +9,10 @@ import {
 import { AnObject, ToppingObject, PossibleParentObject } from "../../../types";
 import Section from "../../section";
 import { useCounter } from "../../../IdProvider";
-import { StepContext } from "../../../App";
+import { StepContext } from "../../App";
 import { useContext } from "react";
+import React from "react";
+import Image from "next/image";
 
 interface Props {
   object: PossibleParentObject;
@@ -54,10 +56,12 @@ export default function Toppings({
     const icons = getAllLcIcons();
     return Object.keys(icons).map((key) => {
       return (
-        <img
+        <Image
           key={key}
           src={icons[key as Lc]}
           alt={key}
+          width={30}
+          height={30}
           onClick={(e) =>
             configureTopping(createLcObject(key as Lc, currentStep))
           }
@@ -70,11 +74,13 @@ export default function Toppings({
     const icons = getAllDsrIcons();
     return Object.keys(icons).map((key) => {
       return (
-        <img
+        <Image
           style={{ width: "30px", height: "30px" }}
           key={key}
           src={icons[key as Dsr]}
           alt={key}
+          width={30}
+          height={30}
           onClick={(e) =>
             configureTopping(createDsrObject(key as Dsr, currentStep))
           }

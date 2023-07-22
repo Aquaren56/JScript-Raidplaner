@@ -9,6 +9,18 @@ import Way4 from "../icons/waymarks/way_4.png";
 
 import DragIcon from "../components/IconBar/DraggableIcon";
 import { ObjectType, WaymarkObject } from "../types";
+import React from "react";
+
+const waymarkStrings = {
+  way1: "/icons/waymarks/way_1.png",
+  way2: "/icons/waymarks/way_2.png",
+  way3: "/icons/waymarks/way_3.png",
+  way4: "/icons/waymarks/way_4.png",
+  wayA: "/icons/waymarks/way_a.png",
+  wayB: "/icons/waymarks/way_b.png",
+  wayC: "/icons/waymarks/way_c.png",
+  wayD: "/icons/waymarks/way_d.png",
+};
 
 const waymarkNumbers = {
   way1: Way1,
@@ -49,7 +61,7 @@ const getDraggableIcon = (key: WaymarkIcon) => {
     <DragIcon
       key={key}
       type={ObjectType[key]}
-      src={getIcon(key)}
+      src={waymarkStrings[key]}
       alt={getIconName(key)}
     />
   );
@@ -89,7 +101,7 @@ export const createWaymarkObject = (
     label: key,
     size: { x: 32, y: 32 },
     pos: { x: pos.x + 32 / 2, y: pos.y + 32 / 2 },
-    img: getIcon(key),
+    iconString: waymarkStrings[key],
     alpha: 1,
     color: getWaymarkColor(key),
     shape: regex.test(key) ? "square" : "circle",

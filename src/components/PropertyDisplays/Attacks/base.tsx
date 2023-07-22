@@ -13,10 +13,12 @@ import ConeAoeProperties from "./coneAoeProps";
 import ColorButton from "../ColorButtonPrefab";
 import { valuesToInt, valuesMaybeToInt } from "../../../utils/utils";
 import Dd2 from "../TestDropdown";
-import { StepContext } from "../../../App";
+import { StepContext } from "../../App";
 import { useContext } from "react";
+import React from "react";
 
-import "../../../styling/property.css";
+//import "../../../styling/property.css";
+import styles from "./attack.module.css";
 
 interface Props {
   attack: Attacc;
@@ -170,9 +172,9 @@ export default function AttackProperties({
   return (
     <div>
       <div>
-        <div className="input-number-con">
-          <label className="input-label">Color:</label>
-          <div className="color-display">
+        <div className={styles.inputnumbercon}>
+          <label className={styles.inputlabel}>Color:</label>
+          <div className={styles.colordisplay}>
             <div
               style={{
                 backgroundColor: rgbToHex(attack.color),
@@ -181,7 +183,7 @@ export default function AttackProperties({
               }}
             >
               <input
-                className="input-color"
+                className={styles.inputcolor}
                 type="color"
                 value={rgbToHex(attack.color)}
                 onChange={(e) => {
@@ -192,7 +194,7 @@ export default function AttackProperties({
               />
             </div>
             <input
-              className="input-color-text"
+              className={styles.inputcolortext}
               type="text"
               value={rgbToHex(attack.color)}
               onChange={(e) => {
@@ -224,9 +226,9 @@ export default function AttackProperties({
           </tbody>
         </table>
       </div>
-      <div className="input-number-con">
-        <label className="input-label">Opacity:</label>
-        <div className="opacity-slider">
+      <div className={styles.inputnumbercon}>
+        <label className={styles.inputlabel}>Opacity:</label>
+        <div className={styles.opacityslider}>
           <input
             type="range"
             min="0"
@@ -242,11 +244,11 @@ export default function AttackProperties({
         </div>
       </div>
       <br />
-      <div className="input-number-row-2">
-        <div className="input-number-con">
-          <label className="input-label">Pos X:</label>
+      <div className={styles.inputnumberrow2}>
+        <div className={styles.inputnumbercon}>
+          <label className={styles.inputlabel}>Pos X:</label>
           <input
-            className="input-number"
+            className={styles.inputnumber}
             step="10"
             type="number"
             value={attack[step].pos.x}
@@ -256,10 +258,10 @@ export default function AttackProperties({
             }}
           />
         </div>
-        <div className="input-number-con">
-          <label className="input-label">Pos Y:</label>
+        <div className={styles.inputnumbercon}>
+          <label className={styles.inputlabel}>Pos Y:</label>
           <input
-            className="input-number"
+            className={styles.inputnumber}
             step="10"
             type="number"
             value={attack[step].pos.y}

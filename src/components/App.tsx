@@ -1,6 +1,7 @@
-import "./styling/header.css";
+"use client";
+import styles from "./header.module.css";
 
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useRef } from "react";
 import React from "react";
 
 import Header from "./Header";
@@ -17,14 +18,31 @@ import { initSetupBoss } from "../utils/loadBoss";
 
 import { CounterProvider } from "../IdProvider";
 import StepList from "./StepBar/StepList";
-import { AnObject, isAttacks, isToppings } from "../types";
+import {
+  AnObject,
+  Players,
+  Attacc,
+  PossibleParentObject,
+  ToppingObject,
+  isAttacks,
+  isEnemys,
+  isPlayers,
+  isToppings,
+} from "../types";
 
 export const StepContext = createContext<number>(0);
 
-function App() {
+interface Props {
+  initItems: AnObject[];
+  initSteps: number[];
+  idStart: number;
+}
+
+function App({ initItems, initSteps, idStart }: Props) {
   const [selectedStep, setSelectedStep] = useState(0);
-  const [allItems, setAllItems] = useState(new Array<AnObject>());
+  const [allItems, setAllItems] = useState(initItems);
   const [selectedElement, setSelectedElement] = useState<AnObject | null>(null);
+  const stepList = useRef(initSteps);
   const [area, setArea] = useState(
     new MapModel({
       square: true,
@@ -32,13 +50,69 @@ function App() {
       grids: [{ rows: 4, columns: 4, coloring: [] }],
     })
   );
-
+  /*
   useEffect(() => {
-    const playerSetup2 = initSetupPlayer(0);
-    const bossSetup2 = initSetupBoss(0);
-    const init2 = [...playerSetup2, ...bossSetup2];
-    setAllItems([...init2]);
+    const initStateString = localStorage.getItem("plannerState");
+    if (initStateString) {
+      const allInfo = JSON.parse(initStateString);
+      const initState = allInfo.allItems;
+      initState.forEach((element: AnObject) => {
+        if (isAttacks(element) || isToppings(element)) {
+          setParentsAndTargetsANew(element, initState);
+        }
+      });
+      //console.log(initState);
+      setAllItems(initState);
+    } else {
+      const playerSetup2 = initSetupPlayer(0);
+      const bossSetup2 = initSetupBoss(0);
+      const init2 = [...playerSetup2, ...bossSetup2];
+      setAllItems([...init2]);
+    }
   }, []);
+*/
+  const setParentsAndTargetsANew = (
+    element: Attacc | ToppingObject,
+    storageItems: AnObject[]
+  ) => {
+    Object.keys(element).forEach((key) => {
+      const keyNum = parseInt(key);
+      if (!isNaN(keyNum)) {
+        if (element[keyNum].parents.length > 0) {
+          element[keyNum].parents.forEach(
+            (parent: PossibleParentObject, index: number) => {
+              storageItems.forEach((item) => {
+                if (isPlayers(item) || isEnemys(item)) {
+                  if (item.id === parent.id) {
+                    element[keyNum].parents[index] = item;
+                  }
+                }
+              });
+            }
+          );
+          if (isAttacks(element)) {
+            if (element[keyNum].targets.length > 0) {
+              element[keyNum].targets.forEach(
+                (target: string | number | Players, index: number) => {
+                  const isString = typeof target === "string";
+                  const isNumber = typeof target === "number";
+                  if (!isString && !isNumber) {
+                    storageItems.forEach((item) => {
+                      if (isPlayers(item)) {
+                        if (item.id === target.id) {
+                          element[keyNum].targets[index] = item;
+                        }
+                      }
+                    });
+                  }
+                }
+              );
+            }
+          }
+        }
+      }
+    });
+  };
 
   const updateSelectedStep = (newStep: number, added: boolean) => {
     if (added) {
@@ -141,26 +215,39 @@ function App() {
     updateAllItems([...allItems]);
   };
 
+  const savePlannerState = () => {
+    const startId =
+      allItems.reduce((prev, current) => {
+        return prev.id > current.id ? prev : current;
+      }).id + 1;
+    const steps = stepList.current;
+    const dataToSave = { startId, steps, allItems };
+    const data = JSON.stringify(dataToSave);
+    localStorage.setItem("plannerState", data);
+  };
+
   return (
-    <div
-      className="App"
-      style={{
-        backgroundColor: "var(--background-color)",
-        color: "var(--text-color)",
-      }}
-    >
-      <CounterProvider>
+    <div className={styles.App}>
+      <CounterProvider initialCounter={9}>
         <StepContext.Provider value={selectedStep}>
-          <Header>
+          <Header className={styles.header}>
             <ThemeToggle />
+            <button
+              onClick={() => {
+                savePlannerState();
+              }}
+            >
+              Save
+            </button>
           </Header>
-          <StepList selectStep={updateSelectedStep} />
+          <StepList
+            selectStep={updateSelectedStep}
+            initSteps={initSteps}
+            stepList={stepList}
+          />
           <IconBar />
-          <div
-            className="canvas-area"
-            style={{ backgroundColor: "var(--dark)" }}
-          >
-            <div className="center-canvas">
+          <div className={styles.canvasarea}>
+            <div className={styles.centercanvas}>
               <PlanningCanvas
                 allElements={allItems}
                 setAllElements={setAllItems}

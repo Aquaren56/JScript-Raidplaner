@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import '../styling/section.css';
+import React, { ReactNode } from "react";
+import styles from "./Section.module.css";
 
 type SectionProps = {
   title: string;
@@ -9,14 +9,12 @@ type SectionProps = {
 const Section: React.FC<SectionProps> = ({ title, children }) => {
   return (
     <section>
-      <div className="separator">
+      <div className={styles.separator}>
         <hr />
         {title}
         <hr />
       </div>
-      <div className='icon-container'>
-        {children}
-      </div>
+      <div className={styles.iconcontainer}>{children}</div>
     </section>
   );
 };
