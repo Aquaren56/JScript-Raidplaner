@@ -1,21 +1,27 @@
-import '../../styling/icon-bar.css';
+import styles from "./iconbar.module.css";
+import { onDrag, calcOffset } from "../../utils/DragnDrop";
+import Image from "next/image";
+import { ObjectType } from "../../types";
+import React from "react";
 
 interface dragProps {
-    src: string;
-    role: string;
-    alt: string;
+  src: string;
+  alt: string;
+  type: ObjectType;
 }
 
-export default function DragIcon(props: dragProps) {
+export default function DragIcon({ src, alt, type }: dragProps) {
+  const dragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    onDrag(
+      e,
+      calcOffset(e, e.currentTarget.querySelector("img") as HTMLImageElement),
+      type
+    );
+  };
 
-    const dragStart = (e: React.DragEvent<HTMLDivElement>) => {
-        e.dataTransfer.setData('role', props.role)
-        e.dataTransfer.setData('pos', `${e.nativeEvent.offsetX} ${e.nativeEvent.offsetY}`)
-    }
-
-    return (
-        <div className="player-icon" draggable={true} onDragStart={dragStart}>
-            <img src={props.src} alt={props.role}/>
-        </div>
-    )
+  return (
+    <div className={styles.playericon} draggable={true} onDragStart={dragStart}>
+      <Image src={src} alt={alt} height={30} width={30} priority={true} />
+    </div>
+  );
 }

@@ -1,11 +1,6 @@
+import styles from "./header.module.css";
+import React from "react";
 
-import '../styling/header.css';
-
-export default function Header() {
-
-    return (
-        <div className='header'>
-            Header Top Left
-        </div>
-    )
+export default function Header(props: any) {
+  return <div className={styles.header}>{props.children}</div>;
 }

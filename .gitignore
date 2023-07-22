@@ -4,11 +4,14 @@
 /node_modules
 /.pnp
 .pnp.js
-
+/.VSCodeCounter
+/.vscode
+package-lock.json
 # testing
 /coverage
 
 # production
+/.next
 /build
 
 # misc

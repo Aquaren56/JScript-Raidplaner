@@ -1,15 +1,15 @@
-import '../../styling/icon-bar.css';
+import styles from "./iconbar.module.css";
+import React from "react";
 
 interface IconTabProps {
-    description: number;
-    onSelection: Function;
+  description: number;
+  onSelection: Function;
 }
 
-export default function IconTab(props: IconTabProps) {
-
-    return (
-        <div className="icon-tab" onClick={e => props.onSelection(props.description)}>
-            {props.description}
-        </div>
-    )
+export default function IconTab({ description, onSelection }: IconTabProps) {
+  return (
+    <div className={styles.icontab} onClick={() => onSelection()}>
+      {description}
+    </div>
+  );
 }

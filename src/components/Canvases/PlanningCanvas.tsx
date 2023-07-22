@@ -1,71 +1,216 @@
-import '../../styling/canvases.css';
+import styles from "./canvases.module.css";
+import React, {
+  useRef,
+  useMemo,
+  useEffect,
+  useState,
+  useContext,
+  useCallback,
+} from "react";
+import { onDrop } from "../../utils/DragnDrop";
+import {
+  AnObject,
+  isAttacks,
+  isPossibleParent,
+  isToppings,
+  isWaymarks,
+} from "../../types";
+import { drawAnObject, drawElementSelection } from "../../utils/drawUtils";
+import { isStepItemHit } from "../../utils/maffs";
+import { createAnObject } from "../../utils/utils";
+import { useCounter } from "../../IdProvider";
+import { StepContext } from "../App";
 
-import React, { useRef, useEffect, useCallback } from 'react';
-import getBasePlayerIcons, { pIconKeys } from '../../utils/loadIcons';
-import IconModel from '../../models/IconModel';
+interface Point {
+  x: number;
+  y: number;
+}
 
 export default function PlanningCanvas(props: any) {
+  const { counter, incrementCounter } = useCounter();
+  const currentStep = useContext(StepContext);
 
-    const {children, setChildren, selection, setSelection, ...rest} = props;
+  const {
+    allElements,
+    setAllElements,
+    selectedElement,
+    setSelectedElement,
+    ...rest
+  } = props;
 
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [dragging, setDragging] = useState<Point | null>(null);
 
-    //const [children, setChildren] = useState(new Array<Child>())
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stepItems = useMemo(() => {
+    return allElements.filter((element: AnObject) => {
+      return element[currentStep] !== undefined || isWaymarks(element);
+    });
+  }, [allElements, currentStep]);
 
-    const draw = useCallback(() => {
-        const canvas = canvasRef.current
-        let context: any;
-        if(canvas !== null) {
-            context = canvas.getContext('2d');
-            canvas.width = canvas.height = 1000;
-            canvas.style.width = canvas.style.height = '500px';
+  const drawCanvas = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        //canvas.width = canvas.height = 1000;
+        //canvas.style.width = canvas.style.height = "500px";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stepItems.forEach((item: AnObject) => {
+          drawAnObject(ctx, item, currentStep, stepItems);
+        });
+        if (selectedElement) {
+          drawElementSelection(ctx, selectedElement, currentStep);
         }
-        if(context) {
-            context.fillStyle = 'transparent';
-            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+      }
+    }
+  };
+
+  const animate = () => {
+    drawCanvas();
+    requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    animate();
+  }, [drawCanvas]);
+
+  const calcPosOnCanvas = (
+    offset: Point,
+    e: React.MouseEvent | React.DragEvent<HTMLCanvasElement>
+  ): Point => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.round(e.clientX - rect.left - offset.x);
+      const y = Math.round(e.clientY - rect.top - offset.y);
+      return { x, y };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const dropHandler = (e: React.DragEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+
+    const result = onDrop(e);
+    if (result) {
+      const topLeft = calcPosOnCanvas(result[1], e);
+      const betterObj = createAnObject(
+        result[0],
+        currentStep,
+        counter,
+        topLeft
+      );
+      incrementCounter();
+      setAllElements([...allElements, betterObj]);
+    }
+  };
+
+  const onCanvasClicked = (e: React.MouseEvent) => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      let childHit2 = false;
+      stepItems.forEach((item: AnObject) => {
+        let offset;
+        if (isStepItemHit(pos, item, currentStep)) {
+          if (isWaymarks(item)) {
+            setSelectedElement(item);
+            offset = {
+              x: item.pos.x - e.clientX + rect.left,
+              y: item.pos.y - e.clientY + rect.top,
+            };
+            setDragging(offset);
+            childHit2 = true;
+          } else if (isPossibleParent(item)) {
+            setSelectedElement(item);
+            offset = {
+              x: item[currentStep].pos.x - e.clientX + rect.left,
+              y: item[currentStep].pos.y - e.clientY + rect.top,
+            };
+            setDragging(offset);
+            childHit2 = true;
+          } else if (
+            (isAttacks(item) || isToppings(item)) &&
+            item[currentStep].parents.length === 0
+          ) {
+            setSelectedElement(item);
+            offset = {
+              x: item[currentStep].pos.x - e.clientX + rect.left,
+              y: item[currentStep].pos.y - e.clientY + rect.top,
+            };
+            setDragging(offset);
+            childHit2 = true;
+          }
         }
-        context.scale(2,2)
-        children.forEach((child: IconModel) => {
-            if(isOfTypePlayer(child.identifier)) {
-                const image = new Image();
-                image.src = getBasePlayerIcons(child.identifier);
-                context.drawImage(image, child.pos.x, child.pos.y, 30, 30);
-            }
-        })
-    }, [children]);
+      });
+      if (!childHit2) {
+        setSelectedElement(null);
+      }
+    }
+  };
 
-    useEffect(() => {
-            draw();
-
-    }, [draw])
-
-    function isOfTypePlayer (keyInput: string): keyInput is pIconKeys {
-        return ['melee', 'ranged', 'tank', 'healer'].includes(keyInput);
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (dragging) {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        if (isWaymarks(selectedElement)) {
+          selectedElement.pos = {
+            x: pos.x + dragging.x,
+            y: pos.y + dragging.y,
+          };
+        } else {
+          selectedElement[currentStep].pos = {
+            x: pos.x + dragging.x,
+            y: pos.y + dragging.y,
+          };
+        }
+        const newElements = [...allElements];
+        setAllElements(newElements);
+      }
     }
 
-    const dropHandler = (e: React.DragEvent<HTMLCanvasElement>) => {
-        e.preventDefault();
-        const canvas = canvasRef.current;
-        let posData = {x: 0, y: 0};
-        if(canvas){
-            const offSetClick = e.dataTransfer.getData('pos');
-            const offSets = offSetClick.split(' ');
-            posData = {x: e.clientX - canvas?.offsetLeft - Number(offSets[0]), y: e.clientY - canvas?.offsetTop - Number(offSets[1])}
+    const canvas = canvasRef.current;
+
+    if (canvas) {
+      let childHit = false;
+      const rect = canvas.getBoundingClientRect();
+      const pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      stepItems.forEach((item: AnObject) => {
+        if (isStepItemHit(pos, item, currentStep)) {
+          document.body.style.cursor = "crosshair";
+          childHit = true;
         }
-
-        const iconData = e.dataTransfer.getData('role');
-
-        const obj = new IconModel( {name: iconData, pos: posData, size: {x: 30, y: 30}} );
-
-        setChildren([...children, obj]);
-        setSelection(obj);
+      });
+      if (!childHit) {
+        document.body.style.cursor = "default";
+      }
     }
+  };
 
-    const allowDrop = (e: React.DragEvent<HTMLCanvasElement>) => {
-        e.preventDefault();
-    }
+  const onMouseUp = (e: React.MouseEvent) => {
+    setDragging(null);
+  };
 
-    return (
-            <canvas className='planning-canvas' ref={canvasRef} {...rest} onDrop={dropHandler} onDragOver={allowDrop}/>
-    )
+  const allowDrop = (e: React.DragEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+  };
+
+  return (
+    <canvas
+      className={styles.planningcanvas}
+      ref={canvasRef}
+      {...rest}
+      onDrop={dropHandler}
+      onDragOver={allowDrop}
+      onMouseDown={onCanvasClicked}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      height={1000}
+      width={1000}
+      style={{ width: "500px", height: "500px" }}
+    />
+  );
 }
